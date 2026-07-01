@@ -1,0 +1,1028 @@
+{
+  "combat": {
+    "baseMaxHp": 14,
+    "heartMaxHpBonus": 2,
+    "npcHeartMaxHpBonus": 0.5,
+    "baseMaxMana": 12,
+    "witMaxManaBonus": 1,
+    "baseAttackCooldownMs": 4200,
+    "graceCooldownReductionMs": 180,
+    "minimumAttackCooldownMs": 1400,
+    "baseDamageCritChance": 0.03,
+    "sparkDamageCritChanceBonus": 0.01,
+    "maximumDamageCritChance": 0.35,
+    "damageCritMultiplier": 1.5,
+    "baseHealCritChance": 0.03,
+    "bondHealCritChanceBonus": 0.01,
+    "maximumHealCritChance": 0.35,
+    "healCritMultiplier": 1.5,
+    "baseFleeChance": 0.35,
+    "graceFleeBonus": 0.035,
+    "maximumFleeChance": 0.85,
+    "deathRespawnSeconds": 45,
+    "outOfCombatRecoveryHp": 1,
+    "outOfCombatRecoverySeconds": 20,
+    "npcSpawnSeconds": 20,
+    "npcDespawnSeconds": 10,
+    "npcPlayersPerInstance": 1,
+    "npcMaxInstancesPerType": 4,
+    "restManaRecoveryAmount": 2,
+    "restManaRecoverySeconds": 10,
+    "restHpRecoveryAmount": 1,
+    "restHpRecoverySeconds": 10,
+    "sanctuaryRestMultiplier": 2,
+    "playerDamage": {
+      "base": 2,
+      "stat": "might",
+      "divisor": 3,
+      "randomMin": 0,
+      "randomMax": 2
+    },
+    "npcDamage": {
+      "base": 1,
+      "stat": "might",
+      "divisor": 4,
+      "randomMin": 0,
+      "randomMax": 2
+    }
+  },
+  "leveling": {
+    "baseXpToLevel": 120,
+    "xpGrowthRate": 1.25,
+    "maxLevel": 50,
+    "combatXpMultiplier": 0.65,
+    "questXpMultiplier": 2
+  },
+  "stats": [
+    {
+      "id": "heart",
+      "name": "Grit",
+      "description": "Nerve, optimism under pressure, and the ability to keep moving when a hologram dragon lands on a bus.",
+      "base": 8
+    },
+    {
+      "id": "wit",
+      "name": "Tactics",
+      "description": "Rules knowledge, fast reads, combo planning, and spotting exactly which glowing card is about to become a problem.",
+      "base": 8
+    },
+    {
+      "id": "grace",
+      "name": "Tempo",
+      "description": "Initiative, timing, footwork, and acting before the monster-of-the-minute gets a second phase.",
+      "base": 8
+    },
+    {
+      "id": "might",
+      "name": "Power",
+      "description": "Raw force, stamina, and the courage to swing a folding chair at a cardboard kaiju.",
+      "base": 8
+    },
+    {
+      "id": "spark",
+      "name": "Charge",
+      "description": "Card energy, flashy effects, burst damage, and how dramatically the air crackles when you draw.",
+      "base": 8
+    },
+    {
+      "id": "bond",
+      "name": "Synergy",
+      "description": "Teamwork, monster rapport, combo glue, and the mysterious power of believing the next draw matters.",
+      "base": 8
+    }
+  ],
+  "jobs": [
+    {
+      "id": "duel-architect",
+      "name": "Duel Architect",
+      "description": "A combo duelist who turns street junk, trap sleeves, and dramatic declarations into layered plays.",
+      "primaryStats": [
+        "wit",
+        "spark"
+      ],
+      "growthPerLevel": {
+        "wit": 0.3,
+        "spark": 0.25,
+        "heart": 0.1
+      },
+      "skills": [
+        {
+          "id": "set-and-swing",
+          "name": "Set and Swing",
+          "description": "Set a face-down trick and hit before anyone can ask if that is legal.",
+          "level": 1,
+          "manaCost": 3,
+          "cooldownSeconds": 3.3,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "You set a sneaky sleeve and clip {target} for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Your face-down bluff guards {guard} damage from the next hit.",
+              "amount": 2,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "chain-window",
+          "name": "Chain Window",
+          "description": "Catch the exact moment a foe overcommits and answer with a bright counterplay.",
+          "level": 2,
+          "manaCost": 4,
+          "cooldownSeconds": 4.4,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "You open a chain window on {target} for {damage} damage.",
+              "formula": {
+                "base": 5,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "trap-snap",
+          "name": "Trap Snap",
+          "description": "A sleeve-flash snare that looks silly until it absolutely works.",
+          "level": 3,
+          "manaCost": 6,
+          "cooldownSeconds": 5.2,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your trap snap catches {target} for {damage} damage.",
+              "formula": {
+                "base": 7,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 4
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The trap recoil leaves you braced behind crackling cardboard.",
+              "amount": 2,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "boss-monster-pose",
+          "name": "Boss Monster Pose",
+          "description": "Strike the pose. The city deserves hope and excessive lighting.",
+          "level": 4,
+          "manaCost": 8,
+          "cooldownSeconds": 5.9,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your boss monster pose staggers {target} for {damage} damage.",
+              "formula": {
+                "base": 8,
+                "stat": "heart",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 5
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The pose is ridiculous and somehow protective.",
+              "amount": 4,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "last-card-combo",
+          "name": "Last Card Combo",
+          "description": "Turn one desperate card into a five-step problem with theme music.",
+          "level": 5,
+          "manaCost": 10,
+          "cooldownSeconds": 6.7,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your last card combo detonates around {target} for {damage} damage.",
+              "formula": {
+                "base": 11,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 3,
+                "randomMax": 6
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "creature-trainer",
+      "name": "Creature Trainer",
+      "description": "A companion-focused battler who calms panicked monsters, calls assists, and keeps the team upright.",
+      "primaryStats": [
+        "bond",
+        "heart"
+      ],
+      "growthPerLevel": {
+        "bond": 0.3,
+        "heart": 0.25,
+        "grace": 0.1
+      },
+      "skills": [
+        {
+          "id": "buddy-bump",
+          "name": "Buddy Bump",
+          "description": "Call a tiny ally for a shoulder-check and a morale boost.",
+          "level": 1,
+          "manaCost": 3,
+          "cooldownSeconds": 3.4,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your buddy bumps {target} for {damage} damage.",
+              "formula": {
+                "base": 3,
+                "stat": "bond",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "heal",
+              "message": "Your partner chirps encouragement, restoring {healing} HP.",
+              "formula": {
+                "base": 1,
+                "stat": "bond",
+                "divisor": 5,
+                "randomMin": 0,
+                "randomMax": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "snack-break",
+          "name": "Snack Break",
+          "description": "A tactical snack shared at unsafe speed.",
+          "level": 2,
+          "manaCost": 4,
+          "cooldownSeconds": 4.6,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "You bait {target} into a snack-break stumble for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "bond",
+                "divisor": 3,
+                "randomMin": 0,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "heal",
+              "message": "The snack break restores {healing} HP.",
+              "formula": {
+                "base": 2,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "tag-team-tumble",
+          "name": "Tag-Team Tumble",
+          "description": "A coordinated roll, bounce, and bonk.",
+          "level": 3,
+          "manaCost": 6,
+          "cooldownSeconds": 5.4,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your tag-team tumble rolls through {target} for {damage} damage.",
+              "formula": {
+                "base": 6,
+                "stat": "heart",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 4
+              }
+            },
+            {
+              "type": "heal",
+              "message": "Your team regroups for {healing} HP.",
+              "formula": {
+                "base": 2,
+                "stat": "heart",
+                "divisor": 4,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "team-spirit-field",
+          "name": "Team Spirit Field",
+          "description": "A bright circle of absolutely unironic team spirit.",
+          "level": 4,
+          "manaCost": 8,
+          "cooldownSeconds": 5.8,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your team spirit field pops against {target} for {damage} damage.",
+              "formula": {
+                "base": 7,
+                "stat": "bond",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 4
+              }
+            },
+            {
+              "type": "heal",
+              "message": "The field steadies you for {healing} HP.",
+              "formula": {
+                "base": 3,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "evolution-cheer",
+          "name": "Evolution Cheer",
+          "description": "Cheer so hard the soundtrack changes key.",
+          "level": 5,
+          "manaCost": 10,
+          "cooldownSeconds": 6.8,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your evolution cheer blasts {target} for {damage} damage.",
+              "formula": {
+                "base": 9,
+                "stat": "heart",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 6
+              }
+            },
+            {
+              "type": "heal",
+              "message": "The cheer surges back as {healing} HP.",
+              "formula": {
+                "base": 3,
+                "stat": "heart",
+                "divisor": 4,
+                "randomMin": 2,
+                "randomMax": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mana-binder",
+      "name": "Mana Binder",
+      "description": "A color-slinging spellcaster who stabilizes weird energy leaks by making them everybody else's problem.",
+      "primaryStats": [
+        "spark",
+        "wit"
+      ],
+      "growthPerLevel": {
+        "spark": 0.32,
+        "wit": 0.22,
+        "bond": 0.1
+      },
+      "skills": [
+        {
+          "id": "cantrip-pop",
+          "name": "Cantrip Pop",
+          "description": "A clean little spell that replaces panic with precision.",
+          "level": 1,
+          "manaCost": 4,
+          "cooldownSeconds": 3.6,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your cantrip pops against {target} for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "color-fix",
+          "name": "Color Fix",
+          "description": "Tune loose mana until it becomes a useful problem.",
+          "level": 2,
+          "manaCost": 5,
+          "cooldownSeconds": 4.7,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "You color-fix a burst through {target} for {damage} damage.",
+              "formula": {
+                "base": 5,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "token-swarm",
+          "name": "Token Swarm",
+          "description": "Summon a crowd of tiny helpful hazards.",
+          "level": 3,
+          "manaCost": 6,
+          "cooldownSeconds": 5.3,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "A token swarm pelts {target} for {damage} damage.",
+              "formula": {
+                "base": 7,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "counterflash",
+          "name": "Counterflash",
+          "description": "Answer nonsense with brighter, louder nonsense.",
+          "level": 4,
+          "manaCost": 8,
+          "cooldownSeconds": 5.8,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your counterflash snaps around {target} for {damage} damage.",
+              "formula": {
+                "base": 8,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 5
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Residual wards bend the next attacks aside.",
+              "amount": 2,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "mythic-overflow",
+          "name": "Mythic Overflow",
+          "description": "Let the mana spike, then politely aim it away from civilians.",
+          "level": 5,
+          "manaCost": 10,
+          "cooldownSeconds": 6.6,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Mythic overflow crashes into {target} for {damage} damage.",
+              "formula": {
+                "base": 11,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 3,
+                "randomMax": 6
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frame-pilot",
+      "name": "Frame Pilot",
+      "description": "A model-kit ace who pilots snap-together battle frames and solves problems with launch angles.",
+      "primaryStats": [
+        "might",
+        "grace"
+      ],
+      "growthPerLevel": {
+        "might": 0.3,
+        "grace": 0.25,
+        "wit": 0.1
+      },
+      "skills": [
+        {
+          "id": "booster-jab",
+          "name": "Booster Jab",
+          "description": "A short thruster burst attached to a very sincere punch.",
+          "level": 1,
+          "manaCost": 3,
+          "cooldownSeconds": 3,
+          "requiresCombat": true,
+          "scalesWith": "grace",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your booster jab tags {target} for {damage} damage.",
+              "formula": {
+                "base": 3,
+                "stat": "grace",
+                "divisor": 3,
+                "randomMin": 0,
+                "randomMax": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "shield-panel",
+          "name": "Shield Panel",
+          "description": "Snap a spare panel into place and shove forward.",
+          "level": 2,
+          "manaCost": 4,
+          "cooldownSeconds": 3.8,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your shield panel slams {target} for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The panel absorbs {guard} damage before it goes flying.",
+              "amount": 3,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "beam-marker",
+          "name": "Beam Marker",
+          "description": "Paint the target with a harmless-looking red dot. Mostly harmless-looking.",
+          "level": 3,
+          "manaCost": 6,
+          "cooldownSeconds": 4.6,
+          "requiresCombat": true,
+          "scalesWith": "grace",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your beam marker burns across {target} for {damage} damage.",
+              "formula": {
+                "base": 6,
+                "stat": "grace",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "launch-rail",
+          "name": "Launch Rail",
+          "description": "Kick off a portable rail like the sidewalk signed a waiver.",
+          "level": 4,
+          "manaCost": 8,
+          "cooldownSeconds": 5.2,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your launch rail crushes {target} for {damage} damage.",
+              "formula": {
+                "base": 8,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 4
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The rail brace steadies you against the counterblow.",
+              "amount": 2,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "final-assembly",
+          "name": "Final Assembly",
+          "description": "Every spare part connects at once. It should not hold. It holds.",
+          "level": 5,
+          "manaCost": 10,
+          "cooldownSeconds": 6.2,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Final assembly hammers {target} for {damage} damage.",
+              "formula": {
+                "base": 10,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 3,
+                "randomMax": 5
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "voyage-captain",
+      "name": "Voyage Captain",
+      "description": "A rubber-limbed, treasure-map brawler whose crew logic is simple: nobody gets left behind.",
+      "primaryStats": [
+        "heart",
+        "might"
+      ],
+      "growthPerLevel": {
+        "heart": 0.28,
+        "might": 0.26,
+        "bond": 0.12
+      },
+      "skills": [
+        {
+          "id": "dockside-wallop",
+          "name": "Dockside Wallop",
+          "description": "A big cheerful hit delivered with nautical confidence.",
+          "level": 1,
+          "manaCost": 3,
+          "cooldownSeconds": 3.2,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your dockside wallop smacks {target} for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "crew-call",
+          "name": "Crew Call",
+          "description": "Yell for backup even if backup is currently a lunch tray.",
+          "level": 2,
+          "manaCost": 4,
+          "cooldownSeconds": 4.2,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your crew call rattles {target} for {damage} damage.",
+              "formula": {
+                "base": 5,
+                "stat": "heart",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Crew spirit guards {guard} damage from incoming trouble.",
+              "amount": 3,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "anchor-swing",
+          "name": "Anchor Swing",
+          "description": "Swing something that is only anchor-shaped if anyone official asks.",
+          "level": 3,
+          "manaCost": 6,
+          "cooldownSeconds": 5,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your anchor swing clobbers {target} for {damage} damage.",
+              "formula": {
+                "base": 7,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "treasure-rush",
+          "name": "Treasure Rush",
+          "description": "Dash toward the obvious objective with heroic disregard for cones.",
+          "level": 4,
+          "manaCost": 8,
+          "cooldownSeconds": 5.7,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your treasure rush crashes into {target} for {damage} damage.",
+              "formula": {
+                "base": 8,
+                "stat": "heart",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 5
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Your grin makes retreat feel impossible.",
+              "amount": 4,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "captains-promise",
+          "name": "Captain's Promise",
+          "description": "A loud promise, a wild swing, and somehow the correct answer.",
+          "level": 5,
+          "manaCost": 10,
+          "cooldownSeconds": 6.5,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your captain's promise blasts {target} for {damage} damage.",
+              "formula": {
+                "base": 10,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 3,
+                "randomMax": 6
+              }
+            },
+            {
+              "type": "guard",
+              "message": "You plant yourself between danger and the crew.",
+              "amount": 5,
+              "charges": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crossover-tactician",
+      "name": "Crossover Tactician",
+      "description": "A multi-series strategist who borrows the right trick from the wrong rulebook at the perfect time.",
+      "primaryStats": [
+        "wit",
+        "bond"
+      ],
+      "growthPerLevel": {
+        "wit": 0.28,
+        "bond": 0.24,
+        "spark": 0.12
+      },
+      "skills": [
+        {
+          "id": "guest-star",
+          "name": "Guest Star",
+          "description": "Call in a cameo assist that definitely signed the release form.",
+          "level": 1,
+          "manaCost": 3,
+          "cooldownSeconds": 3.5,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "A guest star blindsides {target} for {damage} damage.",
+              "formula": {
+                "base": 3,
+                "stat": "bond",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "heal",
+              "message": "The cameo hype restores {healing} HP.",
+              "formula": {
+                "base": 1,
+                "stat": "bond",
+                "divisor": 5,
+                "randomMin": 0,
+                "randomMax": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "rulebook-remix",
+          "name": "Rulebook Remix",
+          "description": "Shuffle expectations until the foe attacks the wrong genre.",
+          "level": 2,
+          "manaCost": 5,
+          "cooldownSeconds": 4.5,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your rulebook remix scrambles {target} for {damage} damage.",
+              "formula": {
+                "base": 5,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "panel-jump",
+          "name": "Panel Jump",
+          "description": "Step between scenes and come back with momentum.",
+          "level": 3,
+          "manaCost": 6,
+          "cooldownSeconds": 5.1,
+          "requiresCombat": true,
+          "scalesWith": "grace",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your panel jump lands on {target} for {damage} damage.",
+              "formula": {
+                "base": 6,
+                "stat": "grace",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 4
+              }
+            },
+            {
+              "type": "guard",
+              "message": "A scene transition blunts the next hit.",
+              "amount": 2,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "team-up-splash",
+          "name": "Team-Up Splash",
+          "description": "Everyone enters frame at once. The background cannot keep up.",
+          "level": 4,
+          "manaCost": 8,
+          "cooldownSeconds": 5.9,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your team-up splash hits {target} for {damage} damage.",
+              "formula": {
+                "base": 8,
+                "stat": "bond",
+                "divisor": 3,
+                "randomMin": 2,
+                "randomMax": 5
+              }
+            },
+            {
+              "type": "heal",
+              "message": "The team-up energy restores {healing} HP.",
+              "formula": {
+                "base": 2,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "finale-crossover",
+          "name": "Finale Crossover",
+          "description": "Resolve six plot threads with one extremely crowded finishing move.",
+          "level": 5,
+          "manaCost": 10,
+          "cooldownSeconds": 6.9,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your finale crossover overwhelms {target} for {damage} damage.",
+              "formula": {
+                "base": 11,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 3,
+                "randomMax": 6
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "species": [
+    {
+      "id": "cardbound",
+      "name": "Cardbound",
+      "description": "A modern-day player caught in the monster-card outbreak.",
+      "modifiers": {},
+      "growthPerLevel": {}
+    }
+  ]
+}

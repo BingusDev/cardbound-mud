@@ -1,0 +1,16 @@
+[Unit]
+Description=Cardbound MUD
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/cardbound-mud
+EnvironmentFile=/etc/cardbound-mud/cardbound-mud.env
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+User=cardbound
+Group=cardbound
+
+[Install]
+WantedBy=multi-user.target

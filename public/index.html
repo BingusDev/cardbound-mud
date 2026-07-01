@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cardbound</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hud">
+        <div class="brand">
+          <strong>Cardbound</strong>
+          <span>Cards are loose. Binder Bay needs heroes.</span>
+        </div>
+      </section>
+
+      <section class="game">
+        <aside class="side">
+          <div class="panel login-panel" id="loginPanel">
+            <h1>Account</h1>
+            <input id="accountInput" autocomplete="username" maxlength="32" placeholder="Account name" />
+            <input id="passwordInput" autocomplete="current-password" placeholder="Password" type="password" />
+            <div class="login-actions">
+              <button id="accountLoginButton" type="button">Log In</button>
+              <button id="accountCreateButton" class="secondary-button" type="button">Create Account</button>
+            </div>
+
+            <div class="character-panel" id="characterPanel" hidden>
+              <h2>Characters</h2>
+              <select id="characterSelect" aria-label="Character">
+                <option value="">No characters yet</option>
+              </select>
+              <button id="enterCharacterButton" type="button">Enter World</button>
+
+              <h2>Create Character</h2>
+              <input id="nameInput" autocomplete="nickname" maxlength="24" placeholder="Character name" />
+              <select id="speciesSelect" aria-label="Origin" hidden>
+                <option value="">Loading origin...</option>
+              </select>
+              <select id="jobSelect" aria-label="Class">
+                <option value="">Loading classes...</option>
+              </select>
+              <div class="creation-preview" id="creationPreview"></div>
+              <input id="adminInput" autocomplete="off" placeholder="Admin code optional" type="password" />
+              <button id="loginButton" type="button">Create & Play</button>
+            </div>
+          </div>
+
+          <div class="panel game-only" hidden>
+            <h2>Navigation</h2>
+            <div class="minimap" id="minimap">
+              <div></div><button data-dir="north">N</button><div></div>
+              <button data-dir="west">W</button><button data-dir="here">Here</button><button data-dir="east">E</button>
+              <div></div><button data-dir="south">S</button><div></div>
+            </div>
+          </div>
+
+          <div class="panel vitals-panel game-only" hidden>
+            <h2>Vitals</h2>
+            <div class="meter">
+              <label>HP <span id="hpText">--</span></label>
+              <div class="bar"><span id="hpBar"></span></div>
+            </div>
+            <div class="meter mana">
+              <label>Charge <span id="manaText">--</span></label>
+              <div class="bar"><span id="manaBar"></span></div>
+            </div>
+          </div>
+
+          <div class="panel action-panel game-only" hidden>
+            <h2>Actions</h2>
+            <div id="combatTarget" class="combat-target">No duel target</div>
+            <div class="action-grid">
+              <button class="action-button" id="attackAction" type="button">Strike</button>
+              <button class="action-button secondary" id="fleeAction" type="button">Break Away</button>
+              <button class="action-button secondary" id="restAction" type="button">Recover</button>
+            </div>
+            <div class="action-panel-header">
+              <span>Skills</span>
+              <button class="small-button" id="editActionSlots" type="button">Edit</button>
+            </div>
+            <div class="skill-grid" id="skillGrid"></div>
+            <div class="slot-editor" id="slotEditor" hidden>
+              <div class="slot-editor-row">
+                <label for="slotSelect0">Slot 1</label>
+                <select id="slotSelect0" data-slot-index="0"></select>
+              </div>
+              <div class="slot-editor-row">
+                <label for="slotSelect1">Slot 2</label>
+                <select id="slotSelect1" data-slot-index="1"></select>
+              </div>
+              <div class="slot-editor-row">
+                <label for="slotSelect2">Slot 3</label>
+                <select id="slotSelect2" data-slot-index="2"></select>
+              </div>
+              <div class="slot-editor-row">
+                <label for="slotSelect3">Slot 4</label>
+                <select id="slotSelect3" data-slot-index="3"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel profile-panel game-only" hidden>
+            <div class="profile-panel-header">
+              <h2 id="profilePanelTitle">Profile</h2>
+              <div class="profile-panel-actions">
+                <button class="small-button" id="profileFirstButton" type="button">Inventory</button>
+                <button class="small-button" id="profileSecondButton" type="button">Equipment</button>
+              </div>
+            </div>
+            <div id="profileView">
+              <dl class="profile-stats">
+                <div>
+                  <dt>Class</dt>
+                  <dd id="speciesText">--</dd>
+                </div>
+                <div hidden>
+                  <dt>Class</dt>
+                  <dd id="jobText">--</dd>
+                </div>
+                <div>
+                  <dt>Level</dt>
+                  <dd id="levelText">--</dd>
+                </div>
+                <div>
+                  <dt>XP</dt>
+                  <dd id="xpText">--</dd>
+                </div>
+                <div>
+                  <dt>Tickets</dt>
+                  <dd id="ticketsText">--</dd>
+                </div>
+                <div>
+                  <dt>Binder</dt>
+                  <dd id="binderCardsText">--</dd>
+                </div>
+                <div>
+                  <dt>Titles</dt>
+                  <dd id="titlesText">--</dd>
+                </div>
+              </dl>
+              <div class="stat-grid" id="statGrid"></div>
+              <div class="skill-progress" id="skillProgress"></div>
+            </div>
+            <div class="inventory-view" id="inventoryView" hidden>
+              <dl class="profile-stats">
+                <div>
+                  <dt>Tickets</dt>
+                  <dd id="inventoryTicketsText">--</dd>
+                </div>
+                <div>
+                  <dt>Carried</dt>
+                  <dd id="inventoryCountText">--</dd>
+                </div>
+              </dl>
+              <div class="inventory-section">
+                <h3>Inventory</h3>
+                <div class="inventory-list" id="inventoryList"></div>
+              </div>
+            </div>
+            <div class="inventory-view" id="equipmentView" hidden>
+              <dl class="profile-stats">
+                <div>
+                  <dt>Equipped</dt>
+                  <dd id="equipmentCountText">--</dd>
+                </div>
+              </dl>
+              <div class="inventory-section">
+                <h3>Equipment</h3>
+                <div class="inventory-list" id="equipmentList"></div>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+
+        <section class="terminal-panel">
+          <div class="room-heading">
+            <div>
+              <h1 id="roomName">Not connected</h1>
+              <p id="roomMeta"></p>
+            </div>
+            <span id="adminBadge"></span>
+          </div>
+          <div id="log" class="log"></div>
+          <form id="commandForm" class="command">
+            <span>&gt;</span>
+            <input id="commandInput" autocomplete="off" placeholder="Type help" disabled />
+          </form>
+        </section>
+
+        <aside class="map-side game-only" hidden>
+          <div class="panel area-map-panel">
+            <h2>Area Map</h2>
+            <div class="area-map-meta" id="areaMapMeta">No map loaded</div>
+            <div class="area-map" id="areaMap"></div>
+            <div class="area-map-legend">
+              <span><b class="legend-current"></b> You</span>
+              <span><b class="legend-room"></b> Room</span>
+              <span><b class="legend-quest"></b> Quest</span>
+              <span><b class="legend-blocked"></b> Blocked</span>
+            </div>
+          </div>
+
+          <div class="panel quest-panel">
+            <div class="quest-panel-header">
+              <h2>Quest Journal</h2>
+              <div class="quest-filter" role="group" aria-label="Quest filter">
+                <button class="small-button active" id="activeQuestsButton" type="button">Active</button>
+                <button class="small-button" id="completeQuestsButton" type="button">Complete</button>
+              </div>
+            </div>
+            <div id="questJournal" class="quest-journal"></div>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <script src="/client.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,3285 @@
+{
+  "metadata": {
+    "title": "Cardbound MUD",
+    "description": "A Saturday-morning modern city where trading card monsters burst from every deck and cause spectacularly manageable havoc.",
+    "version": 2
+  },
+  "startRoomId": "binder-square",
+  "defaultSpawnId": "new-arrivals-square",
+  "zones": [
+    {
+      "id": "binder-downtown",
+      "name": "Binder Downtown",
+      "description": "A modern shopping district where living cards sprint between buses, billboards, and snack kiosks.",
+      "tags": [
+        "starter",
+        "city",
+        "safe-ish"
+      ],
+      "map": {
+        "label": "Downtown",
+        "color": "#3aa6a1",
+        "danger": "low"
+      },
+      "defaultSpawnRoomId": "binder-square",
+      "levelRange": {
+        "min": 1,
+        "max": 3
+      }
+    },
+    {
+      "id": "neon-mall",
+      "name": "Neon Mall",
+      "description": "A bright indoor maze of escalators, closed storefronts, and monsters using sale banners as capes.",
+      "tags": [
+        "mall",
+        "quest",
+        "chaos"
+      ],
+      "map": {
+        "label": "Mall",
+        "color": "#d45b7a",
+        "danger": "medium"
+      },
+      "defaultSpawnRoomId": "main-concourse",
+      "levelRange": {
+        "min": 2,
+        "max": 4
+      }
+    },
+    {
+      "id": "summon-park",
+      "name": "Summon Park",
+      "description": "A city park and toy hangar where companion monsters, model frames, and ambitious kids all need supervision.",
+      "tags": [
+        "park",
+        "hangar",
+        "outdoor"
+      ],
+      "map": {
+        "label": "Park",
+        "color": "#69b36d",
+        "danger": "medium"
+      },
+      "defaultSpawnRoomId": "pocket-park",
+      "levelRange": {
+        "min": 3,
+        "max": 5
+      }
+    },
+    {
+      "id": "crossover-harbor",
+      "name": "Crossover Harbor",
+      "description": "The waterfront convention grounds where every card genre is trying to have its finale at once.",
+      "tags": [
+        "harbor",
+        "finale",
+        "crossover"
+      ],
+      "map": {
+        "label": "Harbor",
+        "color": "#5276c7",
+        "danger": "high"
+      },
+      "defaultSpawnRoomId": "harbor-walk",
+      "levelRange": {
+        "min": 4,
+        "max": 7
+      }
+    }
+  ],
+  "spawnPoints": [
+    {
+      "id": "new-arrivals-square",
+      "name": "New Arrivals at Binder Square",
+      "roomId": "binder-square",
+      "kind": "new-player"
+    },
+    {
+      "id": "binder-square-respawn",
+      "name": "Binder Square First-Aid Tent",
+      "roomId": "binder-square",
+      "kind": "respawn"
+    },
+    {
+      "id": "main-concourse-spawn",
+      "name": "Neon Mall Concourse",
+      "roomId": "main-concourse",
+      "kind": "zone"
+    },
+    {
+      "id": "pocket-park-spawn",
+      "name": "Pocket Park Ranger Table",
+      "roomId": "pocket-park",
+      "kind": "zone"
+    },
+    {
+      "id": "harbor-walk-spawn",
+      "name": "Crossover Harbor Walk",
+      "roomId": "harbor-walk",
+      "kind": "zone"
+    }
+  ],
+  "doors": [
+    {
+      "id": "sleeve-turnstile",
+      "name": "sleeve turnstile",
+      "description": "A mall turnstile wrapped in glowing protective sleeves.",
+      "defaultOpen": false,
+      "defaultLocked": true,
+      "keyItemId": "sleeve-key"
+    },
+    {
+      "id": "frame-bay-door",
+      "name": "frame bay door",
+      "description": "A rolling hangar door with a toy-sized launch rail bolted across it.",
+      "defaultOpen": false,
+      "defaultLocked": true,
+      "keyItemId": "servo-key"
+    },
+    {
+      "id": "crossover-gate",
+      "name": "crossover gate",
+      "description": "A convention-stage gate made of clashing card borders and bad timing.",
+      "defaultOpen": false,
+      "defaultLocked": true,
+      "keyItemId": "crossover-pass"
+    }
+  ],
+  "quests": [
+    {
+      "id": "starter-deck-panic",
+      "name": "Starter Deck Panic",
+      "summary": "Open the mall route and make sure the information kiosk survived first contact with living cards.",
+      "description": "Marshal Echo needs the emergency sleeve key from the card shop. Get the key, open the mall turnstile, reach the concourse, and check in with Milo at the kiosk.",
+      "tags": [
+        "main",
+        "starter"
+      ],
+      "startsOn": {
+        "type": "ask",
+        "npcId": "binder-marshal",
+        "topic": "key"
+      },
+      "steps": [
+        {
+          "id": "learn-sleeve-key",
+          "label": "Learn from Marshal Echo why the mall gate needs the sleeve key.",
+          "objective": "Ask Marshal Echo about the starter kit.",
+          "trigger": {
+            "type": "ask",
+            "npcId": "binder-marshal",
+            "topic": "key"
+          }
+        },
+        {
+          "id": "take-sleeve-key",
+          "label": "Take the sleeve key from Sleeve Queen Card Shop.",
+          "trigger": {
+            "type": "take",
+            "itemId": "sleeve-key"
+          }
+        },
+        {
+          "id": "unlock-sleeve-turnstile",
+          "label": "Unlock the sleeve turnstile.",
+          "trigger": {
+            "type": "unlockDoor",
+            "doorId": "sleeve-turnstile"
+          }
+        },
+        {
+          "id": "open-sleeve-turnstile",
+          "label": "Open the sleeve turnstile.",
+          "trigger": {
+            "type": "openDoor",
+            "doorId": "sleeve-turnstile"
+          }
+        },
+        {
+          "id": "reach-main-concourse",
+          "label": "Reach Neon Mall Concourse.",
+          "trigger": {
+            "type": "enterRoom",
+            "roomId": "main-concourse"
+          }
+        },
+        {
+          "id": "talk-kiosk-kid",
+          "label": "Talk to Kiosk Kid Milo.",
+          "trigger": {
+            "type": "talk",
+            "npcId": "kiosk-kid"
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "xp",
+          "label": "25 XP",
+          "amount": 25
+        },
+        {
+          "type": "tickets",
+          "label": "5 tickets",
+          "amount": 5
+        },
+        {
+          "type": "title",
+          "label": "Sleeve Runner"
+        },
+        {
+          "type": "flag",
+          "label": "Flag: mall_route_open",
+          "flag": "mall_route_open"
+        }
+      ]
+    },
+    {
+      "id": "citywide-signal",
+      "name": "Citywide Signal",
+      "summary": "Help the food court radio crew broadcast monster warnings across Binder Bay.",
+      "description": "Signal DJ Pax can warn the city if you gather an antenna sticker, retrieve the rooftop signal booster, and tell Bea to fire up the mast.",
+      "tags": [
+        "main",
+        "signal"
+      ],
+      "prerequisites": [
+        {
+          "type": "quest",
+          "questId": "starter-deck-panic"
+        }
+      ],
+      "startsOn": {
+        "type": "ask",
+        "npcId": "signal-dj",
+        "topic": "broadcast"
+      },
+      "steps": [
+        {
+          "id": "learn-broadcast-plan",
+          "label": "Learn Pax's broadcast plan.",
+          "trigger": {
+            "type": "ask",
+            "npcId": "signal-dj",
+            "topic": "broadcast"
+          }
+        },
+        {
+          "id": "take-antenna-sticker",
+          "label": "Take the antenna sticker from the transit platform.",
+          "trigger": {
+            "type": "take",
+            "itemId": "antenna-sticker"
+          }
+        },
+        {
+          "id": "take-signal-booster",
+          "label": "Take the signal booster from the broadcast roof.",
+          "trigger": {
+            "type": "take",
+            "itemId": "signal-booster"
+          }
+        },
+        {
+          "id": "reach-broadcast-roof",
+          "label": "Reach the Broadcast Roof.",
+          "trigger": {
+            "type": "enterRoom",
+            "roomId": "broadcast-roof"
+          }
+        },
+        {
+          "id": "talk-roof-technician",
+          "label": "Talk to Roof Technician Bea.",
+          "trigger": {
+            "type": "talk",
+            "npcId": "roof-technician"
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "xp",
+          "label": "35 XP",
+          "amount": 35
+        },
+        {
+          "type": "tickets",
+          "label": "8 tickets",
+          "amount": 8
+        },
+        {
+          "type": "title",
+          "label": "Signal Booster"
+        },
+        {
+          "type": "flag",
+          "label": "Flag: citywide_signal_live",
+          "flag": "citywide_signal_live"
+        }
+      ]
+    },
+    {
+      "id": "park-roundup",
+      "name": "Park Roundup",
+      "summary": "Help Ranger Mira calm the small companion monsters before they learn capitalism from the hot dog cart.",
+      "description": "The park monsters are scared, hungry, and fast. Gather capture tags, check Pocket Park, and report back to Mira.",
+      "tags": [
+        "main",
+        "park"
+      ],
+      "prerequisites": [
+        {
+          "type": "quest",
+          "questId": "citywide-signal"
+        }
+      ],
+      "startsOn": {
+        "type": "ask",
+        "npcId": "ranger-mira",
+        "topic": "roundup"
+      },
+      "steps": [
+        {
+          "id": "learn-roundup",
+          "label": "Learn Ranger Mira's rescue plan.",
+          "trigger": {
+            "type": "ask",
+            "npcId": "ranger-mira",
+            "topic": "roundup"
+          }
+        },
+        {
+          "id": "take-capture-tags",
+          "label": "Take a bundle of capture tags.",
+          "trigger": {
+            "type": "take",
+            "itemId": "capture-tags"
+          }
+        },
+        {
+          "id": "reach-pocket-park",
+          "label": "Check Pocket Park.",
+          "trigger": {
+            "type": "enterRoom",
+            "roomId": "pocket-park"
+          }
+        },
+        {
+          "id": "return-ranger-mira",
+          "label": "Report back to Ranger Mira.",
+          "trigger": {
+            "type": "talk",
+            "npcId": "ranger-mira"
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "xp",
+          "label": "40 XP",
+          "amount": 40
+        },
+        {
+          "type": "tickets",
+          "label": "10 tickets",
+          "amount": 10
+        },
+        {
+          "type": "title",
+          "label": "Monster Wrangler"
+        },
+        {
+          "type": "item",
+          "label": "trainer jacket",
+          "itemId": "trainer-jacket"
+        },
+        {
+          "type": "flag",
+          "label": "Flag: park_roundup_done",
+          "flag": "park_roundup_done"
+        }
+      ]
+    },
+    {
+      "id": "mana-leak-mayhem",
+      "name": "Mana Leak Mayhem",
+      "summary": "Sort out the pop-up mana lab before the colors start making policy decisions.",
+      "description": "Professor Amper needs a prism shard and a vault check to stabilize the mall's loose mana.",
+      "tags": [
+        "main",
+        "lab"
+      ],
+      "prerequisites": [
+        {
+          "type": "quest",
+          "questId": "park-roundup"
+        }
+      ],
+      "startsOn": {
+        "type": "ask",
+        "npcId": "professor-amper",
+        "topic": "prism"
+      },
+      "steps": [
+        {
+          "id": "learn-prism-problem",
+          "label": "Ask Professor Amper about the prism leak.",
+          "trigger": {
+            "type": "ask",
+            "npcId": "professor-amper",
+            "topic": "prism"
+          }
+        },
+        {
+          "id": "take-prism-shard",
+          "label": "Take a prism shard from the mana lab.",
+          "trigger": {
+            "type": "take",
+            "itemId": "prism-shard"
+          }
+        },
+        {
+          "id": "reach-prism-vault",
+          "label": "Reach the Prism Vault.",
+          "trigger": {
+            "type": "enterRoom",
+            "roomId": "prism-vault"
+          }
+        },
+        {
+          "id": "take-prism-badge",
+          "label": "Take the prism badge from the vault.",
+          "trigger": {
+            "type": "take",
+            "itemId": "prism-badge"
+          }
+        },
+        {
+          "id": "return-professor-amper",
+          "label": "Return to Professor Amper.",
+          "trigger": {
+            "type": "talk",
+            "npcId": "professor-amper"
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "xp",
+          "label": "45 XP",
+          "amount": 45
+        },
+        {
+          "type": "tickets",
+          "label": "12 tickets",
+          "amount": 12
+        },
+        {
+          "type": "title",
+          "label": "Mana Safety Intern"
+        },
+        {
+          "type": "flag",
+          "label": "Flag: mana_leak_stable",
+          "flag": "mana_leak_stable"
+        }
+      ]
+    },
+    {
+      "id": "frame-bay-havoc",
+      "name": "Frame Bay Havoc",
+      "summary": "Get into the snap-frame hangar and stop the model kits from inventing dramatic launch procedures.",
+      "description": "Mechanic Joss needs the servo key recovered from the training lot. Unlock the frame bay, enter the hangar, and check the launch rail.",
+      "tags": [
+        "main",
+        "frame"
+      ],
+      "prerequisites": [
+        {
+          "type": "quest",
+          "questId": "mana-leak-mayhem"
+        }
+      ],
+      "startsOn": {
+        "type": "ask",
+        "npcId": "frame-mechanic",
+        "topic": "frame"
+      },
+      "steps": [
+        {
+          "id": "learn-frame-plan",
+          "label": "Ask Mechanic Joss about the frame bay.",
+          "trigger": {
+            "type": "ask",
+            "npcId": "frame-mechanic",
+            "topic": "frame"
+          }
+        },
+        {
+          "id": "take-servo-key",
+          "label": "Take the servo key from the training lot.",
+          "trigger": {
+            "type": "take",
+            "itemId": "servo-key"
+          }
+        },
+        {
+          "id": "unlock-frame-bay",
+          "label": "Unlock the frame bay door.",
+          "trigger": {
+            "type": "unlockDoor",
+            "doorId": "frame-bay-door"
+          }
+        },
+        {
+          "id": "open-frame-bay",
+          "label": "Open the frame bay door.",
+          "trigger": {
+            "type": "openDoor",
+            "doorId": "frame-bay-door"
+          }
+        },
+        {
+          "id": "reach-frame-hangar",
+          "label": "Reach the Snap-Frame Hangar.",
+          "trigger": {
+            "type": "enterRoom",
+            "roomId": "frame-hangar"
+          }
+        },
+        {
+          "id": "talk-frame-mechanic",
+          "label": "Talk to Mechanic Joss in the hangar.",
+          "trigger": {
+            "type": "talk",
+            "npcId": "frame-mechanic"
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "xp",
+          "label": "55 XP",
+          "amount": 55
+        },
+        {
+          "type": "tickets",
+          "label": "15 tickets",
+          "amount": 15
+        },
+        {
+          "type": "title",
+          "label": "Launch Rail Wrangler"
+        },
+        {
+          "type": "flag",
+          "label": "Flag: frame_bay_safe",
+          "flag": "frame_bay_safe"
+        }
+      ]
+    },
+    {
+      "id": "crossover-calamity",
+      "name": "Crossover Calamity",
+      "summary": "Open the final pavilion and stop every card genre from ending the episode at the same time.",
+      "description": "Coordinator Vale has the pass, the stage has the gate, and the pavilion has too many finales. Get the pass, open the crossover gate, and face the Genre-Jam Titan.",
+      "tags": [
+        "main",
+        "finale"
+      ],
+      "prerequisites": [
+        {
+          "type": "quest",
+          "questId": "frame-bay-havoc"
+        }
+      ],
+      "startsOn": {
+        "type": "ask",
+        "npcId": "crossover-coordinator",
+        "topic": "crossover"
+      },
+      "steps": [
+        {
+          "id": "learn-crossover-plan",
+          "label": "Ask Coordinator Vale about the crossover.",
+          "trigger": {
+            "type": "ask",
+            "npcId": "crossover-coordinator",
+            "topic": "crossover"
+          }
+        },
+        {
+          "id": "take-crossover-pass",
+          "label": "Take the crossover pass from the preview stage.",
+          "trigger": {
+            "type": "take",
+            "itemId": "crossover-pass"
+          }
+        },
+        {
+          "id": "unlock-crossover-gate",
+          "label": "Unlock the crossover gate.",
+          "trigger": {
+            "type": "unlockDoor",
+            "doorId": "crossover-gate"
+          }
+        },
+        {
+          "id": "open-crossover-gate",
+          "label": "Open the crossover gate.",
+          "trigger": {
+            "type": "openDoor",
+            "doorId": "crossover-gate"
+          }
+        },
+        {
+          "id": "reach-crossover-pavilion",
+          "label": "Reach the Crossover Pavilion.",
+          "trigger": {
+            "type": "enterRoom",
+            "roomId": "crossover-pavilion"
+          }
+        },
+        {
+          "id": "talk-harbor-captain",
+          "label": "Tell Captain Rook the finale route is open.",
+          "trigger": {
+            "type": "talk",
+            "npcId": "harbor-captain"
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "xp",
+          "label": "70 XP",
+          "amount": 70
+        },
+        {
+          "type": "tickets",
+          "label": "20 tickets",
+          "amount": 20
+        },
+        {
+          "type": "title",
+          "label": "Crossover Closer"
+        },
+        {
+          "type": "item",
+          "label": "finale binder",
+          "itemId": "finale-binder"
+        },
+        {
+          "type": "flag",
+          "label": "Flag: crossover_calamity_contained",
+          "flag": "crossover_calamity_contained"
+        }
+      ]
+    }
+  ],
+  "rooms": [
+    {
+      "id": "binder-square",
+      "zoneId": "binder-downtown",
+      "name": "Binder Square",
+      "description": "Emergency cones, folding tables, and glowing booster wrappers fill the plaza. A giant sign blinks: KEEP CALM AND SLEEVE RESPONSIBLY.",
+      "coords": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "starter",
+        "checkpoint"
+      ],
+      "map": {
+        "symbol": "S",
+        "color": "#3aa6a1",
+        "label": "Square"
+      },
+      "exits": {
+        "north": {
+          "to": "card-shop"
+        },
+        "east": {
+          "to": "transit-platform"
+        },
+        "south": {
+          "to": "food-court"
+        },
+        "west": {
+          "to": "pocket-park"
+        }
+      },
+      "items": [
+        "foil-snack"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "binder-marshal",
+        "rogue-topdeck",
+        "holo-topdeck"
+      ]
+    },
+    {
+      "id": "card-shop",
+      "zoneId": "binder-downtown",
+      "name": "Sleeve Queen Card Shop",
+      "description": "Binders lie open like emergency manuals. A bell over the door rings every time a loose monster card tries to sneak back in.",
+      "coords": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "tags": [
+        "shop"
+      ],
+      "map": {
+        "symbol": "C",
+        "color": "#76d0cc",
+        "label": "Cards"
+      },
+      "exits": {
+        "south": {
+          "to": "binder-square"
+        },
+        "east": {
+          "to": "sleeve-alley"
+        }
+      },
+      "items": [
+        "sleeve-key",
+        "duel-disk-holster"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "shop-owner"
+      ]
+    },
+    {
+      "id": "sleeve-alley",
+      "zoneId": "binder-downtown",
+      "name": "Sleeve Alley",
+      "description": "A narrow alley glittering with penny sleeves, runaway dice, and one suspiciously heroic trash can.",
+      "coords": {
+        "x": 1,
+        "y": -1,
+        "z": 0
+      },
+      "tags": [
+        "alley"
+      ],
+      "map": {
+        "symbol": "A",
+        "color": "#6ec7c2",
+        "label": "Alley"
+      },
+      "exits": {
+        "west": {
+          "to": "card-shop"
+        },
+        "south": {
+          "to": "mall-gate"
+        }
+      },
+      "items": [
+        "energy-drink"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "snack-mimic"
+      ]
+    },
+    {
+      "id": "mall-gate",
+      "zoneId": "binder-downtown",
+      "name": "Mall Gate Turnstiles",
+      "description": "The mall entrance is blocked by turnstiles wrapped in glowing sleeves. Beyond them, escalators roar like dramatic theme music.",
+      "coords": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "gate"
+      ],
+      "map": {
+        "symbol": "G",
+        "color": "#58b5b0",
+        "label": "Gate"
+      },
+      "exits": {
+        "north": {
+          "to": "sleeve-alley"
+        },
+        "south": {
+          "to": "main-concourse",
+          "doorId": "sleeve-turnstile",
+          "requiredItemId": "sleeve-key",
+          "blockedMessage": "The sleeve turnstile flashes red. It wants the sleeve key from the card shop."
+        }
+      },
+      "items": [],
+      "itemSpawns": [],
+      "npcs": []
+    },
+    {
+      "id": "food-court",
+      "zoneId": "binder-downtown",
+      "name": "Food Court Barricade",
+      "description": "Pretzel carts form a defensive wall. Someone has written DO NOT FEED THE HOLO-DRAGON on a napkin dispenser.",
+      "coords": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "tags": [
+        "food",
+        "checkpoint"
+      ],
+      "map": {
+        "symbol": "F",
+        "color": "#f0bb58",
+        "label": "Food"
+      },
+      "exits": {
+        "north": {
+          "to": "binder-square"
+        },
+        "east": {
+          "to": "service-hall"
+        }
+      },
+      "items": [
+        "foil-snack",
+        "lucky-cap"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "signal-dj"
+      ]
+    },
+    {
+      "id": "transit-platform",
+      "zoneId": "binder-downtown",
+      "name": "Transit Platform",
+      "description": "The buses have stopped, but their route signs keep flipping to boss-monster names. Commuters clap whenever one spells anything useful.",
+      "coords": {
+        "x": 1,
+        "y": 0,
+        "z": 1
+      },
+      "tags": [
+        "transit"
+      ],
+      "map": {
+        "symbol": "T",
+        "color": "#9cced8",
+        "label": "Transit"
+      },
+      "exits": {
+        "west": {
+          "to": "binder-square"
+        },
+        "south": {
+          "to": "harbor-walk"
+        }
+      },
+      "items": [
+        "antenna-sticker"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "trapline-busker"
+      ]
+    },
+    {
+      "id": "main-concourse",
+      "zoneId": "neon-mall",
+      "name": "Neon Mall Concourse",
+      "description": "Escalators move on their own, ad screens shout combo advice, and a kiosk kid is using receipt paper to track monster sightings.",
+      "coords": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "mall",
+        "hub"
+      ],
+      "map": {
+        "symbol": "M",
+        "color": "#d45b7a",
+        "label": "Mall"
+      },
+      "exits": {
+        "north": {
+          "to": "mall-gate",
+          "doorId": "sleeve-turnstile",
+          "requiredItemId": "sleeve-key"
+        },
+        "east": {
+          "to": "arcade"
+        },
+        "south": {
+          "to": "service-hall"
+        },
+        "west": {
+          "to": "toy-aisle"
+        }
+      },
+      "items": [
+        "trainer-jacket"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "kiosk-kid",
+        "coupon-knight"
+      ]
+    },
+    {
+      "id": "arcade",
+      "zoneId": "neon-mall",
+      "name": "Arcade of Flashing Buttons",
+      "description": "Cabinets beep in panic. A claw machine has captured three tiny monsters and somehow elected itself mayor.",
+      "coords": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "arcade"
+      ],
+      "map": {
+        "symbol": "A",
+        "color": "#e46b91",
+        "label": "Arcade"
+      },
+      "exits": {
+        "west": {
+          "to": "main-concourse"
+        },
+        "east": {
+          "to": "rooftop-stairs"
+        }
+      },
+      "items": [
+        "capture-tags"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "pixel-drake",
+        "cabinet-boss-drake",
+        "token-mascot"
+      ]
+    },
+    {
+      "id": "rooftop-stairs",
+      "zoneId": "neon-mall",
+      "name": "Rooftop Stairs",
+      "description": "Emergency lights chase each other up the stairwell while card borders peel off the walls like stickers.",
+      "coords": {
+        "x": 2,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "stairs"
+      ],
+      "map": {
+        "symbol": "^",
+        "color": "#d97a9a",
+        "label": "Stairs"
+      },
+      "exits": {
+        "west": {
+          "to": "arcade"
+        },
+        "up": {
+          "to": "broadcast-roof"
+        }
+      },
+      "items": [],
+      "itemSpawns": [],
+      "npcs": []
+    },
+    {
+      "id": "broadcast-roof",
+      "zoneId": "neon-mall",
+      "name": "Broadcast Roof",
+      "description": "A pirate radio mast has been rebuilt from selfie sticks and foil card dividers. The whole roof hums with heroic static.",
+      "coords": {
+        "x": 2,
+        "y": 0,
+        "z": 1
+      },
+      "tags": [
+        "roof"
+      ],
+      "map": {
+        "symbol": "R",
+        "color": "#c95080",
+        "label": "Roof"
+      },
+      "exits": {
+        "down": {
+          "to": "rooftop-stairs"
+        }
+      },
+      "items": [
+        "signal-booster"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "roof-technician",
+        "weather-wyrm"
+      ]
+    },
+    {
+      "id": "service-hall",
+      "zoneId": "neon-mall",
+      "name": "Service Hall",
+      "description": "A staff-only corridor has become a rulebook-only corridor. The vending machines accept coins, cards, and sincere apologies.",
+      "coords": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "tags": [
+        "service"
+      ],
+      "map": {
+        "symbol": "H",
+        "color": "#bd4f70",
+        "label": "Hall"
+      },
+      "exits": {
+        "north": {
+          "to": "main-concourse"
+        },
+        "west": {
+          "to": "food-court"
+        },
+        "east": {
+          "to": "mana-lab"
+        }
+      },
+      "items": [
+        "street-sneakers"
+      ],
+      "itemSpawns": [],
+      "npcs": []
+    },
+    {
+      "id": "mana-lab",
+      "zoneId": "neon-mall",
+      "name": "Pop-Up Mana Lab",
+      "description": "A science fair booth has grown into a lab of colored lights, safety goggles, and equations ending in several exclamation marks.",
+      "coords": {
+        "x": 1,
+        "y": 1,
+        "z": 0
+      },
+      "tags": [
+        "lab"
+      ],
+      "map": {
+        "symbol": "L",
+        "color": "#b85f9f",
+        "label": "Lab"
+      },
+      "exits": {
+        "west": {
+          "to": "service-hall"
+        },
+        "east": {
+          "to": "prism-vault"
+        }
+      },
+      "items": [
+        "prism-shard",
+        "mana-pin"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "professor-amper",
+        "cardboard-golem"
+      ]
+    },
+    {
+      "id": "prism-vault",
+      "zoneId": "neon-mall",
+      "name": "Prism Vault",
+      "description": "A former storage room now contains a floating prism that sorts loose magic into colors, then immediately argues with itself.",
+      "coords": {
+        "x": 2,
+        "y": 1,
+        "z": 0
+      },
+      "tags": [
+        "vault"
+      ],
+      "map": {
+        "symbol": "V",
+        "color": "#a65bbd",
+        "label": "Vault"
+      },
+      "exits": {
+        "west": {
+          "to": "mana-lab"
+        }
+      },
+      "items": [
+        "prism-badge"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "mana-squall"
+      ]
+    },
+    {
+      "id": "toy-aisle",
+      "zoneId": "neon-mall",
+      "name": "Toy Aisle Checkpoint",
+      "description": "Action figures stand in perfect formation beside half-empty shelves. Someone has taped googly eyes over the security camera.",
+      "coords": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "toy"
+      ],
+      "map": {
+        "symbol": "Y",
+        "color": "#db7490",
+        "label": "Toys"
+      },
+      "exits": {
+        "east": {
+          "to": "main-concourse"
+        },
+        "south": {
+          "to": "union-stage"
+        }
+      },
+      "items": [
+        "guest-star-sticker"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "continuity-cameo"
+      ]
+    },
+    {
+      "id": "union-stage",
+      "zoneId": "neon-mall",
+      "name": "Crossover Preview Stage",
+      "description": "A small convention stage is covered in mismatched banners. Every microphone introduces a different genre.",
+      "coords": {
+        "x": -1,
+        "y": 1,
+        "z": 0
+      },
+      "tags": [
+        "stage"
+      ],
+      "map": {
+        "symbol": "U",
+        "color": "#c967ac",
+        "label": "Stage"
+      },
+      "exits": {
+        "north": {
+          "to": "toy-aisle"
+        },
+        "south": {
+          "to": "crossover-pavilion",
+          "doorId": "crossover-gate",
+          "requiredItemId": "crossover-pass",
+          "blockedMessage": "The crossover gate needs a pass stamped by every genre station."
+        }
+      },
+      "items": [
+        "crossover-pass"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "crossover-coordinator",
+        "crossover-glitch",
+        "cross-promo-mecha"
+      ]
+    },
+    {
+      "id": "pocket-park",
+      "zoneId": "summon-park",
+      "name": "Pocket Park",
+      "description": "A duck pond has been covered with floating card sleeves. Tiny monsters chase frisbees while volunteers pretend this is manageable.",
+      "coords": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "park"
+      ],
+      "map": {
+        "symbol": "P",
+        "color": "#69b36d",
+        "label": "Park"
+      },
+      "exits": {
+        "east": {
+          "to": "binder-square"
+        },
+        "west": {
+          "to": "ranger-station"
+        }
+      },
+      "items": [
+        "capture-tags"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "pocket-lizard",
+        "prismatic-pocket-lizard"
+      ]
+    },
+    {
+      "id": "ranger-station",
+      "zoneId": "summon-park",
+      "name": "Park Ranger Card Table",
+      "description": "A ranger table is covered with clipboards, water bottles, and a hand-drawn chart titled THINGS THAT ARE CUTE BUT STILL BITE.",
+      "coords": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "ranger"
+      ],
+      "map": {
+        "symbol": "R",
+        "color": "#78be75",
+        "label": "Ranger"
+      },
+      "exits": {
+        "east": {
+          "to": "pocket-park"
+        },
+        "south": {
+          "to": "training-lot"
+        }
+      },
+      "items": [
+        "capture-tags"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "ranger-mira",
+        "plush-spark-buddy"
+      ]
+    },
+    {
+      "id": "training-lot",
+      "zoneId": "summon-park",
+      "name": "Training Lot",
+      "description": "Parking spaces have been repainted as battle lanes. Cones, chalk arrows, and one very stern whistle keep the chaos almost organized.",
+      "coords": {
+        "x": -1,
+        "y": 1,
+        "z": 0
+      },
+      "tags": [
+        "training"
+      ],
+      "map": {
+        "symbol": "T",
+        "color": "#86c47e",
+        "label": "Lot"
+      },
+      "exits": {
+        "north": {
+          "to": "ranger-station"
+        },
+        "west": {
+          "to": "frame-hangar",
+          "doorId": "frame-bay-door",
+          "requiredItemId": "servo-key",
+          "blockedMessage": "The frame bay door needs the servo key from the training lot."
+        }
+      },
+      "items": [
+        "servo-key"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "frame-mechanic",
+        "practice-dummy"
+      ]
+    },
+    {
+      "id": "frame-hangar",
+      "zoneId": "summon-park",
+      "name": "Snap-Frame Hangar",
+      "description": "Model frames hang from fishing line, half heroic and half unfinished. A launch rail points directly at several warning signs.",
+      "coords": {
+        "x": -2,
+        "y": 1,
+        "z": 0
+      },
+      "tags": [
+        "hangar"
+      ],
+      "map": {
+        "symbol": "F",
+        "color": "#79aa8a",
+        "label": "Hangar"
+      },
+      "exits": {
+        "east": {
+          "to": "training-lot",
+          "doorId": "frame-bay-door",
+          "requiredItemId": "servo-key"
+        },
+        "south": {
+          "to": "harbor-walk"
+        }
+      },
+      "items": [
+        "pilot-gloves"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "frame-mechanic",
+        "plastic-mecha"
+      ]
+    },
+    {
+      "id": "harbor-walk",
+      "zoneId": "crossover-harbor",
+      "name": "Harbor Walk",
+      "description": "Food trucks, convention booths, and emergency tape line the waterfront. The bay reflects monsters that are not actually above it yet.",
+      "coords": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "harbor"
+      ],
+      "map": {
+        "symbol": "H",
+        "color": "#5276c7",
+        "label": "Harbor"
+      },
+      "exits": {
+        "north": {
+          "to": "frame-hangar"
+        },
+        "east": {
+          "to": "transit-platform"
+        },
+        "west": {
+          "to": "captain-pier"
+        }
+      },
+      "items": [
+        "captain-token"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "harbor-captain",
+        "dockside-deckhand"
+      ]
+    },
+    {
+      "id": "captain-pier",
+      "zoneId": "crossover-harbor",
+      "name": "Captain Pier",
+      "description": "A pirate-themed booth has become a leadership seminar with barrels, banners, and suspiciously stretchy hazards.",
+      "coords": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "pier"
+      ],
+      "map": {
+        "symbol": "P",
+        "color": "#6688d1",
+        "label": "Pier"
+      },
+      "exits": {
+        "east": {
+          "to": "harbor-walk"
+        },
+        "north": {
+          "to": "crossover-pavilion"
+        }
+      },
+      "items": [
+        "captain-token"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "rubber-band-brute"
+      ]
+    },
+    {
+      "id": "crossover-pavilion",
+      "zoneId": "crossover-harbor",
+      "name": "Crossover Pavilion",
+      "description": "The final pavilion is a storm of card frames, toy parts, snack wrappers, and heroic speeches arriving out of order.",
+      "coords": {
+        "x": -1,
+        "y": -1,
+        "z": 0
+      },
+      "tags": [
+        "finale"
+      ],
+      "map": {
+        "symbol": "X",
+        "color": "#445fc0",
+        "label": "Finale"
+      },
+      "exits": {
+        "south": {
+          "to": "captain-pier"
+        },
+        "north": {
+          "to": "union-stage",
+          "doorId": "crossover-gate",
+          "requiredItemId": "crossover-pass"
+        }
+      },
+      "items": [
+        "finale-binder"
+      ],
+      "itemSpawns": [],
+      "npcs": [
+        "genre-jam-titan",
+        "credits-colossus"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "sleeve-key",
+      "name": "sleeve key",
+      "description": "A laminated keycard that smells faintly of fresh booster packs.",
+      "type": "key",
+      "value": 5
+    },
+    {
+      "id": "energy-drink",
+      "name": "energy drink",
+      "description": "A neon can promising focus, sparkle, and only mild regret.",
+      "type": "consumable",
+      "value": 4,
+      "consumable": {
+        "hp": 2,
+        "mana": 4
+      }
+    },
+    {
+      "id": "foil-snack",
+      "name": "foil snack",
+      "description": "A snack cake wrapped in shiny foil. Somehow already tournament legal.",
+      "type": "consumable",
+      "value": 3,
+      "consumable": {
+        "hp": 4
+      }
+    },
+    {
+      "id": "antenna-sticker",
+      "name": "antenna sticker",
+      "description": "A lightning-bolt sticker that boosts any signal and most egos.",
+      "type": "misc",
+      "value": 2
+    },
+    {
+      "id": "signal-booster",
+      "name": "signal booster",
+      "description": "A taped-together booster made from selfie sticks, foil rares, and optimism.",
+      "type": "misc",
+      "value": 8
+    },
+    {
+      "id": "capture-tags",
+      "name": "capture tags",
+      "description": "Soft plastic tags for marking panicked monsters as rescued instead of rampaging.",
+      "type": "misc",
+      "value": 5
+    },
+    {
+      "id": "prism-shard",
+      "name": "prism shard",
+      "description": "A rainbow-edged shard that hums in five different arguments.",
+      "type": "misc",
+      "value": 6
+    },
+    {
+      "id": "prism-badge",
+      "name": "prism badge",
+      "description": "A safety badge proving you survived the lab without becoming a color wheel.",
+      "type": "misc",
+      "value": 10
+    },
+    {
+      "id": "servo-key",
+      "name": "servo key",
+      "description": "A tiny motor key with a tag reading DO NOT LAUNCH INDOORS.",
+      "type": "key",
+      "value": 6
+    },
+    {
+      "id": "captain-token",
+      "name": "captain token",
+      "description": "A plastic coin stamped with a smiling skull and a very unofficial motto.",
+      "type": "misc",
+      "value": 5
+    },
+    {
+      "id": "crossover-pass",
+      "name": "crossover pass",
+      "description": "A convention badge stamped by multiple genre stations and one confused pretzel vendor.",
+      "type": "key",
+      "value": 12
+    },
+    {
+      "id": "finale-binder",
+      "name": "finale binder",
+      "description": "A reinforced binder with dividers labeled Plans A through Saturday.",
+      "type": "equipment",
+      "value": 18,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "bond": 1
+        }
+      }
+    },
+    {
+      "id": "duel-disk-holster",
+      "name": "duel disk holster",
+      "description": "A hip holster for quick dramatic card reveals.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "spark": 1
+        }
+      }
+    },
+    {
+      "id": "trainer-jacket",
+      "name": "trainer jacket",
+      "description": "A bright jacket with snack pockets, tag loops, and bite-resistant sleeves.",
+      "type": "equipment",
+      "value": 10,
+      "equipment": {
+        "slot": "body",
+        "statBonuses": {
+          "bond": 1,
+          "heart": 1
+        }
+      }
+    },
+    {
+      "id": "lucky-cap",
+      "name": "lucky cap",
+      "description": "A cap turned exactly the right amount backward for confidence.",
+      "type": "equipment",
+      "value": 8,
+      "equipment": {
+        "slot": "head",
+        "statBonuses": {
+          "heart": 1
+        }
+      }
+    },
+    {
+      "id": "street-sneakers",
+      "name": "street sneakers",
+      "description": "Scuffed sneakers with excellent grip on mall tile and questionable reality.",
+      "type": "equipment",
+      "value": 9,
+      "equipment": {
+        "slot": "feet",
+        "statBonuses": {
+          "grace": 1
+        }
+      }
+    },
+    {
+      "id": "mana-pin",
+      "name": "mana pin",
+      "description": "A little enamel pin that changes color whenever rules are nearby.",
+      "type": "equipment",
+      "value": 11,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "spark": 1,
+          "wit": 1
+        }
+      }
+    },
+    {
+      "id": "pilot-gloves",
+      "name": "pilot gloves",
+      "description": "Fingerless gloves for pilots, builders, and people about to press the big red button.",
+      "type": "equipment",
+      "value": 13,
+      "equipment": {
+        "slot": "body",
+        "statBonuses": {
+          "might": 1,
+          "grace": 1
+        }
+      }
+    },
+    {
+      "id": "guest-star-sticker",
+      "name": "guest star sticker",
+      "description": "A holographic sticker that looks like it belongs to six different shows.",
+      "type": "equipment",
+      "value": 10,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "bond": 1,
+          "spark": 1
+        }
+      }
+    },
+    {
+      "id": "promo-foil-stamp",
+      "name": "promo foil stamp",
+      "description": "A tiny holographic stamp handed out by the event booth for catching limited-print troublemakers.",
+      "type": "equipment",
+      "value": 14,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "spark": 1,
+          "wit": 1
+        }
+      }
+    }
+  ],
+  "npcs": [
+    {
+      "id": "binder-marshal",
+      "name": "Marshal Echo",
+      "species": "human organizer",
+      "description": "A volunteer marshal in a reflective vest, holding a clipboard like it can legally stop a dragon.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 18,
+      "mana": 10,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "clipboard tap",
+        "defeatMessage": "Marshal Echo blows a whistle and calls a timeout.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "Welcome to Binder Square. If your deck starts glowing, point it away from traffic."
+        ],
+        "topics": {
+          "key": {
+            "prompt": "starter kit",
+            "aliases": [
+              "key",
+              "starter",
+              "kit",
+              "sleeve key"
+            ],
+            "response": [
+              "The mall turnstile needs a sleeve key. The card shop north kept the emergency one, because of course the card shop became important immediately.",
+              "Grab it, open the mall gate, and check on the kiosk kid inside before he starts issuing quests on receipt paper."
+            ]
+          },
+          "outbreak": {
+            "prompt": "outbreak",
+            "aliases": [
+              "cards",
+              "monsters",
+              "havoc"
+            ],
+            "response": [
+              "At 3:14 PM every card game in town decided rules were optional and monsters were mandatory.",
+              "Good news: most of them respond to confidence. Bad news: confidence is not a fire extinguisher."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "shop-owner",
+      "name": "Nina Sleeves",
+      "species": "card shop owner",
+      "description": "A card shop owner with a price gun, a first-aid kit, and the terrifying calm of retail experience.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 16,
+      "mana": 12,
+      "disposition": "friendly",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "price check",
+        "defeatMessage": "Nina ducks behind a counter and declares you banned for six minutes.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "Singles are half off if they are not currently alive. Please do not ask me to price the ceiling dragon."
+        ],
+        "topics": {
+          "shop": {
+            "prompt": "shop",
+            "aliases": [
+              "wares",
+              "supplies"
+            ],
+            "response": [
+              "Take the sleeve key if Marshal Echo sent you. Pay me back by keeping the mall from becoming a booster-pack volcano."
+            ]
+          },
+          "monsters": {
+            "prompt": "monsters",
+            "aliases": [
+              "cards",
+              "alive"
+            ],
+            "response": [
+              "They are not evil. Mostly. They are like pets, fireworks, and terms-of-service updates all at once."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rogue-topdeck",
+      "name": "Rogue Topdeck",
+      "species": "loose duel monster",
+      "description": "A caped card knight dramatically topdecks itself every few seconds and gasps each time.",
+      "stats": {
+        "heart": 7,
+        "wit": 8,
+        "grace": 7,
+        "might": 6,
+        "spark": 8,
+        "bond": 5
+      },
+      "hp": 14,
+      "mana": 8,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 35
+        }
+      },
+      "combat": {
+        "attackName": "dramatic slash",
+        "defeatMessage": "The Rogue Topdeck spins into a sleeve and sulks in foil silence.",
+        "respawnSeconds": 30,
+        "xp": 16,
+        "tickets": 5,
+        "drops": [
+          {
+            "itemId": "foil-snack",
+            "chance": 0.45,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Rogue Topdeck points at you, then at the sky, then at its own reflection."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Duel Page",
+        "rarity": "uncommon",
+        "flavor": "A dramatic opener that loudly believes every draw was destiny."
+      }
+    },
+    {
+      "id": "snack-mimic",
+      "name": "Snack Mimic",
+      "species": "living snack wrapper",
+      "description": "A shiny wrapper with googly eyes and too many teeth for a snack.",
+      "stats": {
+        "heart": 6,
+        "wit": 5,
+        "grace": 8,
+        "might": 5,
+        "spark": 7,
+        "bond": 4
+      },
+      "hp": 11,
+      "mana": 6,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 30
+        }
+      },
+      "combat": {
+        "attackName": "foil chomp",
+        "defeatMessage": "The Snack Mimic unwraps into ordinary trash and one edible snack.",
+        "respawnSeconds": 30,
+        "xp": 13,
+        "tickets": 4,
+        "drops": [
+          {
+            "itemId": "energy-drink",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "crinkle crinkle"
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Prize Page",
+        "rarity": "common",
+        "flavor": "A wrapper-card hybrid best handled before lunch gets ideas."
+      }
+    },
+    {
+      "id": "signal-dj",
+      "name": "Signal DJ Pax",
+      "species": "pirate radio volunteer",
+      "description": "A teen DJ broadcasting monster alerts between jingles from behind a pretzel cart.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 15,
+      "mana": 12,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "feedback squeal",
+        "defeatMessage": "Pax drops the mic, catches it, and calls that a tactical retreat.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "Binder Bay Radio is live, improvised, and only a little on fire."
+        ],
+        "topics": {
+          "broadcast": {
+            "prompt": "broadcast",
+            "aliases": [
+              "signal",
+              "antenna",
+              "radio"
+            ],
+            "response": [
+              "The roof mast needs an antenna sticker and a signal booster. Get the sticker from transit, the booster from the roof, then tell the technician we can go citywide."
+            ]
+          },
+          "music": {
+            "prompt": "music",
+            "aliases": [
+              "theme",
+              "song"
+            ],
+            "response": [
+              "Every good emergency needs a theme song. I am taking requests after the flying vending machine lands."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "kiosk-kid",
+      "name": "Kiosk Kid Milo",
+      "species": "mall survivor",
+      "description": "A kid behind an information kiosk, armed with receipt paper, three markers, and terrifying logistics.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 14,
+      "mana": 8,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "receipt whip",
+        "defeatMessage": "Milo ducks behind the kiosk and writes COMBAT IS NOT CUSTOMER SERVICE.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "I have maps, coupons, and an evolving theory that the escalators are unionizing."
+        ],
+        "topics": {
+          "mall": {
+            "prompt": "mall",
+            "aliases": [
+              "concourse",
+              "kiosk"
+            ],
+            "response": [
+              "The mall is weird but navigable. Arcade east, lab through service, toy aisle west. If a sign says Final Sale, do not duel it."
+            ]
+          },
+          "marshal": {
+            "prompt": "Marshal Echo",
+            "aliases": [
+              "echo",
+              "marshal"
+            ],
+            "response": [
+              "Tell the marshal I am alive, helpful, and only charging one coupon per rescue."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "coupon-knight",
+      "name": "Coupon Knight",
+      "species": "discount champion",
+      "description": "A cardboard knight with a lance made of expired coupons.",
+      "stats": {
+        "heart": 7,
+        "wit": 6,
+        "grace": 6,
+        "might": 7,
+        "spark": 6,
+        "bond": 4
+      },
+      "hp": 18,
+      "mana": 6,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "coupon lance",
+        "defeatMessage": "The Coupon Knight yields and prints a raincheck.",
+        "respawnSeconds": 30,
+        "xp": 18,
+        "tickets": 5,
+        "drops": [
+          {
+            "itemId": "foil-snack",
+            "chance": 0.4,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Coupon Knight declares, \"Buy one peril, get one free!\""
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Prize Page",
+        "rarity": "uncommon",
+        "flavor": "A discount champion with expired offers and valid confidence."
+      }
+    },
+    {
+      "id": "pixel-drake",
+      "name": "Pixel Drake",
+      "species": "arcade monster",
+      "description": "A blocky little dragon made of arcade pixels, tickets, and poor impulse control.",
+      "stats": {
+        "heart": 7,
+        "wit": 7,
+        "grace": 9,
+        "might": 7,
+        "spark": 8,
+        "bond": 4
+      },
+      "hp": 18,
+      "mana": 8,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 28
+        }
+      },
+      "combat": {
+        "attackName": "pixel burst",
+        "defeatMessage": "The Pixel Drake drops into attract mode and stops biting.",
+        "respawnSeconds": 30,
+        "xp": 18,
+        "tickets": 4,
+        "drops": [
+          {
+            "itemId": "capture-tags",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Pixel Drake makes a coin-in sound with its mouth."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Arcade Page",
+        "rarity": "uncommon",
+        "flavor": "A coin-op dragon with excellent sound effects and no indoor voice."
+      }
+    },
+    {
+      "id": "roof-technician",
+      "name": "Roof Technician Bea",
+      "species": "emergency technician",
+      "description": "A technician zip-tied to a safety harness and absolutely done with magical static.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 15,
+      "mana": 10,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "wrench warning",
+        "defeatMessage": "Bea points to the safety sign until you feel bad.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "If this mast explodes into confetti, I am invoicing the entire concept of card games."
+        ],
+        "topics": {
+          "signal": {
+            "prompt": "signal",
+            "aliases": [
+              "broadcast",
+              "booster",
+              "antenna"
+            ],
+            "response": [
+              "Sticker plus booster equals citywide warning. Probably. If the warning comes out as a guitar solo, that is still useful."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "weather-wyrm",
+      "name": "Weather Wyrm",
+      "species": "forecast monster",
+      "description": "A serpentine forecast graphic escaped from a weather app and now predicts punches.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 7,
+        "spark": 9,
+        "bond": 4
+      },
+      "hp": 22,
+      "mana": 10,
+      "disposition": "hostile",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 32
+        }
+      },
+      "combat": {
+        "attackName": "pressure front",
+        "defeatMessage": "The Weather Wyrm collapses into a seven-day forecast for mild embarrassment.",
+        "respawnSeconds": 30,
+        "xp": 22,
+        "tickets": 6,
+        "drops": [
+          {
+            "itemId": "signal-booster",
+            "chance": 0.3,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Weather Wyrm hisses: \"Chance of chaos: one hundred percent.\""
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Mana Page",
+        "rarity": "uncommon",
+        "flavor": "A forecast serpent whose seven-day outlook is mostly trouble."
+      }
+    },
+    {
+      "id": "professor-amper",
+      "name": "Professor Amper",
+      "species": "pop-up researcher",
+      "description": "A researcher in safety goggles, holding a prism shard with barbecue tongs.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 16,
+      "mana": 14,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "peer review",
+        "defeatMessage": "Professor Amper retreats behind a trifold display.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "Excellent, a test subject. I mean helper. I said helper."
+        ],
+        "topics": {
+          "prism": {
+            "prompt": "prism",
+            "aliases": [
+              "mana",
+              "leak",
+              "shard"
+            ],
+            "response": [
+              "The lab leak is sorting monsters by color and mood. Bring me a prism shard, then check the vault before the colors start voting."
+            ]
+          },
+          "science": {
+            "prompt": "science",
+            "aliases": [
+              "research",
+              "lab"
+            ],
+            "response": [
+              "Science is what we call it when screaming becomes repeatable."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "cardboard-golem",
+      "name": "Cardboard Golem",
+      "species": "folded bulk rare",
+      "description": "A hulking golem folded from bulk cards, packing tape, and very big feelings.",
+      "stats": {
+        "heart": 9,
+        "wit": 5,
+        "grace": 5,
+        "might": 10,
+        "spark": 6,
+        "bond": 3
+      },
+      "hp": 26,
+      "mana": 6,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "bulk smash",
+        "defeatMessage": "The Cardboard Golem collapses into a recyclable heap.",
+        "respawnSeconds": 30,
+        "xp": 24,
+        "tickets": 7,
+        "drops": [
+          {
+            "itemId": "prism-shard",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Cardboard Golem creaks like a thousand unsorted commons."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Prize Page",
+        "rarity": "rare",
+        "flavor": "Bulk cards, packing tape, and one extremely committed silhouette."
+      }
+    },
+    {
+      "id": "mana-squall",
+      "name": "Mana Squall",
+      "species": "loose spellstorm",
+      "description": "A swirling spellstorm that keeps becoming five colors and one bad idea.",
+      "stats": {
+        "heart": 8,
+        "wit": 9,
+        "grace": 8,
+        "might": 6,
+        "spark": 11,
+        "bond": 4
+      },
+      "hp": 24,
+      "mana": 16,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "color burst",
+        "defeatMessage": "The Mana Squall sorts itself into a neat little badge.",
+        "respawnSeconds": 30,
+        "xp": 26,
+        "tickets": 8,
+        "drops": [
+          {
+            "itemId": "prism-badge",
+            "chance": 0.45,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Mana Squall crackles in several incompatible rules systems."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Mana Page",
+        "rarity": "rare",
+        "flavor": "Five colors, one storm, and zero patience for clean timing windows."
+      }
+    },
+    {
+      "id": "ranger-mira",
+      "name": "Ranger Mira",
+      "species": "monster rescue ranger",
+      "description": "A park ranger with bite-proof gloves and a whistle labeled PLEASE WORK.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 18,
+      "mana": 10,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "whistle blast",
+        "defeatMessage": "Ranger Mira blows the whistle and everyone takes five.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "Approach slowly, speak kindly, and never assume cute means harmless."
+        ],
+        "topics": {
+          "roundup": {
+            "prompt": "roundup",
+            "aliases": [
+              "creatures",
+              "tags",
+              "rescue"
+            ],
+            "response": [
+              "Grab capture tags from the ranger table or arcade, tag the park sightings, and report back before the little ones discover the hot dog cart."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "pocket-lizard",
+      "name": "Pocket Lizard",
+      "species": "small companion monster",
+      "description": "A tiny bright-eyed monster sitting in a card sleeve like it is a sleeping bag.",
+      "stats": {
+        "heart": 6,
+        "wit": 6,
+        "grace": 9,
+        "might": 5,
+        "spark": 7,
+        "bond": 8
+      },
+      "hp": 14,
+      "mana": 8,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 24
+        }
+      },
+      "combat": {
+        "attackName": "tiny tackle",
+        "defeatMessage": "The Pocket Lizard curls up, tagged and calm.",
+        "respawnSeconds": 30,
+        "xp": 16,
+        "tickets": 3,
+        "drops": [
+          {
+            "itemId": "capture-tags",
+            "chance": 0.3,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Pocket Lizard squeaks at the exact pitch of a new sidequest."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Pocket Page",
+        "rarity": "common",
+        "flavor": "Small enough to nap in a sleeve, brave enough to start a chase scene."
+      }
+    },
+    {
+      "id": "practice-dummy",
+      "name": "Practice Dummy Deluxe",
+      "species": "animated tutorial prop",
+      "description": "A foam dummy with a screen that says HIT ME RESPONSIBLY.",
+      "stats": {
+        "heart": 10,
+        "wit": 4,
+        "grace": 4,
+        "might": 6,
+        "spark": 4,
+        "bond": 4
+      },
+      "hp": 22,
+      "mana": 0,
+      "disposition": "wild",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "foam bop",
+        "defeatMessage": "The dummy gives you a B plus and falls over.",
+        "respawnSeconds": 30,
+        "xp": 18,
+        "tickets": 2,
+        "drops": [
+          {
+            "itemId": "servo-key",
+            "chance": 0.2,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The dummy squeaks: \"Learning objective detected.\""
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Frame Page",
+        "rarity": "common",
+        "flavor": "A training prop with professional-grade squeaks and feedback."
+      }
+    },
+    {
+      "id": "frame-mechanic",
+      "name": "Mechanic Joss",
+      "species": "model-frame mechanic",
+      "description": "A mechanic surrounded by runners, sprues, and tiny parts sorted with terrifying precision.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 17,
+      "mana": 10,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "parts lecture",
+        "defeatMessage": "Joss lectures you about tool safety until combat becomes impossible.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "Do not touch the red launch button. The blue one is also bad. Actually, hands in pockets."
+        ],
+        "topics": {
+          "frame": {
+            "prompt": "frame",
+            "aliases": [
+              "servo",
+              "hangar",
+              "mecha"
+            ],
+            "response": [
+              "The frame bay door needs the servo key from the training lot. Get in, check the launch rail, and stop the plastic mecha before it discovers stairs."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "plastic-mecha",
+      "name": "Plastic Mecha",
+      "species": "snap-frame monster",
+      "description": "A towering snap-together battle frame, half assembled and fully confident.",
+      "stats": {
+        "heart": 9,
+        "wit": 7,
+        "grace": 8,
+        "might": 11,
+        "spark": 8,
+        "bond": 3
+      },
+      "hp": 30,
+      "mana": 10,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "beam pointer",
+        "defeatMessage": "The Plastic Mecha loses one dramatic shoulder piece and powers down.",
+        "respawnSeconds": 30,
+        "xp": 30,
+        "tickets": 9,
+        "drops": [
+          {
+            "itemId": "pilot-gloves",
+            "chance": 0.25,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Plastic Mecha points at the sky even though the ceiling is right there."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Frame Page",
+        "rarity": "rare",
+        "flavor": "A snap-frame titan powered by decals, drama, and loose polycaps."
+      }
+    },
+    {
+      "id": "harbor-captain",
+      "name": "Captain Rook",
+      "species": "waterfront volunteer",
+      "description": "A waterfront volunteer wearing a captain hat over a bike helmet.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 18,
+      "mana": 10,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "megaphone order",
+        "defeatMessage": "Captain Rook calls a snack break and refuses to duel volunteers.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "Welcome aboard the pier, which is legally still a sidewalk."
+        ],
+        "topics": {
+          "crew": {
+            "prompt": "crew",
+            "aliases": [
+              "captain",
+              "token",
+              "harbor"
+            ],
+            "response": [
+              "Grab captain tokens from the harbor or pier. The rubber-band brute respects bold declarations and also snacks. Mostly bold declarations."
+            ]
+          },
+          "finale": {
+            "prompt": "finale",
+            "aliases": [
+              "crossover",
+              "pavilion"
+            ],
+            "response": [
+              "The pavilion is where everything crashes together. Bring a crossover pass unless you enjoy arguing with sentient badge scanners."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rubber-band-brute",
+      "name": "Rubber-Band Brute",
+      "species": "stretchy card brawler",
+      "description": "A stretchy brawler made of rubber bands, pirate stickers, and unearned confidence.",
+      "stats": {
+        "heart": 10,
+        "wit": 6,
+        "grace": 8,
+        "might": 10,
+        "spark": 6,
+        "bond": 5
+      },
+      "hp": 28,
+      "mana": 8,
+      "disposition": "hostile",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 30
+        }
+      },
+      "combat": {
+        "attackName": "stretch punch",
+        "defeatMessage": "The Rubber-Band Brute snaps back to normal size and looks embarrassed.",
+        "respawnSeconds": 30,
+        "xp": 28,
+        "tickets": 8,
+        "drops": [
+          {
+            "itemId": "captain-token",
+            "chance": 0.4,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Rubber-Band Brute winds up from approximately too far away."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Voyage Page",
+        "rarity": "rare",
+        "flavor": "A stretchy dockside bruiser that treats distance as a suggestion."
+      }
+    },
+    {
+      "id": "crossover-coordinator",
+      "name": "Coordinator Vale",
+      "species": "crossover event runner",
+      "description": "An event coordinator with six lanyards, seven schedules, and no remaining fear.",
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 8,
+        "might": 8,
+        "spark": 8,
+        "bond": 8
+      },
+      "hp": 18,
+      "mana": 14,
+      "disposition": "friendly",
+      "behavior": {},
+      "combat": {
+        "attackName": "schedule smack",
+        "defeatMessage": "Vale reschedules the fight for never.",
+        "respawnSeconds": 0,
+        "xp": 0,
+        "tickets": 0,
+        "drops": []
+      },
+      "dialogue": {
+        "greeting": [
+          "If one more universe enters from stage left, I am billing overtime to destiny."
+        ],
+        "topics": {
+          "crossover": {
+            "prompt": "crossover",
+            "aliases": [
+              "pass",
+              "stage",
+              "finale"
+            ],
+            "response": [
+              "Take the crossover pass, get it through the stage gate, and stop the genre jam in the pavilion before every rulebook merges into soup."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "crossover-glitch",
+      "name": "Crossover Glitch",
+      "species": "rule collision",
+      "description": "A flickering silhouette made of mismatched card frames and surprise guest stars.",
+      "stats": {
+        "heart": 8,
+        "wit": 10,
+        "grace": 10,
+        "might": 8,
+        "spark": 10,
+        "bond": 6
+      },
+      "hp": 30,
+      "mana": 14,
+      "disposition": "hostile",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 26
+        }
+      },
+      "combat": {
+        "attackName": "continuity error",
+        "defeatMessage": "The Crossover Glitch resolves into a harmless sticker sheet.",
+        "respawnSeconds": 30,
+        "xp": 32,
+        "tickets": 10,
+        "drops": [
+          {
+            "itemId": "guest-star-sticker",
+            "chance": 0.3,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Crossover Glitch speaks in three catchphrases at once."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Crossover Page",
+        "rarity": "rare",
+        "flavor": "A rules collision that arrives with three guest-star entrances."
+      }
+    },
+    {
+      "id": "genre-jam-titan",
+      "name": "Genre-Jam Titan",
+      "species": "finale monster",
+      "description": "A huge monster made from duel capes, tiny companions, spell prisms, model parts, pirate banners, and crossover badges.",
+      "stats": {
+        "heart": 12,
+        "wit": 10,
+        "grace": 8,
+        "might": 12,
+        "spark": 12,
+        "bond": 8
+      },
+      "hp": 42,
+      "mana": 18,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "everything strike",
+        "defeatMessage": "The Genre-Jam Titan splits into a dozen tired cards and one very relieved city.",
+        "respawnSeconds": 30,
+        "xp": 45,
+        "tickets": 15,
+        "drops": [
+          {
+            "itemId": "finale-binder",
+            "chance": 0.5,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Genre-Jam Titan raises six opening themes at once."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Finale Page",
+        "rarity": "showcase",
+        "flavor": "The citywide finale compressed into one impossible card frame."
+      }
+    },
+    {
+      "id": "holo-topdeck",
+      "name": "Holo Topdeck",
+      "species": "foil variant duel monster",
+      "description": "A mirror-bright version of Rogue Topdeck that sparkles hard enough to interrupt traffic.",
+      "card": {
+        "page": "Event Page",
+        "rarity": "rare",
+        "flavor": "A limited shimmer print that insists every entrance deserves a spotlight.",
+        "variant": true,
+        "event": "Opening Night Foil"
+      },
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 9,
+        "might": 7,
+        "spark": 10,
+        "bond": 6
+      },
+      "hp": 22,
+      "mana": 10,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 42
+        }
+      },
+      "combat": {
+        "attackName": "foil flourish",
+        "defeatMessage": "The Holo Topdeck flashes one last dramatic glint and slides into a premium sleeve.",
+        "respawnSeconds": 90,
+        "xp": 28,
+        "tickets": 9,
+        "drops": [
+          {
+            "itemId": "foil-snack",
+            "chance": 0.75,
+            "quantity": 1
+          },
+          {
+            "itemId": "promo-foil-stamp",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Holo Topdeck reflects your heroic pose back at maximum brightness."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "prismatic-pocket-lizard",
+      "name": "Prismatic Pocket Lizard",
+      "species": "rainbow companion variant",
+      "description": "A pocket-sized companion monster refracting sunlight into tiny victory poses.",
+      "card": {
+        "page": "Event Page",
+        "rarity": "rare",
+        "flavor": "A cheerful event variant that turns every rescue tag into a parade ribbon.",
+        "variant": true,
+        "event": "Park Rescue Promo"
+      },
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 10,
+        "might": 5,
+        "spark": 8,
+        "bond": 10
+      },
+      "hp": 20,
+      "mana": 12,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 36
+        }
+      },
+      "combat": {
+        "attackName": "rainbow pounce",
+        "defeatMessage": "The Prismatic Pocket Lizard chirps, accepts a tag, and sparkles into your binder log.",
+        "respawnSeconds": 90,
+        "xp": 26,
+        "tickets": 8,
+        "drops": [
+          {
+            "itemId": "capture-tags",
+            "chance": 0.7,
+            "quantity": 1
+          },
+          {
+            "itemId": "promo-foil-stamp",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Prismatic Pocket Lizard squeaks in limited-edition colors."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "cabinet-boss-drake",
+      "name": "Cabinet Boss Drake",
+      "species": "bonus-stage arcade variant",
+      "description": "A pixel dragon with a boss health bar hovering where common sense should be.",
+      "card": {
+        "page": "Event Page",
+        "rarity": "rare",
+        "flavor": "A bonus-stage variant with flashing borders and exactly one continue left.",
+        "variant": true,
+        "event": "Arcade High Score Rush"
+      },
+      "stats": {
+        "heart": 8,
+        "wit": 8,
+        "grace": 9,
+        "might": 9,
+        "spark": 9,
+        "bond": 6
+      },
+      "hp": 24,
+      "mana": 12,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "boss pattern",
+        "defeatMessage": "The Cabinet Boss Drake blinks GAME CLEAR and coughs up a burst of tickets.",
+        "respawnSeconds": 90,
+        "xp": 30,
+        "tickets": 10,
+        "drops": [
+          {
+            "itemId": "capture-tags",
+            "chance": 0.5,
+            "quantity": 1
+          },
+          {
+            "itemId": "promo-foil-stamp",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Cabinet Boss Drake roars in sixteen-bit surround sound."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "cross-promo-mecha",
+      "name": "Cross-Promo Mecha",
+      "species": "collab frame variant",
+      "description": "A model-frame monster wearing too many sponsor decals and enjoying all of them.",
+      "card": {
+        "page": "Event Page",
+        "rarity": "showcase",
+        "flavor": "A showcase collab print with enough decals to qualify as a parade float.",
+        "variant": true,
+        "event": "Convention Floor Preview"
+      },
+      "stats": {
+        "heart": 10,
+        "wit": 8,
+        "grace": 8,
+        "might": 11,
+        "spark": 9,
+        "bond": 6
+      },
+      "hp": 32,
+      "mana": 14,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "sponsor beam",
+        "defeatMessage": "The Cross-Promo Mecha sheds three decals, salutes every franchise, and powers down.",
+        "respawnSeconds": 120,
+        "xp": 38,
+        "tickets": 12,
+        "drops": [
+          {
+            "itemId": "guest-star-sticker",
+            "chance": 0.55,
+            "quantity": 1
+          },
+          {
+            "itemId": "promo-foil-stamp",
+            "chance": 0.5,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Cross-Promo Mecha announces itself in six logos at once."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "trapline-busker",
+      "name": "Trapline Busker",
+      "species": "street duel trickster",
+      "description": "A sidewalk performer juggling face-down cards and acting shocked when every one is a trap.",
+      "card": {
+        "page": "Duel Page",
+        "rarity": "common",
+        "flavor": "A street-corner trick card with a hat full of dramatic reveals."
+      },
+      "stats": {
+        "heart": 8,
+        "wit": 9,
+        "grace": 8,
+        "might": 6,
+        "spark": 8,
+        "bond": 6
+      },
+      "hp": 16,
+      "mana": 10,
+      "disposition": "wild",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "hat trick",
+        "defeatMessage": "The Trapline Busker bows, sweeps the trap cards into a neat pile, and vanishes behind applause nobody ordered.",
+        "respawnSeconds": 45,
+        "xp": 18,
+        "tickets": 5,
+        "drops": [
+          {
+            "itemId": "duel-disk-holster",
+            "chance": 0.18,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Trapline Busker asks you to pick a card, then picks the loudest one for you."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "plush-spark-buddy",
+      "name": "Plush Spark Buddy",
+      "species": "soft companion monster",
+      "description": "A stuffed companion mascot crackling with static and extremely sincere courage.",
+      "card": {
+        "page": "Pocket Page",
+        "rarity": "uncommon",
+        "flavor": "A soft companion print with brave button eyes and a tiny thunder pose."
+      },
+      "stats": {
+        "heart": 9,
+        "wit": 8,
+        "grace": 9,
+        "might": 5,
+        "spark": 8,
+        "bond": 9
+      },
+      "hp": 18,
+      "mana": 10,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 34
+        }
+      },
+      "combat": {
+        "attackName": "static snuggle",
+        "defeatMessage": "The Plush Spark Buddy gives one last determined squeak and settles into rescue mode.",
+        "respawnSeconds": 45,
+        "xp": 20,
+        "tickets": 5,
+        "drops": [
+          {
+            "itemId": "capture-tags",
+            "chance": 0.45,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Plush Spark Buddy vibrates with the confidence of a toy aisle champion."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "dockside-deckhand",
+      "name": "Dockside Deckhand",
+      "species": "rubber-rope card brawler",
+      "description": "A cheerful dockside brawler made of rope loops, sticker scars, and bold declarations.",
+      "card": {
+        "page": "Voyage Page",
+        "rarity": "uncommon",
+        "flavor": "A dockside crew card that treats every railing like a dramatic entrance."
+      },
+      "stats": {
+        "heart": 9,
+        "wit": 8,
+        "grace": 8,
+        "might": 9,
+        "spark": 8,
+        "bond": 7
+      },
+      "hp": 23,
+      "mana": 8,
+      "disposition": "hostile",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 36
+        }
+      },
+      "combat": {
+        "attackName": "rope-loop swing",
+        "defeatMessage": "The Dockside Deckhand salutes, misses the pier post, and decides that still counts.",
+        "respawnSeconds": 45,
+        "xp": 24,
+        "tickets": 7,
+        "drops": [
+          {
+            "itemId": "captain-token",
+            "chance": 0.45,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Dockside Deckhand shouts that the crew has arrived, then looks around for the crew."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "token-mascot",
+      "name": "Token Mascot",
+      "species": "arcade prize monster",
+      "description": "A round arcade-prize mascot rolling on token feet and chanting a victory jingle.",
+      "card": {
+        "page": "Arcade Page",
+        "rarity": "common",
+        "flavor": "A low-score arcade card that becomes priceless if you hum the jingle."
+      },
+      "stats": {
+        "heart": 7,
+        "wit": 8,
+        "grace": 9,
+        "might": 6,
+        "spark": 8,
+        "bond": 6
+      },
+      "hp": 15,
+      "mana": 8,
+      "disposition": "wild",
+      "behavior": {
+        "wander": {
+          "enabled": true,
+          "intervalSeconds": 30
+        }
+      },
+      "combat": {
+        "attackName": "token tumble",
+        "defeatMessage": "The Token Mascot rolls into the prize counter and awards itself a participation sticker.",
+        "respawnSeconds": 45,
+        "xp": 17,
+        "tickets": 6,
+        "drops": [
+          {
+            "itemId": "capture-tags",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Token Mascot jingles like a prize machine with plot relevance."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "continuity-cameo",
+      "name": "Continuity Cameo",
+      "species": "guest-frame rule blip",
+      "description": "A cheerful guest-frame silhouette waving from the wrong side of the schedule.",
+      "card": {
+        "page": "Crossover Page",
+        "rarity": "uncommon",
+        "flavor": "A cameo card that looks familiar from exactly nowhere official."
+      },
+      "stats": {
+        "heart": 8,
+        "wit": 9,
+        "grace": 9,
+        "might": 8,
+        "spark": 9,
+        "bond": 7
+      },
+      "hp": 21,
+      "mana": 12,
+      "disposition": "wild",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "guest cut-in",
+        "defeatMessage": "The Continuity Cameo waves, exits through the wrong panel, and leaves the schedule slightly cleaner.",
+        "respawnSeconds": 60,
+        "xp": 24,
+        "tickets": 7,
+        "drops": [
+          {
+            "itemId": "guest-star-sticker",
+            "chance": 0.45,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Continuity Cameo introduces itself with a theme sting nobody recognizes."
+        ],
+        "topics": {}
+      }
+    },
+    {
+      "id": "credits-colossus",
+      "name": "Credits Colossus",
+      "species": "encore finale monster",
+      "description": "A towering encore monster made of scrolling credits, recap cards, and one last impossible pose.",
+      "card": {
+        "page": "Finale Page",
+        "rarity": "rare",
+        "flavor": "An encore card printed after the ending because the city still had confetti left."
+      },
+      "stats": {
+        "heart": 11,
+        "wit": 9,
+        "grace": 8,
+        "might": 11,
+        "spark": 10,
+        "bond": 6
+      },
+      "hp": 36,
+      "mana": 16,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "encore slam",
+        "defeatMessage": "The Credits Colossus scrolls past SPECIAL THANKS and finally sits down.",
+        "respawnSeconds": 90,
+        "xp": 40,
+        "tickets": 13,
+        "drops": [
+          {
+            "itemId": "finale-binder",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Credits Colossus raises a glowing card that says AND ONE MORE THING."
+        ],
+        "topics": {}
+      }
+    }
+  ]
+}

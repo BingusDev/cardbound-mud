@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cardbound Builder</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/admin.css" />
+  </head>
+  <body>
+    <main class="builder-shell">
+      <header class="builder-top">
+        <div>
+          <strong>Cardbound Builder</strong>
+          <span>World editor v2</span>
+        </div>
+        <nav class="builder-tabs" aria-label="Builder sections">
+          <button class="active" data-admin-tab="world" type="button">World</button>
+          <button data-admin-tab="rooms" type="button">Rooms</button>
+          <button data-admin-tab="items" type="button">Items</button>
+          <button data-admin-tab="npcs" type="button">NPCs</button>
+          <button data-admin-tab="quests" type="button">Quests</button>
+          <button data-admin-tab="config" type="button">Config</button>
+          <button data-admin-tab="characters" type="button">Characters</button>
+          <button data-admin-tab="accounts" type="button">Accounts</button>
+        </nav>
+        <form id="adminAuthForm" class="builder-auth">
+          <label>
+            Admin User
+            <input id="adminName" autocomplete="username" placeholder="Builder username" />
+          </label>
+          <label>
+            Password
+            <input id="adminToken" autocomplete="current-password" placeholder="Builder password" type="password" />
+          </label>
+          <button id="loadAdminButton" type="submit">Load</button>
+          <span id="adminAuthStatus" class="admin-auth-status" aria-live="polite"></span>
+        </form>
+      </header>
+
+      <section class="builder-status panel collapsed">
+        <div>
+          <button id="validationToggle" class="validation-toggle" type="button" aria-expanded="false">Checks</button>
+          <div id="saveStatus" class="save-status">Load the world to begin.</div>
+          <div id="builderSaveMeta" class="builder-save-meta">No saves this session.</div>
+        </div>
+        <div class="builder-actions builder-status-actions">
+          <button id="exportWorldButton" type="button">Export World</button>
+          <button id="exportConfigButton" type="button">Export Config</button>
+          <button id="exportBundleButton" type="button">Export Bundle</button>
+        </div>
+        <ul id="validationList"></ul>
+      </section>
+
+      <section class="admin-tab-panel active" data-tab-panel="world">
+        <div class="world-builder-layout">
+          <section class="builder-editor panel world-map-panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1>World Editor</h1>
+                <p>Shape a zone on the grid. Select a room, then click an adjacent empty space to create and connect one.</p>
+              </div>
+              <div class="builder-actions room-tools">
+                <label class="compact-control">
+                  Zone
+                  <select id="worldZoneSelect"></select>
+                </label>
+                <label class="compact-control">
+                  Z
+                  <input id="worldZInput" type="number" value="0" />
+                </label>
+                <button id="newZoneButton" type="button">New Zone</button>
+              </div>
+            </div>
+
+            <div class="world-map-toolbar">
+              <div id="worldMapHint">Load the world to begin shaping zones.</div>
+              <div class="world-map-legend" aria-label="Map legend">
+                <span><i class="legend-room"></i>Room</span>
+                <span><i class="legend-selected"></i>Selected</span>
+                <span><i class="legend-create"></i>Create</span>
+                <span><i class="legend-locked"></i>Locked</span>
+              </div>
+            </div>
+            <div id="worldMapGrid" class="world-map-grid" aria-label="Visual zone map"></div>
+          </section>
+
+          <aside class="builder-validation panel world-inspector">
+            <h1>Selection</h1>
+            <div id="worldSelectionCard" class="world-selection-card">Select a room on the grid.</div>
+            <div class="builder-actions world-selection-actions">
+              <button id="worldEditRoomButton" type="button">Edit Room</button>
+              <button id="worldDuplicateRoomButton" type="button">Duplicate</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-tab-panel="rooms">
+        <div class="builder-layout">
+          <aside class="builder-list panel">
+            <div class="builder-list-header">
+              <h1>Rooms</h1>
+              <div class="builder-actions">
+                <button id="newRoomButton" type="button">New</button>
+                <button id="duplicateRoomButton" type="button">Duplicate</button>
+              </div>
+            </div>
+            <input id="roomFilter" placeholder="Filter rooms" />
+            <div id="roomList" class="room-list"></div>
+          </aside>
+
+          <section class="builder-editor panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1 id="editorTitle">Select a room</h1>
+                <p id="editorMeta"></p>
+              </div>
+              <div class="builder-actions room-tools">
+                <select id="quickRoomDirection" aria-label="Direction for linked room">
+                  <option value="north">North</option>
+                  <option value="east">East</option>
+                  <option value="south">South</option>
+                  <option value="west">West</option>
+                  <option value="up">Up</option>
+                  <option value="down">Down</option>
+                </select>
+                <button id="quickLinkRoomButton" type="button">Link New Room</button>
+                <button id="saveRoomButton" type="button">Save Room</button>
+              </div>
+            </div>
+
+            <form id="roomForm" class="room-form">
+              <label>ID<input id="roomId" required /></label>
+              <label>Name<input id="roomNameInput" required /></label>
+              <label>Zone<select id="zoneId"></select></label>
+              <label class="wide">Description<textarea id="roomDescription" required rows="5"></textarea></label>
+              <label>Tags<input id="roomTags" placeholder="safe, road, checkpoint" /></label>
+              <label>Map Label<input id="mapLabel" /></label>
+              <label>Map Symbol<input id="mapSymbol" maxlength="2" required /></label>
+              <label>Map Color<input id="mapColor" placeholder="#d7b86f" /></label>
+              <label>X<input id="coordX" type="number" required /></label>
+              <label>Y<input id="coordY" type="number" required /></label>
+              <label>Z<input id="coordZ" type="number" required /></label>
+              <div class="placement-grid wide">
+                <fieldset class="placement-panel">
+                  <legend>Room Pickups</legend>
+                  <input id="itemFilter" placeholder="Filter items" />
+                  <div id="itemPicker" class="placement-list"></div>
+                </fieldset>
+                <fieldset class="placement-panel">
+                  <legend>NPCs</legend>
+                  <input id="npcFilter" placeholder="Filter NPCs" />
+                  <div id="npcPicker" class="placement-list"></div>
+                </fieldset>
+              </div>
+              <fieldset class="wide exit-editor">
+                <legend>Exits</legend>
+                <div id="exitGrid" class="exit-grid"></div>
+              </fieldset>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-tab-panel="items">
+        <div class="builder-layout entity-layout">
+          <aside class="builder-list panel">
+            <div class="builder-list-header">
+              <h1>Items</h1>
+              <div class="builder-actions">
+                <button id="newItemButton" type="button">New</button>
+                <button id="duplicateItemButton" type="button">Duplicate</button>
+              </div>
+            </div>
+            <select id="itemSelect" size="14"></select>
+          </aside>
+          <section class="builder-editor panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1>Item Editor</h1>
+                <p>Equipment, consumables, keys, values, and stat bonuses.</p>
+              </div>
+              <button id="saveItemButton" type="button">Save Item</button>
+            </div>
+            <form class="room-form">
+              <label>ID<input id="itemIdInput" /></label>
+              <label>Name<input id="itemNameInput" /></label>
+              <label>Type
+                <select id="itemTypeInput">
+                  <option value="misc">misc</option>
+                  <option value="consumable">consumable</option>
+                  <option value="equipment">equipment</option>
+                  <option value="key">key</option>
+                </select>
+              </label>
+              <label>Value<input id="itemValueInput" type="number" min="0" /></label>
+              <label class="wide">Description<textarea id="itemDescriptionInput" rows="5"></textarea></label>
+              <div class="item-type-panel wide" id="consumableFields">
+                <label>HP Restore<input id="itemHpInput" type="number" min="0" /></label>
+                <label>Charge Restore<input id="itemManaInput" type="number" min="0" /></label>
+              </div>
+              <div class="item-type-panel wide" id="equipmentFields">
+                <label>Equip Slot
+                  <select id="itemSlotInput">
+                    <option value="trinket">trinket</option>
+                    <option value="head">head</option>
+                    <option value="body">body</option>
+                    <option value="feet">feet</option>
+                  </select>
+                </label>
+                <div id="itemStatGrid" class="mini-grid"></div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-tab-panel="npcs">
+        <div class="builder-layout entity-layout">
+          <aside class="builder-list panel">
+            <div class="builder-list-header">
+              <h1>NPCs</h1>
+              <div class="builder-actions">
+                <button id="newNpcButton" type="button">New</button>
+                <button id="duplicateNpcButton" type="button">Duplicate</button>
+              </div>
+            </div>
+            <select id="npcSelect" size="14"></select>
+          </aside>
+          <section class="builder-editor panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1>NPC Editor</h1>
+                <p>Stats, combat rewards, drops, merchant wares, and dialogue.</p>
+              </div>
+              <button id="saveNpcButton" type="button">Save NPC</button>
+            </div>
+            <form class="room-form">
+              <label>ID<input id="npcIdInput" /></label>
+              <label>Name<input id="npcNameInput" /></label>
+              <label>Type<input id="npcSpeciesInput" /></label>
+              <label>Disposition
+                <select id="npcDispositionInput">
+                  <option value="friendly">friendly</option>
+                  <option value="wild">loose</option>
+                  <option value="hostile">hostile</option>
+                </select>
+              </label>
+              <label><span>Auto-engage</span><input id="npcAutoEngageInput" type="checkbox" /></label>
+              <label><span>Stationary</span><input id="npcStationaryInput" type="checkbox" /></label>
+              <label><span>Wanders</span><input id="npcWanderEnabledInput" type="checkbox" /></label>
+              <label>Wander Interval<input id="npcWanderIntervalInput" type="number" min="1" /></label>
+              <label class="wide">Description<textarea id="npcDescriptionInput" rows="4"></textarea></label>
+              <fieldset class="drop-editor wide">
+                <legend>Binder Card</legend>
+                <div class="mini-grid">
+                  <label>Page<input id="npcCardPageInput" placeholder="Duel Page" /></label>
+                  <label>Rarity
+                    <select id="npcCardRarityInput">
+                      <option value="">auto</option>
+                      <option value="common">common</option>
+                      <option value="uncommon">uncommon</option>
+                      <option value="rare">rare</option>
+                      <option value="showcase">showcase</option>
+                    </select>
+                  </label>
+                  <label><span>Variant</span><input id="npcCardVariantInput" type="checkbox" /></label>
+                  <label>Event<input id="npcCardEventInput" placeholder="Saturday Promo" /></label>
+                </div>
+                <label class="wide">Flavor<textarea id="npcCardFlavorInput" rows="2" placeholder="Leave blank to use the first sentence of the NPC description."></textarea></label>
+              </fieldset>
+              <div class="mini-grid wide">
+                <label>HP<input id="npcHpInput" type="number" min="1" /></label>
+                <label>Charge<input id="npcManaInput" type="number" min="0" /></label>
+                <label>XP<input id="npcXpInput" type="number" min="0" /></label>
+                <label>Tickets<input id="npcTicketsInput" type="number" min="0" /></label>
+                <label>Respawn<input id="npcRespawnInput" type="number" min="0" /></label>
+              </div>
+              <div id="npcStatGrid" class="mini-grid wide"></div>
+              <fieldset class="drop-editor wide">
+                <legend>Drops</legend>
+                <div id="npcDropList" class="drop-list"></div>
+                <button id="addNpcDropButton" type="button">Add Drop</button>
+              </fieldset>
+              <fieldset class="drop-editor wide">
+                <legend>Merchant</legend>
+                <label><span>Buys Items</span><input id="npcMerchantBuysInput" type="checkbox" /></label>
+                <div class="mini-grid">
+                  <label>Markup<input id="npcMerchantMarkupInput" type="number" min="0" step="0.05" /></label>
+                  <label>Markdown<input id="npcMerchantMarkdownInput" type="number" min="0" max="1" step="0.05" /></label>
+                </div>
+                <label>Wares<select id="npcMerchantItemsInput" multiple size="6"></select></label>
+              </fieldset>
+              <label>Strike Name<input id="npcAttackNameInput" /></label>
+              <label class="wide">Defeat Message<textarea id="npcDefeatMessageInput" rows="3"></textarea></label>
+              <label class="wide">Greeting Lines<textarea id="npcGreetingInput" rows="4"></textarea></label>
+              <fieldset class="drop-editor wide">
+                <legend>Dialogue Topics</legend>
+                <div id="npcTopicList" class="quest-list"></div>
+                <button id="addNpcTopicButton" type="button">Add Topic</button>
+              </fieldset>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-tab-panel="quests">
+        <div class="builder-layout entity-layout">
+          <aside class="builder-list panel">
+            <div class="builder-list-header">
+              <h1>Quests</h1>
+              <div class="builder-actions">
+                <button id="newQuestButton" type="button">New</button>
+                <button id="duplicateQuestButton" type="button">Duplicate</button>
+              </div>
+            </div>
+            <select id="questSelect" size="14"></select>
+          </aside>
+          <section class="builder-editor panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1>Quest Editor</h1>
+                <p>Start trigger, ordered steps, and rewards.</p>
+              </div>
+              <button id="saveQuestButton" type="button">Save Quest</button>
+            </div>
+            <form class="room-form">
+              <label>ID<input id="questIdInput" /></label>
+              <label>Name<input id="questNameInput" /></label>
+              <label>Tags<input id="questTagsInput" placeholder="starter, zone, side" /></label>
+              <label class="wide">Summary<input id="questSummaryInput" /></label>
+              <label class="wide">Description<textarea id="questDescriptionInput" rows="4"></textarea></label>
+              <fieldset class="drop-editor wide">
+                <legend>Prerequisites</legend>
+                <div id="questPrereqList" class="quest-list"></div>
+                <button id="addQuestPrereqButton" type="button">Add Prerequisite</button>
+              </fieldset>
+              <fieldset class="drop-editor wide">
+                <legend>Starts On</legend>
+                <div id="questStartTrigger" class="trigger-grid"></div>
+                <label class="wide">On Start Script JSON<textarea id="questStartScriptsInput" rows="5" placeholder='[{"type":"message","lines":["The moonlight trembles."]}]'></textarea></label>
+              </fieldset>
+              <fieldset class="drop-editor wide">
+                <legend>Steps</legend>
+                <div id="questStepList" class="quest-list"></div>
+                <button id="addQuestStepButton" type="button">Add Step</button>
+              </fieldset>
+              <fieldset class="drop-editor wide">
+                <legend>Rewards</legend>
+                <div id="questRewardList" class="quest-list"></div>
+                <button id="addQuestRewardButton" type="button">Add Reward</button>
+              </fieldset>
+              <fieldset class="drop-editor wide">
+                <legend>Completion Script</legend>
+                <textarea id="questCompleteScriptsInput" rows="5" placeholder='[{"type":"setFlag","flag":"moonfallen-rumors-heard"}]'></textarea>
+              </fieldset>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-tab-panel="config">
+        <div class="builder-layout entity-layout">
+          <aside class="builder-list panel">
+            <div class="builder-list-header">
+              <h1>Config</h1>
+              <button id="saveConfigButton" type="button">Save Config</button>
+            </div>
+            <div id="configList" class="room-list"></div>
+          </aside>
+          <section class="builder-editor panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1 id="configEditorTitle">Character Config</h1>
+                <p>Leveling, stats, internal origin growth, classes, and skills.</p>
+              </div>
+            </div>
+            <div id="configEditor" class="config-editor"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-tab-panel="characters">
+        <div class="builder-layout entity-layout">
+          <aside class="builder-list panel">
+            <div class="builder-list-header">
+              <h1>Characters</h1>
+              <button id="refreshCharactersButton" type="button">Refresh</button>
+            </div>
+            <div id="characterList" class="character-list"></div>
+          </aside>
+          <section class="builder-editor panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1 id="characterEditorTitle">Select a character</h1>
+                <p id="characterEditorMeta">View and adjust testing state.</p>
+              </div>
+              <button id="saveCharacterButton" type="button" disabled>Save Character</button>
+            </div>
+            <form class="room-form">
+              <label>Name<input id="characterNameInput" disabled /></label>
+              <label>Origin<input id="characterSpeciesInput" disabled /></label>
+              <label>Class<input id="characterJobInput" disabled /></label>
+              <label>Room<select id="characterRoomInput"></select></label>
+              <label>Level<input id="characterLevelInput" type="number" min="1" /></label>
+              <label>XP<input id="characterXpInput" type="number" min="0" /></label>
+              <label>Tickets<input id="characterTicketsInput" type="number" min="0" /></label>
+              <label>HP<input id="characterHpInput" type="number" min="0" /></label>
+              <label>Charge<input id="characterManaInput" type="number" min="0" /></label>
+              <label>Checkpoint<select id="characterSanctuaryInput"></select></label>
+              <label class="wide">Titles<input id="characterTitlesInput" placeholder="comma-separated" /></label>
+              <label class="wide">Flags<input id="characterFlagsInput" placeholder="comma-separated" /></label>
+              <label class="wide">Inventory<input id="characterInventoryInput" placeholder="comma-separated item ids" /></label>
+              <fieldset class="drop-editor wide">
+                <legend>Quest Debug</legend>
+                <div class="debug-grid">
+                  <label>Room<select id="debugRoomSelect"></select></label>
+                  <div class="builder-actions">
+                    <button id="debugMoveButton" type="button" disabled>Move</button>
+                    <button id="debugSanctuaryButton" type="button" disabled>Set Checkpoint</button>
+                    <button id="debugHealButton" type="button" disabled>Heal</button>
+                  </div>
+                  <label>Item<select id="debugItemSelect"></select></label>
+                  <div class="builder-actions">
+                    <button id="debugAddItemButton" type="button" disabled>Add Item</button>
+                  </div>
+                  <label>Flag<input id="debugFlagInput" placeholder="flag id" /></label>
+                  <div class="builder-actions">
+                    <button id="debugGrantFlagButton" type="button" disabled>Grant Flag</button>
+                    <button id="debugRemoveFlagButton" type="button" disabled>Remove Flag</button>
+                  </div>
+                  <label>Quest<select id="debugQuestSelect"></select></label>
+                  <div class="builder-actions">
+                    <button id="debugCompleteQuestButton" type="button" disabled>Complete Quest</button>
+                    <button id="debugResetQuestButton" type="button" disabled>Reset Quest</button>
+                  </div>
+                </div>
+                <div id="debugQuestState" class="debug-state">Select a character to inspect quest state.</div>
+              </fieldset>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-tab-panel="accounts">
+        <div class="builder-layout entity-layout">
+          <aside class="builder-list panel">
+            <div class="builder-list-header">
+              <h1>Accounts</h1>
+              <button id="refreshAccountsButton" type="button">Refresh</button>
+            </div>
+            <div id="accountList" class="character-list"></div>
+          </aside>
+          <section class="builder-editor panel">
+            <div class="builder-editor-header">
+              <div>
+                <h1 id="accountEditorTitle">Select an account</h1>
+                <p id="accountEditorMeta">Reset passwords without exposing existing credentials.</p>
+              </div>
+            </div>
+            <form class="room-form">
+              <label>Account<input id="accountUsernameInput" disabled /></label>
+              <label>New Password<input id="accountPasswordInput" type="password" autocomplete="new-password" minlength="8" placeholder="8+ characters" /></label>
+              <label>Confirm Password<input id="accountPasswordConfirmInput" type="password" autocomplete="new-password" minlength="8" /></label>
+              <div class="builder-actions wide">
+                <button id="resetAccountPasswordButton" type="button" disabled>Reset Password</button>
+              </div>
+              <div class="debug-state wide" id="accountCharactersState">Select an account to see its characters.</div>
+            </form>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="/admin.js" type="module"></script>
+  </body>
+</html>
