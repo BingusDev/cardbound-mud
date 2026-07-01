@@ -2219,23 +2219,23 @@ function renderCombatConfig() {
     <form class="room-form">
       <div class="mini-grid">
         <label>Base Max HP<input data-config-combat="baseMaxHp" type="number" min="1" value="${combat.baseMaxHp ?? 18}" /></label>
-        <label>HP per Heart<input data-config-combat="heartMaxHpBonus" type="number" min="0" step="0.1" value="${combat.heartMaxHpBonus ?? 2}" /></label>
-        <label>NPC HP per Heart<input data-config-combat="npcHeartMaxHpBonus" type="number" min="0" step="0.1" value="${combat.npcHeartMaxHpBonus ?? 0.5}" /></label>
+        <label>HP per Ramp<input data-config-combat="heartMaxHpBonus" type="number" min="0" step="0.1" value="${combat.heartMaxHpBonus ?? 2}" /></label>
+        <label>NPC HP per Ramp<input data-config-combat="npcHeartMaxHpBonus" type="number" min="0" step="0.1" value="${combat.npcHeartMaxHpBonus ?? 0.5}" /></label>
         <label>Base Max Charge<input data-config-combat="baseMaxMana" type="number" min="0" value="${combat.baseMaxMana ?? 10}" /></label>
-        <label>Charge per Tactics<input data-config-combat="witMaxManaBonus" type="number" min="0" step="0.1" value="${combat.witMaxManaBonus ?? 1}" /></label>
+        <label>Charge per Combo<input data-config-combat="witMaxManaBonus" type="number" min="0" step="0.1" value="${combat.witMaxManaBonus ?? 1}" /></label>
         <label>Base Strike Cooldown MS<input data-config-combat="baseAttackCooldownMs" type="number" min="1" value="${combat.baseAttackCooldownMs ?? 4200}" /></label>
-        <label>Grace Cooldown Reduction MS<input data-config-combat="graceCooldownReductionMs" type="number" min="0" value="${combat.graceCooldownReductionMs ?? 180}" /></label>
+        <label>Tempo Cooldown Reduction MS<input data-config-combat="graceCooldownReductionMs" type="number" min="0" value="${combat.graceCooldownReductionMs ?? 180}" /></label>
         <label>Minimum Strike Cooldown MS<input data-config-combat="minimumAttackCooldownMs" type="number" min="1" value="${combat.minimumAttackCooldownMs ?? 1400}" /></label>
         <label>Base Damage Crit Chance<input data-config-combat="baseDamageCritChance" type="number" min="0" max="1" step="0.01" value="${combat.baseDamageCritChance ?? 0.03}" /></label>
-        <label>Spark Damage Crit Bonus<input data-config-combat="sparkDamageCritChanceBonus" type="number" min="0" max="1" step="0.01" value="${combat.sparkDamageCritChanceBonus ?? 0.01}" /></label>
+        <label>Control Damage Crit Bonus<input data-config-combat="sparkDamageCritChanceBonus" type="number" min="0" max="1" step="0.01" value="${combat.sparkDamageCritChanceBonus ?? 0.01}" /></label>
         <label>Max Damage Crit Chance<input data-config-combat="maximumDamageCritChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumDamageCritChance ?? 0.35}" /></label>
         <label>Damage Crit Multiplier<input data-config-combat="damageCritMultiplier" type="number" min="1" step="0.1" value="${combat.damageCritMultiplier ?? 1.5}" /></label>
         <label>Base Heal Crit Chance<input data-config-combat="baseHealCritChance" type="number" min="0" max="1" step="0.01" value="${combat.baseHealCritChance ?? 0.03}" /></label>
-        <label>Bond Heal Crit Bonus<input data-config-combat="bondHealCritChanceBonus" type="number" min="0" max="1" step="0.01" value="${combat.bondHealCritChanceBonus ?? 0.01}" /></label>
+        <label>Synergy Heal Crit Bonus<input data-config-combat="bondHealCritChanceBonus" type="number" min="0" max="1" step="0.01" value="${combat.bondHealCritChanceBonus ?? 0.01}" /></label>
         <label>Max Heal Crit Chance<input data-config-combat="maximumHealCritChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumHealCritChance ?? 0.35}" /></label>
         <label>Heal Crit Multiplier<input data-config-combat="healCritMultiplier" type="number" min="1" step="0.1" value="${combat.healCritMultiplier ?? 1.5}" /></label>
         <label>Base Break Away Chance<input data-config-combat="baseFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.baseFleeChance ?? 0.35}" /></label>
-        <label>Grace Break Away Bonus<input data-config-combat="graceFleeBonus" type="number" min="0" max="1" step="0.001" value="${combat.graceFleeBonus ?? 0.035}" /></label>
+        <label>Tempo Break Away Bonus<input data-config-combat="graceFleeBonus" type="number" min="0" max="1" step="0.001" value="${combat.graceFleeBonus ?? 0.035}" /></label>
         <label>Maximum Break Away Chance<input data-config-combat="maximumFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumFleeChance ?? 0.85}" /></label>
         <label>Death Respawn Seconds<input data-config-combat="deathRespawnSeconds" type="number" min="1" value="${combat.deathRespawnSeconds ?? 60}" /></label>
         <label>Out of Combat Recovery HP<input data-config-combat="outOfCombatRecoveryHp" type="number" min="0" value="${combat.outOfCombatRecoveryHp ?? 1}" /></label>

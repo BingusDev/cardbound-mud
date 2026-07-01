@@ -56,14 +56,14 @@
   "stats": [
     {
       "id": "heart",
-      "name": "Grit",
-      "description": "Nerve, optimism under pressure, and the ability to keep moving when a hologram dragon lands on a bus.",
+      "name": "Ramp",
+      "description": "Build-up, durability, and the ability to keep your engine moving when the city throws a boss monster at you.",
       "base": 8
     },
     {
       "id": "wit",
-      "name": "Tactics",
-      "description": "Rules knowledge, fast reads, combo planning, and spotting exactly which glowing card is about to become a problem.",
+      "name": "Combo",
+      "description": "Sequencing, rules knowledge, fast reads, and turning two small plays into one ridiculous answer.",
       "base": 8
     },
     {
@@ -74,14 +74,14 @@
     },
     {
       "id": "might",
-      "name": "Power",
-      "description": "Raw force, stamina, and the courage to swing a folding chair at a cardboard kaiju.",
+      "name": "Aggro",
+      "description": "Pressure, raw force, stamina, and the willingness to solve a problem before it stabilizes.",
       "base": 8
     },
     {
       "id": "spark",
-      "name": "Charge",
-      "description": "Card energy, flashy effects, burst damage, and how dramatically the air crackles when you draw.",
+      "name": "Control",
+      "description": "Card energy, flashy effects, disruption, burst damage, and making the field behave on your terms.",
       "base": 8
     },
     {
