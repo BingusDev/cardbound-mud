@@ -49,12 +49,12 @@ test("skill damage bands fit current solo combat", () => {
 
 test("support and defensive classes trade damage for mitigation or healing", () => {
   const config = CharacterConfig.load();
-  const architect = config.jobDefinition("duel-architect");
-  const trainer = config.jobDefinition("creature-trainer");
-  const trainerStats = leveledStats(config, config.defaultSpeciesId, "creature-trainer", 5);
+  const duelist = config.jobDefinition("duelist");
+  const trainer = config.jobDefinition("trainer");
+  const trainerStats = leveledStats(config, config.defaultSpeciesId, "trainer", 5);
 
-  assert.ok(architect.skills.some((skill) => totalFlatGuard(skill.effects ?? []) >= 6), "Duel Architect should have meaningful guard skills");
-  assert.ok(trainer.skills.some((skill) => totalEffect(skill.effects ?? [], "heal", trainerStats) >= 7), "Creature Trainer should have meaningful healing skills");
+  assert.ok(duelist.skills.some((skill) => totalFlatGuard(skill.effects ?? []) >= 6), "Duelist should have meaningful guard skills");
+  assert.ok(trainer.skills.some((skill) => totalEffect(skill.effects ?? [], "heal", trainerStats) >= 7), "Trainer should have meaningful healing skills");
 });
 
 function leveledStats(config: CharacterConfig, species: string, job: string, level: number): PlayerStats {

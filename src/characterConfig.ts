@@ -132,7 +132,7 @@ export class CharacterConfig {
     this.stats = file.stats;
     this.jobs = file.jobs;
     this.species = file.species;
-    this.defaultJobId = this.jobs[0]?.id ?? "duel-architect";
+    this.defaultJobId = this.jobs[0]?.id ?? "duelist";
     this.defaultSpeciesId = this.species[0]?.id ?? "cardbound";
     this.validate();
   }

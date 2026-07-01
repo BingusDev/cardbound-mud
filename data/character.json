@@ -93,9 +93,9 @@
   ],
   "jobs": [
     {
-      "id": "duel-architect",
-      "name": "Duel Architect",
-      "description": "A combo duelist who turns street junk, trap sleeves, and dramatic declarations into layered plays.",
+      "id": "duelist",
+      "name": "Duelist",
+      "description": "A dramatic card battler who wins through traps, tempo, and loudly declared finishing moves.",
       "primaryStats": [
         "wit",
         "spark"
@@ -242,8 +242,8 @@
       ]
     },
     {
-      "id": "creature-trainer",
-      "name": "Creature Trainer",
+      "id": "trainer",
+      "name": "Trainer",
       "description": "A companion-focused battler who calms panicked monsters, calls assists, and keeps the team upright.",
       "primaryStats": [
         "bond",
@@ -428,9 +428,9 @@
       ]
     },
     {
-      "id": "mana-binder",
-      "name": "Mana Binder",
-      "description": "A color-slinging spellcaster who stabilizes weird energy leaks by making them everybody else's problem.",
+      "id": "planeswalker",
+      "name": "Planeswalker",
+      "description": "A color-slinging spellcaster who stabilizes weird mana leaks by making them everybody else's problem.",
       "primaryStats": [
         "spark",
         "wit"
@@ -565,8 +565,8 @@
       ]
     },
     {
-      "id": "frame-pilot",
-      "name": "Frame Pilot",
+      "id": "pilot",
+      "name": "Pilot",
       "description": "A model-kit ace who pilots snap-together battle frames and solves problems with launch angles.",
       "primaryStats": [
         "might",
@@ -708,8 +708,8 @@
       ]
     },
     {
-      "id": "voyage-captain",
-      "name": "Voyage Captain",
+      "id": "captain",
+      "name": "Captain",
       "description": "A rubber-limbed, treasure-map brawler whose crew logic is simple: nobody gets left behind.",
       "primaryStats": [
         "heart",
@@ -857,9 +857,9 @@
       ]
     },
     {
-      "id": "crossover-tactician",
-      "name": "Crossover Tactician",
-      "description": "A multi-series strategist who borrows the right trick from the wrong rulebook at the perfect time.",
+      "id": "arena-fighter",
+      "name": "Arena Fighter",
+      "description": "A multi-series battler who borrows the right trick from the wrong rulebook at the perfect time.",
       "primaryStats": [
         "wit",
         "bond"

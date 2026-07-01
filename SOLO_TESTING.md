@@ -8,12 +8,12 @@ Use this for a quick solo pass after world or balance edits.
 - Create a character.
 - Confirm the create screen offers classes only.
 - Try at least one of:
-  - Duel Architect
-  - Creature Trainer
-  - Mana Binder
-  - Frame Pilot
-  - Voyage Captain
-  - Crossover Tactician
+  - Duelist
+  - Trainer
+  - Planeswalker
+  - Pilot
+  - Captain
+  - Arena Fighter
 
 ## Starter Flow
 
@@ -34,7 +34,7 @@ Expected:
 - `Starter Deck Panic` starts from Marshal Echo.
 - Taking `sleeve key` is blocked before the quest starts.
 - The sleeve turnstile opens after the quest starts and you use the key from `Mall Gate Turnstiles`.
-- Player labels show class only, for example `Duel Architect`.
+- Player labels show class only, for example `Duelist`.
 
 ## Main Quest Chain
 

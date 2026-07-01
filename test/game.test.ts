@@ -192,7 +192,7 @@ test("players can set descriptions and inspect each other", (t) => {
     {
       name: other.name,
       speciesName: "Cardbound",
-      jobName: "Duel Architect",
+      jobName: "Duelist",
       titles: [],
       description: other.description
     }
@@ -201,7 +201,7 @@ test("players can set descriptions and inspect each other", (t) => {
     {
       name: other.name,
       speciesName: "Cardbound",
-      jobName: "Duel Architect",
+      jobName: "Duelist",
       titles: [],
       description: other.description
     }
@@ -220,13 +220,13 @@ test("room listings include inspectable player labels", (t) => {
     {
       name: "Road Friend",
       speciesName: "Cardbound",
-      jobName: "Duel Architect",
+      jobName: "Duelist",
       titles: ["Sleeve Runner"],
       description: "A traveler."
     }
   ]);
 
-  assert.match(look.lines.join("\n"), /Also here: Road Friend \(Duel Architect - Sleeve Runner\)/);
+  assert.match(look.lines.join("\n"), /Also here: Road Friend \(Duelist - Sleeve Runner\)/);
 });
 
 test("inventory full includes item descriptions", (t) => {
