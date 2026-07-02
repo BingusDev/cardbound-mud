@@ -125,7 +125,7 @@ commandInput.addEventListener("keydown", (event) => {
 
 attackAction.addEventListener("click", () => {
   if (currentState?.combat?.isDead) {
-    appendLog(["You are still inside a rescue sleeve."]);
+    appendLog(["You are still inside the Life Point safety field."]);
     return;
   }
   if (!currentState?.combat?.inCombat) {
@@ -141,7 +141,7 @@ fleeAction.addEventListener("click", () => {
 
 restAction.addEventListener("click", () => {
   if (currentState?.combat?.isDead) {
-    appendLog(["You are still inside a rescue sleeve."]);
+    appendLog(["You are still inside the Life Point safety field."]);
     return;
   }
   if (currentState?.combat?.inCombat) {
@@ -351,7 +351,7 @@ function logLineClass(line) {
 }
 
 function isCombatLine(line) {
-  return /combat|engage|fighting|hits you|strike .* for \d+ damage|clips you|critical|falls|defeated|rescue sleeve catches you/i.test(line);
+  return /combat|duel|challenge|engage|fighting|hits you|attack .* for \d+ damage|clips you|critical|falls|defeated|Life Point safety field catches you/i.test(line);
 }
 
 function signalCombatStart() {
@@ -613,7 +613,7 @@ function renderSkills(skills) {
     button.textContent = skill?.name ?? `Slot ${index + 1}`;
     button.dataset.manaCost = String(skill?.manaCost ?? 0);
     button.dataset.implemented = skill ? "true" : "false";
-    button.title = skill ? `${skill.description} Charge: ${skill.manaCost}. Scales with ${statName(skill.scalesWith)}.` : "Choose a skill for this action slot.";
+    button.title = skill ? `${skill.description} Energy: ${skill.manaCost}. Scales with ${statName(skill.scalesWith)}.` : "Choose a skill for this action slot.";
     button.addEventListener("click", () => {
       if (!skill) {
         slotEditor.hidden = false;
@@ -633,7 +633,7 @@ function renderSlotEditor(skills) {
     select.innerHTML = "";
     select.append(new Option("Empty", ""));
     for (const skill of skills) {
-      select.append(new Option(`${skill.name} (${skill.manaCost ?? 0} charge)`, skill.id));
+      select.append(new Option(`${skill.name} (${skill.manaCost ?? 0} Energy)`, skill.id));
     }
     select.value = skills.some((skill) => skill.id === currentValue) ? currentValue : "";
   });
@@ -698,13 +698,13 @@ function updateActionPanel() {
   attackAction.classList.toggle("ready", ready);
   attackAction.classList.toggle("cooling", combat.inCombat && !ready);
   attackAction.classList.toggle("locked", !combat.inCombat || combat.isDead);
-  attackAction.textContent = combat.inCombat && !ready ? `Strike ${formatRemaining(remaining)}` : "Strike";
+  attackAction.textContent = combat.inCombat && !ready ? `Attack ${formatRemaining(remaining)}` : "Attack";
   attackAction.title = combat.isDead
-    ? "You are waiting for the rescue sleeve to return you."
+    ? "You are waiting for the Life Point safety field to return you."
     : !combat.inCombat
     ? "Type strike <npc> to choose a target."
     : ready
-      ? "Strike your current target."
+      ? "Attack your current target."
       : "Still getting ready. Click or type strike to try anyway.";
 
   fleeAction.disabled = !combat.inCombat || combat.isDead;
@@ -717,9 +717,9 @@ function updateActionPanel() {
   restAction.title = combat.inCombat
     ? "You cannot recover while fighting."
     : combat.isDead
-      ? "You are waiting for the rescue sleeve to return you."
+    ? "You are waiting for the Life Point safety field to return you."
       : needsRest
-        ? "Recover HP and charge over time."
+        ? "Recover HP and Energy over time."
         : "You are already fully recovered.";
 
   document.querySelectorAll(".skill-button").forEach((button) => {
@@ -848,14 +848,14 @@ function itemMeta(item, slot) {
   const parts = [];
   if (slot) parts.push(`Equipped: ${slot}`);
   parts.push(item.type);
-  if (Number.isFinite(item.value)) parts.push(`${item.value} tickets`);
+  if (Number.isFinite(item.value)) parts.push(`${item.value} Prize Tickets`);
   const bonuses = Object.entries(item.equipment?.statBonuses ?? {})
     .filter(([, value]) => value)
     .map(([statId, value]) => `${value > 0 ? "+" : ""}${value} ${statName(statId)}`);
   if (bonuses.length) parts.push(bonuses.join(", "));
   const consumable = [];
   if (item.consumable?.hp) consumable.push(`${item.consumable.hp} HP`);
-  if (item.consumable?.mana) consumable.push(`${item.consumable.mana} charge`);
+  if (item.consumable?.mana) consumable.push(`${item.consumable.mana} Energy`);
   if (consumable.length) parts.push(`Restores ${consumable.join(", ")}`);
   return parts.join(" | ");
 }
@@ -866,7 +866,7 @@ function skillProgressItem(skill, locked) {
   const label = document.createElement("span");
   const meta = document.createElement("small");
   label.textContent = skill.name;
-  meta.textContent = locked ? `Unlocks at level ${skill.level}` : `${skill.manaCost ?? 0} charge | ${statName(skill.scalesWith)}`;
+  meta.textContent = locked ? `Unlocks at level ${skill.level}` : `${skill.manaCost ?? 0} Energy | ${statName(skill.scalesWith)}`;
   item.title = skill.description;
   item.append(label, meta);
   return item;
@@ -976,7 +976,7 @@ function questCard(quest) {
 
 function formatQuestReward(reward) {
   if (reward.type === "xp") return `${scaledQuestXp(reward.amount ?? 0)} XP`;
-  if (reward.type === "tickets") return `${reward.amount ?? 0} tickets`;
+  if (reward.type === "tickets") return `${reward.amount ?? 0} Prize Tickets`;
   if (reward.type === "item") return reward.label || reward.itemId;
   if (reward.type === "title") return `Title: ${reward.label}`;
   if (reward.type === "flag") return "";

@@ -69,7 +69,7 @@
     {
       "id": "grace",
       "name": "Tempo",
-      "description": "Initiative, timing, footwork, and acting before the monster-of-the-minute gets a second phase.",
+      "description": "Initiative, timing, footwork, and acting before the boss monster gets a second phase.",
       "base": 8
     },
     {
@@ -292,7 +292,7 @@
         {
           "id": "snack-break",
           "name": "Potion Toss",
-          "description": "Use a Potion mid-fight, because apparently the bag menu still works in Binder Bay.",
+          "description": "Use a Potion mid-fight, because apparently the bag menu still works in Cardbound City.",
           "level": 2,
           "manaCost": 4,
           "cooldownSeconds": 4.6,
@@ -567,7 +567,7 @@
     {
       "id": "pilot",
       "name": "Pilot",
-      "description": "A Gundam Pilot who treats loose card monsters like mobile suits: lock on, draw the beam saber, and launch from the catapult.",
+      "description": "A Gundam Pilot who treats runaway card monsters like mobile suits: lock on, draw the beam saber, and launch from the catapult.",
       "primaryStats": [
         "might",
         "grace"
@@ -799,7 +799,7 @@
         {
           "id": "treasure-rush",
           "name": "Gear Second",
-          "description": "Kick into Gear Second, charge the prize, and shrug off the counterattack.",
+          "description": "Kick into Gear Second, rush the prize, and shrug off the counterattack.",
           "level": 4,
           "manaCost": 8,
           "cooldownSeconds": 5.7,

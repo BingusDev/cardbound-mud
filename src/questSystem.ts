@@ -135,7 +135,7 @@ export class QuestSystem {
       if (reward.type === "tickets") {
         const amount = reward.amount ?? 0;
         player.tickets += amount;
-        lines.push(`Reward: ${amount} tickets.`);
+        lines.push(`Reward: ${amount} Prize Tickets.`);
       }
 
       if (reward.type === "title" && !player.titles.includes(reward.label)) {
@@ -187,7 +187,7 @@ export class QuestSystem {
 
   private rewardLabel(reward: QuestDefinition["rewards"][number]) {
     if (reward.type === "xp") return `${this.characterConfig.scaleXpReward(reward.amount ?? 0, "quest")} XP`;
-    if (reward.type === "tickets") return `${reward.amount ?? 0} tickets`;
+    if (reward.type === "tickets") return `${reward.amount ?? 0} Prize Tickets`;
     if (reward.type === "title") return `Title: ${reward.label}`;
     if (reward.type === "flag") return "";
     return reward.label;

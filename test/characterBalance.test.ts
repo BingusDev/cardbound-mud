@@ -11,14 +11,14 @@ test("each job has a clean level 1-5 skill curve", () => {
     for (const skill of job.skills) {
       const effects = skill.effects ?? (skill.effect ? [skill.effect] : []);
       assert.ok(effects.length > 0, `${job.name} ${skill.name} should have an implemented effect`);
-      assert.ok(skill.manaCost > 0, `${job.name} ${skill.name} should cost charge`);
+      assert.ok(skill.manaCost > 0, `${job.name} ${skill.name} should cost Energy`);
       assert.ok(skill.cooldownSeconds >= 2.5, `${job.name} ${skill.name} cooldown should not be spam-fast`);
       assert.ok(skill.cooldownSeconds <= 7, `${job.name} ${skill.name} cooldown should stay responsive`);
     }
   }
 });
 
-test("level 1 skills are usable several times from a fresh charge pool", () => {
+test("level 1 skills are usable several times from a fresh Energy pool", () => {
   const config = CharacterConfig.load();
 
   for (const job of config.jobs) {

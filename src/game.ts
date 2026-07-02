@@ -64,39 +64,39 @@ interface BinderCardInfo {
 }
 
 const binderMilestones: BinderMilestone[] = [
-  { count: 1, name: "First Sleeve", description: "+1 max charge", bonus: { maxHp: 0, maxMana: 1 } },
-  { count: 3, name: "Page Starter", description: "+1 max HP", bonus: { maxHp: 1, maxMana: 0 } },
-  { count: 6, name: "Combo Sheet", description: "+1 max charge", bonus: { maxHp: 0, maxMana: 1 } },
-  { count: 10, name: "City Binder", description: "+2 max HP", bonus: { maxHp: 2, maxMana: 0 } },
-  { count: 13, name: "Full Set Fever", description: "+1 max HP and +1 max charge", bonus: { maxHp: 1, maxMana: 1 } }
+  { count: 1, name: "First Pull", description: "+1 max Energy", bonus: { maxHp: 0, maxMana: 1 } },
+  { count: 3, name: "Starter Deck", description: "+1 max HP", bonus: { maxHp: 1, maxMana: 0 } },
+  { count: 6, name: "Side Deck Tech", description: "+1 max Energy", bonus: { maxHp: 0, maxMana: 1 } },
+  { count: 10, name: "Master Set", description: "+2 max HP", bonus: { maxHp: 2, maxMana: 0 } },
+  { count: 13, name: "Secret Rare Chase", description: "+1 max HP and +1 max Energy", bonus: { maxHp: 1, maxMana: 1 } }
 ];
 
 const binderPageOrder = [
-  "Duel Page",
-  "Pocket Page",
-  "Mana Page",
-  "Frame Page",
-  "Voyage Page",
+  "Duel Monsters Page",
+  "Pokemon Page",
+  "Magic Page",
+  "Gundam Page",
+  "One Piece Page",
   "Prize Page",
   "Arcade Page",
-  "Crossover Page",
+  "Union Arena Page",
   "Event Page",
   "Finale Page",
-  "Binder Bay Page"
+  "Cardbound City Page"
 ];
 
 const binderPageTitles: Record<string, string> = {
-  "Duel Page": "Duel Page Ace",
-  "Pocket Page": "Pocket Page Pal",
-  "Mana Page": "Mana Page Scholar",
-  "Frame Page": "Frame Page Mechanic",
-  "Voyage Page": "Voyage Page Captain",
-  "Prize Page": "Prize Page Clipper",
+  "Duel Monsters Page": "Duel Monsters Ace",
+  "Pokemon Page": "Pokemon Ranger Pal",
+  "Magic Page": "Five-Color Planeswalker",
+  "Gundam Page": "White Base Mechanic",
+  "One Piece Page": "Straw Hat Captain",
+  "Prize Page": "Prize Ticket Clipper",
   "Arcade Page": "Arcade Page Legend",
-  "Crossover Page": "Crossover Page Wrangler",
-  "Event Page": "Event Page Hunter",
-  "Finale Page": "Finale Page Finisher",
-  "Binder Bay Page": "Binder Bay Archivist"
+  "Union Arena Page": "Union Arena Wrangler",
+  "Event Page": "Secret Rare Hunter",
+  "Finale Page": "Final Trigger Finisher",
+  "Cardbound City Page": "Cardbound Archivist"
 };
 
 export class Game {
@@ -138,7 +138,7 @@ export class Game {
     if (deathLines.length) return { lines: deathLines };
 
     if (this.combat.isDead(player)) {
-      return { lines: [`You are inside a rescue sleeve between scenes. You will return in ${formatSeconds((player.deadUntil ?? Date.now()) - Date.now())}.`] };
+      return { lines: [`You are inside the Life Point safety field between scenes. You will return in ${formatSeconds((player.deadUntil ?? Date.now()) - Date.now())}.`] };
     }
 
     if (!verb) return { lines: ["Type a command first."] };
@@ -151,7 +151,7 @@ export class Game {
     });
 
     if (verb in directionAliases || verb === "go") {
-      if (this.combat.isInCombat(player)) return respond({ lines: ["You are in combat. Use break away if you want to disengage."] });
+      if (this.combat.isInCombat(player)) return respond({ lines: ["You are in a duel. Use run if you want to disengage."] });
       const direction = verb === "go" ? directionAliases[arg] : directionAliases[verb];
       if (!direction) return respond({ lines: ["Go where? Try north, east, south, or west."] });
       const exit = this.world.resolveExit(player.roomId, direction);
@@ -274,7 +274,7 @@ export class Game {
           "Commands: look, look <npc|item|player>, north/east/south/west, go <direction>, say <message>, /me <action>, me <action>, inventory, inventory full, take <item>, drop <item>, use <item>, equip <item>, unequip <slot>, shop, buy <item>, sell <item>, talk <npc>, ask <npc> about <topic>, help.",
           "Character: profile, score, binder/cards, describe me <description>, who.",
           "Quests: quests, quest <name>.",
-          "Combat: strike/attack <npc>, break/flee, combat, recover/rest.",
+          "Combat: attack/duel <npc>, run/flee, combat, recover/rest.",
           "Doors: open <direction|door>, unlock <direction|door>.",
           player.isAdmin ? "Admin: your account can use the Cardbound Builder at /admin.html." : ""
         ].filter(Boolean)
@@ -579,7 +579,7 @@ export class Game {
     if (healed <= 0 && restored <= 0) return [`You do not need ${item.name} right now.`];
     player.inventory = removeOne(player.inventory, item.id);
     this.store.savePlayer(player);
-    return [`You use ${item.name}.`, healed ? `Recovered ${healed} HP.` : "", restored ? `Recovered ${restored} charge.` : ""].filter(Boolean);
+    return [`You use ${item.name}.`, healed ? `Recovered ${healed} HP.` : "", restored ? `Recovered ${restored} Energy.` : ""].filter(Boolean);
   }
 
   private useKeyOnNearbyDoor(player: PlayerRecord, item: ItemDefinition) {
@@ -656,29 +656,29 @@ export class Game {
     if (!wares.length) return [`${merchantMatch.npc.name} has no wares for sale right now.`];
     return [
       `${merchantMatch.npc.name}'s wares:`,
-      ...wares.map((item) => `${item.name} - ${this.buyPrice(item, merchantMatch.merchant)} tickets. ${item.description}`),
+      ...wares.map((item) => `${item.name} - ${this.buyPrice(item, merchantMatch.merchant)} Prize Tickets. ${item.description}`),
       merchantMatch.merchant.buys ? `They will buy carried items for about ${Math.round(merchantMatch.merchant.markdown * 100)}% value.` : ""
     ].filter(Boolean);
   }
 
   private buy(player: PlayerRecord, query: string) {
     const { itemQuery, merchantQuery } = splitTradeQuery(query, "from");
-    if (!itemQuery) return ["Buy what? Try: buy foil snack."];
+    if (!itemQuery) return ["Buy what? Try: buy Potion snack cake."];
     const merchantMatch = this.findMerchant(player.roomId, merchantQuery);
     if (!merchantMatch) return ["No merchant here is selling that."];
     const item = merchantMatch.merchant.items.map((itemId) => this.world.items.get(itemId)).find((candidate) => candidate && matches(candidate, itemQuery));
     if (!item) return [`${merchantMatch.npc.name} is not selling that.`];
     const price = this.buyPrice(item, merchantMatch.merchant);
-    if (player.tickets < price) return [`${item.name} costs ${price} tickets. You have ${player.tickets}.`];
+    if (player.tickets < price) return [`${item.name} costs ${price} Prize Tickets. You have ${player.tickets}.`];
     player.tickets -= price;
     player.inventory.push(item.id);
     this.store.savePlayer(player);
-    return [`You buy ${item.name} from ${merchantMatch.npc.name} for ${price} tickets.`];
+    return [`You buy ${item.name} from ${merchantMatch.npc.name} for ${price} Prize Tickets.`];
   }
 
   private sell(player: PlayerRecord, query: string) {
     const { itemQuery, merchantQuery } = splitTradeQuery(query, "to");
-    if (!itemQuery) return ["Sell what? Try: sell foil snack."];
+    if (!itemQuery) return ["Sell what? Try: sell Potion snack cake."];
     const merchantMatch = this.findMerchant(player.roomId, merchantQuery);
     if (!merchantMatch) return ["No merchant here is buying goods."];
     if (!merchantMatch.merchant.buys) return [`${merchantMatch.npc.name} is not buying goods right now.`];
@@ -691,7 +691,7 @@ export class Game {
     player.inventory = removeOne(player.inventory, item.id);
     player.tickets += price;
     this.store.savePlayer(player);
-    return [`You sell ${item.name} to ${merchantMatch.npc.name} for ${price} tickets.`];
+    return [`You sell ${item.name} to ${merchantMatch.npc.name} for ${price} Prize Tickets.`];
   }
 
   private equip(player: PlayerRecord, query: string) {
@@ -772,7 +772,7 @@ export class Game {
         `Type: ${npc.species}.`,
         npc.description,
         npc.disposition !== "friendly"
-          ? `Binder: ${player.binderCards.includes(npc.id) ? "collected" : "not collected"} (${card.page}, ${card.rarity}).`
+          ? `Collection Binder: ${player.binderCards.includes(npc.id) ? "collected" : "not collected"} (${card.page}, ${card.rarity}).`
           : "",
         npcDispositionLine(npc)
       ].filter(Boolean);
@@ -1022,8 +1022,8 @@ export class Game {
     return [
       `${player.name}`,
       this.characterConfig.jobName(player.job),
-      `Level ${player.level} | XP ${player.xp}/${this.characterConfig.xpForNextLevel(player.level)} | ${player.tickets} tickets`,
-      `Binder cards: ${player.binderCards.length} (${binderProgressSummary(player.binderCards.length)}).`,
+      `Level ${player.level} | XP ${player.xp}/${this.characterConfig.xpForNextLevel(player.level)} | ${player.tickets} Prize Tickets`,
+      `Collection cards: ${player.binderCards.length} (${binderProgressSummary(player.binderCards.length)}).`,
       `Stats: ${this.characterConfig.stats.map((stat) => `${stat.name} ${stats[stat.id] ?? 0}`).join(", ")}.`,
       this.equipmentItems(player).length ? `Equipped: ${this.equipmentItems(player).map(([slot, item]) => `${slot}: ${item.name}`).join(", ")}.` : "Equipped: nothing.",
       player.titles.length ? `Titles: ${player.titles.join(", ")}.` : "Titles: none yet.",
@@ -1037,10 +1037,10 @@ export class Game {
     const pageProgress = binderPageProgress(this.world, player);
     const selectedPage = query ? resolveBinderPage(query, pageProgress) : undefined;
     if (query && !selectedPage) {
-      return [`No binder page matches '${query}'. Try: ${pageProgress.map((page) => page.page).join(", ")}.`];
+      return [`No collection page matches '${query}'. Try: ${pageProgress.map((page) => page.page).join(", ")}.`];
     }
     const lines = [
-      `Binder cards (${cards.length}): ${binderProgressSummary(cards.length)}.`,
+      `Collection cards (${cards.length}): ${binderProgressSummary(cards.length)}.`,
       "Milestones:",
       ...binderMilestoneLines(cards.length),
       "Page chase:",
@@ -1052,7 +1052,7 @@ export class Game {
     ];
 
     if (!cards.length) {
-      return [...lines, "Pages: empty.", "Defeat loose monsters to sleeve their card echoes."];
+      return [...lines, "Pages: empty.", "Defeat runaway card monsters to log their prints."];
     }
 
     lines.push("Pages:");
@@ -1072,14 +1072,14 @@ export class Game {
   private itemSummary(item: ItemDefinition) {
     const details: string[] = [item.description];
     if (item.type) details.push(`Type: ${item.type}.`);
-    if (Number.isFinite(item.value)) details.push(`Value: ${item.value} tickets.`);
+    if (Number.isFinite(item.value)) details.push(`Value: ${item.value} Prize Tickets.`);
     const bonuses = Object.entries(item.equipment?.statBonuses ?? {})
       .filter((entry): entry is [string, number] => Boolean(entry[1]))
       .map(([stat, value]) => `${value > 0 ? "+" : ""}${value} ${stat}`);
     if (bonuses.length) details.push(`Bonuses: ${bonuses.join(", ")}.`);
     const consumable = [];
     if (item.consumable?.hp) consumable.push(`${item.consumable.hp} HP`);
-    if (item.consumable?.mana) consumable.push(`${item.consumable.mana} charge`);
+    if (item.consumable?.mana) consumable.push(`${item.consumable.mana} Energy`);
     if (consumable.length) details.push(`Restores: ${consumable.join(", ")}.`);
     return details.join(" ");
   }
@@ -1137,7 +1137,7 @@ export class Game {
       const title = binderPageTitles[page.page] ?? `${page.page} Archivist`;
       if (player.titles.includes(title)) continue;
       player.titles.push(title);
-      lines.push(`Binder page complete: ${page.page}. Title earned: ${title}.`);
+      lines.push(`Collection page complete: ${page.page}. Title earned: ${title}.`);
     }
     if (lines.length) this.store.savePlayer(player);
     return lines;
@@ -1166,14 +1166,14 @@ function npcRoomLabel(npc: NpcDefinition) {
   if (npc.disposition === "friendly") return `${npc.name} (friendly)`;
   if (npc.behavior?.autoEngage) return `${npc.name} (hostile, attacks on sight)`;
   if (npc.disposition === "hostile") return `${npc.name} (hostile)`;
-  return `${npc.name} (loose)`;
+  return `${npc.name} (runaway)`;
 }
 
 function npcDispositionLine(npc: NpcDefinition) {
   if (npc.disposition === "friendly") return "They do not seem like an enemy.";
   if (npc.behavior?.autoEngage) return "They are hostile and may attack on sight.";
   if (npc.disposition === "hostile") return "They are hostile and ready to fight.";
-  return "They are loose and can be challenged.";
+  return "They are a runaway card monster and can be challenged.";
 }
 
 function playerPresenceLabel(presence: PlayerPresence) {
@@ -1221,7 +1221,7 @@ function binderProgressSummary(count: number) {
 function binderBonusText(bonus: BinderBonus) {
   const parts = [];
   if (bonus.maxHp) parts.push(`+${bonus.maxHp} max HP`);
-  if (bonus.maxMana) parts.push(`+${bonus.maxMana} max charge`);
+  if (bonus.maxMana) parts.push(`+${bonus.maxMana} max Energy`);
   return parts.join(", ") || "no bonus";
 }
 
@@ -1238,9 +1238,9 @@ function binderCardInfo(world: World, cardId: string): BinderCardInfo {
     return {
       id: cardId,
       name: cardId,
-      page: "Binder Bay Page",
+      page: "Cardbound City Page",
       rarity: "common",
-      flavor: "A mystery card echo with a smudged nameplate."
+    flavor: "A mystery card print with a smudged nameplate."
     };
   }
   return {
@@ -1271,15 +1271,15 @@ function binderPageForNpc(npc: NpcDefinition) {
   const text = `${npc.id} ${npc.name} ${npc.species} ${npc.description}`.toLowerCase();
   if (npc.card?.variant || npc.card?.event) return "Event Page";
   if (text.includes("finale") || text.includes("titan")) return "Finale Page";
-  if (text.includes("duel") || text.includes("topdeck")) return "Duel Page";
-  if (text.includes("pocket") || text.includes("companion")) return "Pocket Page";
-  if (text.includes("mana") || text.includes("spell") || text.includes("forecast") || text.includes("weather")) return "Mana Page";
-  if (text.includes("frame") || text.includes("mecha") || text.includes("tutorial prop")) return "Frame Page";
-  if (text.includes("captain") || text.includes("harbor") || text.includes("pier") || text.includes("rubber-band")) return "Voyage Page";
+  if (text.includes("duel") || text.includes("topdeck")) return "Duel Monsters Page";
+  if (text.includes("pocket") || text.includes("companion") || text.includes("pokemon")) return "Pokemon Page";
+  if (text.includes("mana") || text.includes("spell") || text.includes("forecast") || text.includes("weather") || text.includes("magic")) return "Magic Page";
+  if (text.includes("frame") || text.includes("mecha") || text.includes("tutorial prop") || text.includes("gundam") || text.includes("gunpla")) return "Gundam Page";
+  if (text.includes("captain") || text.includes("harbor") || text.includes("pier") || text.includes("rubber-band") || text.includes("straw hat")) return "One Piece Page";
   if (text.includes("coupon") || text.includes("snack") || text.includes("bulk rare")) return "Prize Page";
   if (text.includes("arcade") || text.includes("pixel")) return "Arcade Page";
-  if (text.includes("crossover") || text.includes("rule collision") || text.includes("genre")) return "Crossover Page";
-  return "Binder Bay Page";
+  if (text.includes("crossover") || text.includes("rule collision") || text.includes("genre") || text.includes("union arena")) return "Union Arena Page";
+  return "Cardbound City Page";
 }
 
 function binderRarityForNpc(npc: NpcDefinition): BinderCardInfo["rarity"] {

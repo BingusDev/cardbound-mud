@@ -39,9 +39,9 @@ test("quest pickup items are gated until their quest has started", (t) => {
   const { game, player } = testGame(t, "quest-gate");
 
   game.runCommand(player, "north", []);
-  const blocked = game.runCommand(player, "take the sleeve key", []);
+  const blocked = game.runCommand(player, "take the Duel Disk keycard", []);
 
-  assert.match(blocked.lines.join("\n"), /Starter Deck Panic has not begun yet/i);
+  assert.match(blocked.lines.join("\n"), /Duel Disk Lockdown has not begun yet/i);
   assert.match(blocked.lines.join("\n"), /ask Marshal Echo about key/i);
   assert.equal(player.inventory.includes("sleeve-key"), false);
 });
@@ -52,9 +52,9 @@ test("quest doors are gated until their quest has started", (t) => {
   player.roomId = "mall-gate";
   store.savePlayer(player);
 
-  const blocked = game.runCommand(player, "use sleeve key", []);
+  const blocked = game.runCommand(player, "use Duel Disk keycard", []);
 
-  assert.match(blocked.lines.join("\n"), /Starter Deck Panic has not begun yet/i);
+  assert.match(blocked.lines.join("\n"), /Duel Disk Lockdown has not begun yet/i);
   assert.match(blocked.lines.join("\n"), /ask Marshal Echo about key/i);
 });
 
@@ -65,7 +65,7 @@ test("future quest items point to prerequisites instead of unusable starts", (t)
   const blocked = game.runCommand(player, "take prism shard", []);
 
   assert.match(blocked.lines.join("\n"), /Mana Leak Mayhem is tied to later work/i);
-  assert.match(blocked.lines.join("\n"), /Park Roundup/i);
+  assert.match(blocked.lines.join("\n"), /Poke Ball Roundup/i);
 });
 
 test("look shows available quest starts in the current room", (t) => {
@@ -74,20 +74,20 @@ test("look shows available quest starts in the current room", (t) => {
   const look = game.runCommand(player, "look", []);
 
   assert.match(look.lines.join("\n"), /Work to begin here:/);
-  assert.match(look.lines.join("\n"), /Starter Deck Panic/);
+  assert.match(look.lines.join("\n"), /Duel Disk Lockdown/);
   assert.match(look.lines.join("\n"), /Ask Marshal Echo about key/);
 });
 
-test("starting Starter Deck Panic permits the key and records progress", (t) => {
+test("starting Duel Disk Lockdown permits the key and records progress", (t) => {
   const { game, player, store } = testGame(t, "brass-key");
 
   const start = game.runCommand(player, "ask Marshal Echo about key", []);
-  assert.match(start.lines.join("\n"), /Quest started: Starter Deck Panic/i);
+  assert.match(start.lines.join("\n"), /Quest started: Duel Disk Lockdown/i);
 
   game.runCommand(player, "north", []);
-  const take = game.runCommand(player, "take the sleeve key", []);
+  const take = game.runCommand(player, "take the Duel Disk keycard", []);
 
-  assert.match(take.lines.join("\n"), /You take the sleeve key/i);
+  assert.match(take.lines.join("\n"), /You take the Duel Disk keycard/i);
   assert.equal(player.inventory.includes("sleeve-key"), true);
   assert.deepEqual(store.getQuestRecord(player.id, "starter-deck-panic")?.completedSteps.includes("take-sleeve-key"), true);
 });
@@ -100,9 +100,9 @@ test("taking one item copy does not schedule a respawn while another spawned cop
   store.setRoomItems("binder-square", ["foil-snack", "foil-snack"]);
   store.setRoomItemRespawns("binder-square", {});
 
-  const take = game.runCommand(player, "take foil snack", []);
+  const take = game.runCommand(player, "take Potion snack cake", []);
 
-  assert.match(take.lines.join("\n"), /You take the foil snack/i);
+  assert.match(take.lines.join("\n"), /You take the Potion snack cake/i);
   assert.deepEqual(store.getRoomItems("binder-square"), ["foil-snack"]);
   assert.deepEqual(store.getRoomItemRespawns("binder-square"), {});
 });
@@ -117,7 +117,7 @@ test("starting a quest retro-credits already satisfied steps", (t) => {
   const start = game.runCommand(player, "ask Marshal Echo about key", []);
   const completed = store.getQuestRecord(player.id, "starter-deck-panic")?.completedSteps ?? [];
 
-  assert.match(start.lines.join("\n"), /Quest started: Starter Deck Panic/i);
+  assert.match(start.lines.join("\n"), /Quest started: Duel Disk Lockdown/i);
   assert.equal(completed.includes("take-sleeve-key"), true);
   assert.equal(completed.includes("unlock-sleeve-turnstile"), true);
   assert.equal(completed.includes("open-sleeve-turnstile"), true);
@@ -129,15 +129,15 @@ test("use key opens a matching nearby quest door after the quest is active", (t)
 
   game.runCommand(player, "ask Marshal Echo about key", []);
   game.runCommand(player, "north", []);
-  game.runCommand(player, "take sleeve key", []);
+  game.runCommand(player, "take Duel Disk keycard", []);
   player.roomId = "mall-gate";
   store.savePlayer(player);
 
-  const used = game.runCommand(player, "use sleeve key", []);
+  const used = game.runCommand(player, "use Duel Disk keycard", []);
   const door = World.load().door("sleeve-turnstile");
   const state = store.getDoorState(player.id, door);
 
-  assert.match(used.lines.join("\n"), /unlock and open sleeve turnstile/i);
+  assert.match(used.lines.join("\n"), /unlock and open Duel Disk turnstile/i);
   assert.equal(state.isLocked, false);
   assert.equal(state.isOpen, true);
 });
@@ -221,12 +221,12 @@ test("room listings include inspectable player labels", (t) => {
       name: "Road Friend",
       speciesName: "Cardbound",
       jobName: "Duelist",
-      titles: ["Sleeve Runner"],
+      titles: ["Battle City Hall Monitor"],
       description: "A traveler."
     }
   ]);
 
-  assert.match(look.lines.join("\n"), /Also here: Road Friend \(Duelist - Sleeve Runner\)/);
+  assert.match(look.lines.join("\n"), /Also here: Road Friend \(Duelist - Battle City Hall Monitor\)/);
 });
 
 test("inventory full includes item descriptions", (t) => {
@@ -236,20 +236,20 @@ test("inventory full includes item descriptions", (t) => {
   game.runCommand(player, "take duel disk holster", []);
   const inventory = game.runCommand(player, "inventory full", []);
 
-  assert.match(inventory.lines.join("\n"), /duel disk holster:/);
+  assert.match(inventory.lines.join("\n"), /Duel Disk holster:/);
   assert.match(inventory.lines.join("\n"), /Type: equipment/i);
 });
 
-test("cardbound combat verbs strike, break, and recover are accepted", (t) => {
+test("cardbound combat verbs attack, run, and recover are accepted", (t) => {
   const { game, player, store, world } = testGame(t, "combat-verbs");
 
   movePlayerToNpc(player, store, world, "rogue-topdeck");
   const strike = game.runCommand(player, "strike rogue topdeck", []);
-  assert.match(strike.lines.join("\n"), /You engage Rogue Topdeck|You strike Rogue Topdeck/i);
+  assert.match(strike.lines.join("\n"), /You challenge Rogue Duelist Token to a duel|You attack Rogue Duelist Token/i);
 
   const brokeAway = game.runCommand(player, "break", []);
   assert.doesNotMatch(brokeAway.lines.join("\n"), /Unknown command/i);
-  assert.match(game.runCommand(player, "combat", []).lines.join("\n"), /You are not in combat/i);
+  assert.match(game.runCommand(player, "combat", []).lines.join("\n"), /You are not in a duel/i);
 
   player.hp = Math.max(1, player.maxHp - 3);
   store.savePlayer(player);
@@ -272,13 +272,13 @@ test("each level 1 class can open combat against an early monster", (t) => {
     store.savePlayer(player);
 
     const result = game.runCommand(player, "strike rogue topdeck", []);
-    assert.match(result.lines.join("\n"), /You engage Rogue Topdeck/i, `${job.name} should be able to start combat`);
+    assert.match(result.lines.join("\n"), /You challenge Rogue Duelist Token to a duel/i, `${job.name} should be able to start combat`);
     assert.ok(player.hp > 0, `${job.name} should survive opening combat`);
-    assert.ok(player.mana >= 0, `${job.name} charge should remain valid`);
+    assert.ok(player.mana >= 0, `${job.name} Energy should remain valid`);
   }
 });
 
-test("defeated loose monsters are sleeved into the player binder", (t) => {
+test("defeated runaway monsters are logged into the collection binder", (t) => {
   const { game, player, store, world } = testGame(t, "binder-cards");
 
   movePlayerToNpc(player, store, world, "rogue-topdeck");
@@ -286,31 +286,31 @@ test("defeated loose monsters are sleeved into the player binder", (t) => {
   store.savePlayer(player);
 
   const lookBefore = game.runCommand(player, "look rogue topdeck", []);
-  assert.match(lookBefore.lines.join("\n"), /Binder: not collected \(Duel Page, uncommon\)/i);
+  assert.match(lookBefore.lines.join("\n"), /Collection Binder: not collected \(Duel Monsters Page, uncommon\)/i);
 
   const strike = game.runCommand(player, "strike rogue topdeck", []);
-  assert.match(strike.lines.join("\n"), /Binder card added: Rogue Topdeck/i);
-  assert.doesNotMatch(strike.lines.join("\n"), /Binder page complete: Duel Page/i);
-  assert.equal(player.titles.includes("Duel Page Ace"), false);
+  assert.match(strike.lines.join("\n"), /Collection card logged: Rogue Duelist Token/i);
+  assert.doesNotMatch(strike.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
+  assert.equal(player.titles.includes("Duel Monsters Ace"), false);
   assert.deepEqual(player.binderCards, ["rogue-topdeck"]);
 
   movePlayerToNpc(player, store, world, "trapline-busker");
   const secondStrike = game.runCommand(player, "strike trapline busker", []);
-  assert.match(secondStrike.lines.join("\n"), /Binder card added: Trapline Busker/i);
-  assert.match(secondStrike.lines.join("\n"), /Binder page complete: Duel Page/i);
-  assert.equal(player.titles.includes("Duel Page Ace"), true);
+  assert.match(secondStrike.lines.join("\n"), /Collection card logged: Trap Card Busker/i);
+  assert.match(secondStrike.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
+  assert.equal(player.titles.includes("Duel Monsters Ace"), true);
 
   const binder = game.runCommand(player, "binder", []);
-  assert.match(binder.lines.join("\n"), /Binder cards \(2\): First Sleeve active; \+1 max charge/i);
-  assert.match(binder.lines.join("\n"), /Duel Page:/i);
+  assert.match(binder.lines.join("\n"), /Collection cards \(2\): First Pull active; \+1 max Energy/i);
+  assert.match(binder.lines.join("\n"), /Duel Monsters Page:/i);
   assert.match(binder.lines.join("\n"), /Page chase:/i);
-  assert.match(binder.lines.join("\n"), /Duel Page: complete, title Duel Page Ace/i);
-  assert.match(binder.lines.join("\n"), /Rogue Topdeck/i);
-  assert.match(binder.lines.join("\n"), /Page Starter \(locked at 3\)/i);
+  assert.match(binder.lines.join("\n"), /Duel Monsters Page: complete, title Duel Monsters Ace/i);
+  assert.match(binder.lines.join("\n"), /Rogue Duelist Token/i);
+  assert.match(binder.lines.join("\n"), /Starter Deck \(locked at 3\)/i);
 
   const duelPage = game.runCommand(player, "binder duel", []);
-  assert.match(duelPage.lines.join("\n"), /Duel Page:/i);
-  assert.match(duelPage.lines.join("\n"), /Trapline Busker/i);
+  assert.match(duelPage.lines.join("\n"), /Duel Monsters Page:/i);
+  assert.match(duelPage.lines.join("\n"), /Trap Card Busker/i);
   assert.doesNotMatch(duelPage.lines.join("\n"), /Event Page:/i);
 });
 
@@ -322,12 +322,12 @@ test("event variants announce their event binder chase", (t) => {
   store.savePlayer(player);
 
   const strike = game.runCommand(player, "strike holo topdeck", []);
-  assert.match(strike.lines.join("\n"), /Binder card added: Holo Topdeck/i);
-  assert.match(strike.lines.join("\n"), /Event variant logged: Opening Night Foil/i);
+  assert.match(strike.lines.join("\n"), /Collection card logged: Secret Rare Topdeck/i);
+  assert.match(strike.lines.join("\n"), /Secret Rare variant logged: Opening Night Foil/i);
 
   const eventPage = game.runCommand(player, "binder event", []);
   assert.match(eventPage.lines.join("\n"), /Event Page:/i);
-  assert.match(eventPage.lines.join("\n"), /Holo Topdeck/i);
+  assert.match(eventPage.lines.join("\n"), /Secret Rare Topdeck/i);
 });
 
 test("binder milestones increase derived vitals without changing base stats", (t) => {
@@ -343,10 +343,10 @@ test("binder milestones increase derived vitals without changing base stats", (t
   assert.equal(view.maxMana, baseMaxMana + 1);
 
   const profile = game.runCommand(player, "profile", []);
-  assert.match(profile.lines.join("\n"), /First Sleeve, Page Starter active/i);
+  assert.match(profile.lines.join("\n"), /First Pull, Starter Deck active/i);
 });
 
-test("each zone has a fightable monster that can be sleeved", (t) => {
+test("each zone has a fightable monster that can be logged", (t) => {
   const { game, player, store, world } = testGame(t, "zone-combat");
   const zonesWithCombat = new Set<string>();
 
@@ -368,7 +368,7 @@ test("each zone has a fightable monster that can be sleeved", (t) => {
     player.stats = { ...player.stats, might: 99, grace: 99 };
     store.savePlayer(player);
     const result = game.runCommand(player, `strike ${npc.name}`, []);
-    assert.match(result.lines.join("\n"), new RegExp(`Binder card added: ${escapeRegExp(npc.name)}`, "i"));
+    assert.match(result.lines.join("\n"), new RegExp(`Collection card logged: ${escapeRegExp(npc.name)}`, "i"));
     zonesWithCombat.add(zone.id);
   }
 

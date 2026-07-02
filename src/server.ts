@@ -392,7 +392,7 @@ app.post("/api/admin/npcs", (req, res) => {
 });
 
 wss.on("connection", (socket) => {
-  send(socket, { type: "system", message: "Connected. Log in or create an account, then choose a character to enter Binder Bay." });
+  send(socket, { type: "system", message: "Connected. Log in or create an account, then choose a character to enter Cardbound City." });
 
   socket.on("message", (raw) => {
     try {
@@ -449,7 +449,7 @@ function handleMessage(socket: WebSocket, message: ClientMessage) {
   if (message.type === "accountLogin") {
     const account = store.authenticateAccount(message.username, message.password);
     accountSessions.set(socket, account);
-    send(socket, { type: "log", lines: [`Welcome back, ${account.username}. Choose a character to enter Binder Bay.`] });
+    send(socket, { type: "log", lines: [`Welcome back, ${account.username}. Choose a character to enter Cardbound City.`] });
     sendAccount(socket);
     return;
   }

@@ -198,7 +198,7 @@
               <label class="wide">Description<textarea id="itemDescriptionInput" rows="5"></textarea></label>
               <div class="item-type-panel wide" id="consumableFields">
                 <label>HP Restore<input id="itemHpInput" type="number" min="0" /></label>
-                <label>Charge Restore<input id="itemManaInput" type="number" min="0" /></label>
+                <label>Energy Restore<input id="itemManaInput" type="number" min="0" /></label>
               </div>
               <div class="item-type-panel wide" id="equipmentFields">
                 <label>Equip Slot
@@ -243,7 +243,7 @@
               <label>Disposition
                 <select id="npcDispositionInput">
                   <option value="friendly">friendly</option>
-                  <option value="wild">loose</option>
+                  <option value="wild">runaway</option>
                   <option value="hostile">hostile</option>
                 </select>
               </label>
@@ -255,7 +255,7 @@
               <fieldset class="drop-editor wide">
                 <legend>Binder Card</legend>
                 <div class="mini-grid">
-                  <label>Page<input id="npcCardPageInput" placeholder="Duel Page" /></label>
+                  <label>Page<input id="npcCardPageInput" placeholder="Duel Monsters Page" /></label>
                   <label>Rarity
                     <select id="npcCardRarityInput">
                       <option value="">auto</option>
@@ -272,9 +272,9 @@
               </fieldset>
               <div class="mini-grid wide">
                 <label>HP<input id="npcHpInput" type="number" min="1" /></label>
-                <label>Charge<input id="npcManaInput" type="number" min="0" /></label>
+                <label>Energy<input id="npcManaInput" type="number" min="0" /></label>
                 <label>XP<input id="npcXpInput" type="number" min="0" /></label>
-                <label>Tickets<input id="npcTicketsInput" type="number" min="0" /></label>
+                <label>Prize Tickets<input id="npcTicketsInput" type="number" min="0" /></label>
                 <label>Respawn<input id="npcRespawnInput" type="number" min="0" /></label>
               </div>
               <div id="npcStatGrid" class="mini-grid wide"></div>
@@ -292,7 +292,7 @@
                 </div>
                 <label>Wares<select id="npcMerchantItemsInput" multiple size="6"></select></label>
               </fieldset>
-              <label>Strike Name<input id="npcAttackNameInput" /></label>
+              <label>Attack Name<input id="npcAttackNameInput" /></label>
               <label class="wide">Defeat Message<textarea id="npcDefeatMessageInput" rows="3"></textarea></label>
               <label class="wide">Greeting Lines<textarea id="npcGreetingInput" rows="4"></textarea></label>
               <fieldset class="drop-editor wide">
@@ -405,9 +405,9 @@
               <label>Room<select id="characterRoomInput"></select></label>
               <label>Level<input id="characterLevelInput" type="number" min="1" /></label>
               <label>XP<input id="characterXpInput" type="number" min="0" /></label>
-              <label>Tickets<input id="characterTicketsInput" type="number" min="0" /></label>
+              <label>Prize Tickets<input id="characterTicketsInput" type="number" min="0" /></label>
               <label>HP<input id="characterHpInput" type="number" min="0" /></label>
-              <label>Charge<input id="characterManaInput" type="number" min="0" /></label>
+              <label>Energy<input id="characterManaInput" type="number" min="0" /></label>
               <label>Checkpoint<select id="characterSanctuaryInput"></select></label>
               <label class="wide">Titles<input id="characterTitlesInput" placeholder="comma-separated" /></label>
               <label class="wide">Flags<input id="characterFlagsInput" placeholder="comma-separated" /></label>

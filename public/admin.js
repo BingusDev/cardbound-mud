@@ -1195,10 +1195,10 @@ function createDraftNpc() {
   const npc = {
     id: uniqueNpcId("new-npc"),
     name: "New NPC",
-    species: "card monster",
-    description: "A new figure waits to be written into Binder Bay.",
+    species: "runaway card monster",
+    description: "A new figure waits to be written into Cardbound City.",
     card: {
-      page: "Binder Bay Page",
+      page: "Cardbound City Page",
       rarity: "common",
       flavor: "",
       variant: false,
@@ -1454,7 +1454,7 @@ function createDraftQuest() {
     id: uniqueQuestId("new-quest"),
     name: "New Quest",
     summary: "A new task waits to be written.",
-    description: "A new quest for Binder Bay.",
+    description: "A new quest for Cardbound City.",
     tags: ["side"],
     prerequisites: [],
     startsOn: { type: "talk" },
@@ -1644,7 +1644,7 @@ function renderQuestRewards() {
         <select data-reward-field="type">
           ${[
             ["xp", "xp"],
-            ["tickets", "tickets"],
+            ["tickets", "Prize Tickets"],
             ["item", "item"],
             ["title", "title"],
             ["flag", "flag"]
@@ -2221,11 +2221,11 @@ function renderCombatConfig() {
         <label>Base Max HP<input data-config-combat="baseMaxHp" type="number" min="1" value="${combat.baseMaxHp ?? 18}" /></label>
         <label>HP per Ramp<input data-config-combat="heartMaxHpBonus" type="number" min="0" step="0.1" value="${combat.heartMaxHpBonus ?? 2}" /></label>
         <label>NPC HP per Ramp<input data-config-combat="npcHeartMaxHpBonus" type="number" min="0" step="0.1" value="${combat.npcHeartMaxHpBonus ?? 0.5}" /></label>
-        <label>Base Max Charge<input data-config-combat="baseMaxMana" type="number" min="0" value="${combat.baseMaxMana ?? 10}" /></label>
-        <label>Charge per Combo<input data-config-combat="witMaxManaBonus" type="number" min="0" step="0.1" value="${combat.witMaxManaBonus ?? 1}" /></label>
-        <label>Base Strike Cooldown MS<input data-config-combat="baseAttackCooldownMs" type="number" min="1" value="${combat.baseAttackCooldownMs ?? 4200}" /></label>
+        <label>Base Max Energy<input data-config-combat="baseMaxMana" type="number" min="0" value="${combat.baseMaxMana ?? 10}" /></label>
+        <label>Energy per Combo<input data-config-combat="witMaxManaBonus" type="number" min="0" step="0.1" value="${combat.witMaxManaBonus ?? 1}" /></label>
+        <label>Base Attack Cooldown MS<input data-config-combat="baseAttackCooldownMs" type="number" min="1" value="${combat.baseAttackCooldownMs ?? 4200}" /></label>
         <label>Tempo Cooldown Reduction MS<input data-config-combat="graceCooldownReductionMs" type="number" min="0" value="${combat.graceCooldownReductionMs ?? 180}" /></label>
-        <label>Minimum Strike Cooldown MS<input data-config-combat="minimumAttackCooldownMs" type="number" min="1" value="${combat.minimumAttackCooldownMs ?? 1400}" /></label>
+        <label>Minimum Attack Cooldown MS<input data-config-combat="minimumAttackCooldownMs" type="number" min="1" value="${combat.minimumAttackCooldownMs ?? 1400}" /></label>
         <label>Base Damage Crit Chance<input data-config-combat="baseDamageCritChance" type="number" min="0" max="1" step="0.01" value="${combat.baseDamageCritChance ?? 0.03}" /></label>
         <label>Control Damage Crit Bonus<input data-config-combat="sparkDamageCritChanceBonus" type="number" min="0" max="1" step="0.01" value="${combat.sparkDamageCritChanceBonus ?? 0.01}" /></label>
         <label>Max Damage Crit Chance<input data-config-combat="maximumDamageCritChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumDamageCritChance ?? 0.35}" /></label>
@@ -2234,9 +2234,9 @@ function renderCombatConfig() {
         <label>Synergy Heal Crit Bonus<input data-config-combat="bondHealCritChanceBonus" type="number" min="0" max="1" step="0.01" value="${combat.bondHealCritChanceBonus ?? 0.01}" /></label>
         <label>Max Heal Crit Chance<input data-config-combat="maximumHealCritChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumHealCritChance ?? 0.35}" /></label>
         <label>Heal Crit Multiplier<input data-config-combat="healCritMultiplier" type="number" min="1" step="0.1" value="${combat.healCritMultiplier ?? 1.5}" /></label>
-        <label>Base Break Away Chance<input data-config-combat="baseFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.baseFleeChance ?? 0.35}" /></label>
-        <label>Tempo Break Away Bonus<input data-config-combat="graceFleeBonus" type="number" min="0" max="1" step="0.001" value="${combat.graceFleeBonus ?? 0.035}" /></label>
-        <label>Maximum Break Away Chance<input data-config-combat="maximumFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumFleeChance ?? 0.85}" /></label>
+        <label>Base Run Chance<input data-config-combat="baseFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.baseFleeChance ?? 0.35}" /></label>
+        <label>Tempo Run Bonus<input data-config-combat="graceFleeBonus" type="number" min="0" max="1" step="0.001" value="${combat.graceFleeBonus ?? 0.035}" /></label>
+        <label>Maximum Run Chance<input data-config-combat="maximumFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumFleeChance ?? 0.85}" /></label>
         <label>Death Respawn Seconds<input data-config-combat="deathRespawnSeconds" type="number" min="1" value="${combat.deathRespawnSeconds ?? 60}" /></label>
         <label>Out of Combat Recovery HP<input data-config-combat="outOfCombatRecoveryHp" type="number" min="0" value="${combat.outOfCombatRecoveryHp ?? 1}" /></label>
         <label>Out of Combat Recovery Seconds<input data-config-combat="outOfCombatRecoverySeconds" type="number" min="1" value="${combat.outOfCombatRecoverySeconds ?? 20}" /></label>
@@ -2244,8 +2244,8 @@ function renderCombatConfig() {
         <label>NPC Despawn Seconds<input data-config-combat="npcDespawnSeconds" type="number" min="0" value="${combat.npcDespawnSeconds ?? 10}" /></label>
         <label>Players Per NPC<input data-config-combat="npcPlayersPerInstance" type="number" min="1" value="${combat.npcPlayersPerInstance ?? 1}" /></label>
         <label>Max NPCs Per Type<input data-config-combat="npcMaxInstancesPerType" type="number" min="1" value="${combat.npcMaxInstancesPerType ?? 4}" /></label>
-        <label>Recover Charge Amount<input data-config-combat="restManaRecoveryAmount" type="number" min="0" value="${combat.restManaRecoveryAmount ?? 2}" /></label>
-        <label>Recover Charge Seconds<input data-config-combat="restManaRecoverySeconds" type="number" min="1" value="${combat.restManaRecoverySeconds ?? 10}" /></label>
+        <label>Recover Energy Amount<input data-config-combat="restManaRecoveryAmount" type="number" min="0" value="${combat.restManaRecoveryAmount ?? 2}" /></label>
+        <label>Recover Energy Seconds<input data-config-combat="restManaRecoverySeconds" type="number" min="1" value="${combat.restManaRecoverySeconds ?? 10}" /></label>
         <label>Recover HP Amount<input data-config-combat="restHpRecoveryAmount" type="number" min="0" value="${combat.restHpRecoveryAmount ?? 1}" /></label>
         <label>Recover HP Seconds<input data-config-combat="restHpRecoverySeconds" type="number" min="1" value="${combat.restHpRecoverySeconds ?? 10}" /></label>
         <label>Checkpoint Recovery Multiplier<input data-config-combat="sanctuaryRestMultiplier" type="number" min="1" step="0.1" value="${combat.sanctuaryRestMultiplier ?? 2}" /></label>
@@ -2350,7 +2350,7 @@ function renderSkillEditor(skill, jobIndex, skillIndex) {
         <label>ID<input data-skill-field="id" value="${escapeHtml(skill.id)}" /></label>
         <label>Name<input data-skill-field="name" value="${escapeHtml(skill.name)}" /></label>
         <label>Level<input data-skill-field="level" type="number" min="1" value="${skill.level ?? 1}" /></label>
-        <label>Charge Cost<input data-skill-field="manaCost" type="number" min="0" value="${skill.manaCost ?? 0}" /></label>
+        <label>Energy Cost<input data-skill-field="manaCost" type="number" min="0" value="${skill.manaCost ?? 0}" /></label>
         <label>Cooldown<input data-skill-field="cooldownSeconds" type="number" min="0" step="0.1" value="${skill.cooldownSeconds ?? 3}" /></label>
         <label>Scales With
           <select data-skill-field="scalesWith">
@@ -2443,7 +2443,7 @@ function newSkillDraft(job) {
   return {
     id: uniqueSkillId(job, "new-skill"),
     name: "New Skill",
-    description: "A new class technique waiting for its place in Binder Bay.",
+    description: "A new class technique waiting for its place in Cardbound City.",
     level: 1,
     manaCost: 3,
     cooldownSeconds: 3.5,

@@ -67,7 +67,7 @@ export class CombatSystem {
   }
 
   startResting(player: PlayerRecord, now = Date.now()) {
-    if (this.isDead(player, now)) return ["You are inside a rescue sleeve between scenes. You cannot recover yet."];
+    if (this.isDead(player, now)) return ["You are inside the Life Point safety field between scenes. You cannot recover yet."];
     if (this.isInCombat(player)) return ["You cannot recover while a duel is active."];
     if (player.hp >= player.maxHp && player.mana >= player.maxMana) return ["You are already fully recovered."];
 
@@ -101,7 +101,7 @@ export class CombatSystem {
     player.mana = player.maxMana;
     this.store.savePlayer(player);
     const room = this.world.room(player.roomId);
-    return [`The rescue sleeve sets you back at ${room.name}. You are shaken, but whole.`];
+    return [`The Life Point safety field sets you back at ${room.name}. You are shaken, but whole.`];
   }
 
   updateSanctuary(player: PlayerRecord) {
@@ -191,8 +191,8 @@ export class CombatSystem {
           player.deadUntil = now + this.characterConfig.combat.deathRespawnSeconds * 1000;
           player.hp = 0;
           this.store.savePlayer(player);
-          lines.push(`A rescue sleeve catches you before the knockout can stick. You will wake at your checkpoint in ${formatSeconds(this.characterConfig.combat.deathRespawnSeconds * 1000)}.`);
-          roomLines.push(`${player.name} falls, then vanishes in a flash of rescue-sleeve light.`);
+          lines.push(`The Life Point safety field catches you before the knockout can stick. You will wake at your checkpoint in ${formatSeconds(this.characterConfig.combat.deathRespawnSeconds * 1000)}.`);
+          roomLines.push(`${player.name} falls, then vanishes in a flash of Life Point light.`);
           events.push({ playerId, roomId: combat.roomId, lines, roomLines, ended: true });
           continue;
         }
@@ -221,7 +221,7 @@ export class CombatSystem {
       return this.performPlayerAttack(player, existingCombat, Date.now());
     }
 
-    if (!query) return ["Strike what? Try strike <npc>."];
+    if (!query) return ["Attack what? Try attack <npc> or duel <npc>."];
 
     const npc = this.findNpcInRoom(player.roomId, query);
     if (!npc) return ["You do not see that target here."];
@@ -244,8 +244,8 @@ export class CombatSystem {
     };
     this.combats.set(player.id, combat);
     return [
-      `You engage ${npc.name}.`,
-      `Your strike rhythm is ${formatSeconds(this.attackCooldownMs(this.playerStats(player).grace ?? 8))}; ${npc.name}'s is ${formatSeconds(this.attackCooldownMs(npc.stats.grace ?? 8))}.`,
+      `You challenge ${npc.name} to a duel.`,
+      `Your attack timing is ${formatSeconds(this.attackCooldownMs(this.playerStats(player).grace ?? 8))}; ${npc.name}'s is ${formatSeconds(this.attackCooldownMs(npc.stats.grace ?? 8))}.`,
       ...this.performPlayerAttack(player, combat, now)
     ];
   }
@@ -266,20 +266,20 @@ export class CombatSystem {
       nextPlayerAttackAt: now,
       nextNpcAttackAt: now + Math.floor(this.attackCooldownMs(npc.stats.grace ?? 8) / 2)
     });
-    return [`${npc.name} moves to block your path. You are in combat.`];
+    return [`${npc.name} moves to block your path. You are in a duel.`];
   }
 
   useSkill(player: PlayerRecord, skill: SkillDefinition) {
     this.resting.delete(player.id);
     const combat = this.combats.get(player.id);
-    if (skill.requiresCombat && !combat) return [`${skill.name} is a combat skill. Choose a target with strike <npc> first.`];
+    if (skill.requiresCombat && !combat) return [`${skill.name} is a duel skill. Choose a target with attack <npc> first.`];
     if (!combat) return [`${skill.name} needs a target.`];
     const effects = skill.effects ?? (skill.effect ? [skill.effect] : []);
     if (!effects.length) return [`${skill.name} is still a training form.`];
 
     const now = Date.now();
     if (now < combat.nextPlayerAttackAt) return ["You're not done getting ready yet!"];
-    if (player.mana < skill.manaCost) return [`You need ${skill.manaCost} charge for ${skill.name}.`];
+    if (player.mana < skill.manaCost) return [`You need ${skill.manaCost} Energy for ${skill.name}.`];
 
     const npc = this.world.npcs.get(combat.npcId);
     if (!npc) {
@@ -309,30 +309,30 @@ export class CombatSystem {
 
   flee(player: PlayerRecord) {
     const combat = this.combats.get(player.id);
-    if (!combat) return ["You are not in combat."];
+    if (!combat) return ["You are not in a duel."];
     this.combats.delete(player.id);
     this.playerGuards.delete(player.id);
     this.resting.delete(player.id);
     this.nextPlayerRecoveryAt.set(player.id, Date.now() + this.recoveryIntervalMs());
     const success = Math.random() < this.fleeChance(this.playerStats(player).grace ?? 8);
-    if (success) return ["You break away from combat."];
+    if (success) return ["You run from the duel."];
 
     const npc = this.world.npcs.get(combat.npcId);
     if (!npc) return ["You stumble away from danger."];
     const damage = Math.max(1, Math.floor(this.npcDamage(npc).amount / 2));
     player.hp = Math.max(1, player.hp - damage);
     this.store.savePlayer(player);
-    return [`You try to break away, but ${npc.name} clips you for ${damage} damage before you get clear.`];
+    return [`You try to run, but ${npc.name} clips you for ${damage} damage before you get clear.`];
   }
 
   status(player: PlayerRecord) {
     const combat = this.combats.get(player.id);
-    if (!combat) return ["You are not in combat."];
+    if (!combat) return ["You are not in a duel."];
     const npc = this.world.npcs.get(combat.npcId);
     if (!npc) return ["Your opponent is gone."];
     const state = this.npcState(combat.roomId, combat.npcId, combat.npcInstanceKey);
     const readyIn = Math.max(0, combat.nextPlayerAttackAt - Date.now());
-    return [`Fighting ${npc.name}: ${state.hp}/${this.npcMaxHp(npc)} HP. Your HP: ${player.hp}/${player.maxHp}. Strike ${readyIn ? `ready in ${formatSeconds(readyIn)}` : "ready now"}.`];
+    return [`Dueling ${npc.name}: ${state.hp}/${this.npcMaxHp(npc)} HP. Your HP: ${player.hp}/${player.maxHp}. Attack ${readyIn ? `ready in ${formatSeconds(readyIn)}` : "ready now"}.`];
   }
 
   view(player: PlayerRecord): CombatView {
@@ -377,7 +377,7 @@ export class CombatSystem {
 
     const { amount: damage, critical } = this.playerDamage(player);
     combat.nextPlayerAttackAt = now + this.attackCooldownMs(this.playerStats(player).grace ?? 8);
-    return this.damageNpc(player, combat, npc, npcState, damage, `You strike ${npc.name} for ${damage} damage.${critical ? " Critical!" : ""}`, now);
+    return this.damageNpc(player, combat, npc, npcState, damage, `You attack ${npc.name} for ${damage} damage.${critical ? " Critical!" : ""}`, now);
   }
 
   private damageNpc(
@@ -408,7 +408,7 @@ export class CombatSystem {
 
     if (npc.combat.tickets > 0) {
       player.tickets += npc.combat.tickets;
-      lines.push(`Reward: ${npc.combat.tickets} tickets.`);
+      lines.push(`Reward: ${npc.combat.tickets} Prize Tickets.`);
     }
 
     const binderLines = this.addBinderCard(player, npc);
@@ -427,9 +427,9 @@ export class CombatSystem {
     if (npc.disposition === "friendly") return [];
     if (player.binderCards.includes(npc.id)) return [];
     player.binderCards.push(npc.id);
-    const lines = [`Binder card added: ${npc.name}. Type binder to inspect the page.`];
+    const lines = [`Collection card logged: ${npc.name}. Type binder to inspect the page.`];
     if (npc.card?.variant || npc.card?.event) {
-      lines.push(`Event variant logged: ${npc.card.event ?? "Special Print"}. Try binder event to inspect the chase.`);
+      lines.push(`Secret Rare variant logged: ${npc.card.event ?? "Special Print"}. Try binder event to inspect the chase.`);
     }
     return lines;
   }
@@ -763,7 +763,7 @@ export class CombatSystem {
         player.mana = Math.min(player.maxMana, player.mana + manaAmount * ticks);
         rest.nextManaAt += ticks * manaInterval;
         const recovered = player.mana - before;
-        if (recovered > 0) lines.push(`You recover ${recovered} charge.`);
+        if (recovered > 0) lines.push(`You recover ${recovered} Energy.`);
       }
 
       if (hpAmount > 0 && player.hp < player.maxHp && now >= rest.nextHpAt) {

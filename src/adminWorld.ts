@@ -539,7 +539,7 @@ export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
   for (const npc of file.npcs) {
     if (!placedNpcIds.has(npc.id)) issues.push(`${npc.name} is not placed in any room.`);
     if (npc.disposition !== "friendly" && npc.combat.xp <= 0 && npc.combat.tickets <= 0 && !npc.combat.drops.length) {
-      issues.push(`${npc.name} is fightable but has no XP, tickets, or drops.`);
+      issues.push(`${npc.name} is fightable but has no XP, Prize Tickets, or drops.`);
     }
     if (!npc.dialogue.greeting.length) issues.push(`${npc.name} has no greeting lines.`);
     if (npc.disposition === "friendly" && !Object.keys(npc.dialogue.topics ?? {}).length && !npc.merchant) {
