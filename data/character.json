@@ -95,7 +95,7 @@
     {
       "id": "duelist",
       "name": "Duelist",
-      "description": "A dramatic card battler who wins through traps, tempo, and loudly declared finishing moves.",
+      "description": "A Duel Disk showboat who lives for Normal Summons, Trap Cards, chain timing, and one last Heart of the Cards topdeck.",
       "primaryStats": [
         "wit",
         "spark"
@@ -108,8 +108,8 @@
       "skills": [
         {
           "id": "set-and-swing",
-          "name": "Set Card Strike",
-          "description": "Set a defensive card, then punish the opening before the monster can read the table.",
+          "name": "Normal Summon",
+          "description": "Normal Summon a scrappy monster, then set one face-down Trap Card for cover.",
           "level": 1,
           "manaCost": 3,
           "cooldownSeconds": 3.3,
@@ -118,7 +118,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "You spring a set card and strike {target} for {damage} damage.",
+              "message": "You Normal Summon and strike {target} for {damage} damage.",
               "formula": {
                 "base": 4,
                 "stat": "wit",
@@ -129,7 +129,7 @@
             },
             {
               "type": "guard",
-              "message": "Your face-down card guards {guard} damage from the next hit.",
+              "message": "Your face-down Trap Card guards {guard} damage from the next hit.",
               "amount": 2,
               "charges": 1
             }
@@ -137,8 +137,8 @@
         },
         {
           "id": "chain-window",
-          "name": "Chain Response",
-          "description": "Answer a reckless attack at exactly the right timing window.",
+          "name": "Chain Link 2",
+          "description": "Cut into the enemy play with perfect chain timing.",
           "level": 2,
           "manaCost": 4,
           "cooldownSeconds": 4.4,
@@ -147,7 +147,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your chain response catches {target} for {damage} damage.",
+              "message": "Your Chain Link 2 response catches {target} for {damage} damage.",
               "formula": {
                 "base": 5,
                 "stat": "wit",
@@ -160,8 +160,8 @@
         },
         {
           "id": "trap-snap",
-          "name": "Trap Card Reversal",
-          "description": "Flip a prepared trap into damage and a short burst of protection.",
+          "name": "Mirror Force",
+          "description": "Flip the classic Trap Card and turn an attack back into the attacker.",
           "level": 3,
           "manaCost": 6,
           "cooldownSeconds": 5.2,
@@ -170,7 +170,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your trap card reversal snaps shut on {target} for {damage} damage.",
+              "message": "Mirror Force snaps shut on {target} for {damage} damage.",
               "formula": {
                 "base": 7,
                 "stat": "spark",
@@ -181,7 +181,7 @@
             },
             {
               "type": "guard",
-              "message": "The trap backlash leaves you braced behind crackling cardboard.",
+              "message": "The Trap Card backlash leaves you braced behind crackling cardboard.",
               "amount": 2,
               "charges": 2
             }
@@ -189,8 +189,8 @@
         },
         {
           "id": "boss-monster-pose",
-          "name": "Ace Monster Stand",
-          "description": "Take the field like your signature monster just arrived, gaining force and cover.",
+          "name": "Blue-Eyes Entrance",
+          "description": "Call your inner Blue-Eyes White Dragon moment for damage and dramatic protection.",
           "level": 4,
           "manaCost": 8,
           "cooldownSeconds": 5.9,
@@ -199,7 +199,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your ace monster stand staggers {target} for {damage} damage.",
+              "message": "Your Blue-Eyes entrance staggers {target} for {damage} damage.",
               "formula": {
                 "base": 8,
                 "stat": "heart",
@@ -210,7 +210,7 @@
             },
             {
               "type": "guard",
-              "message": "The ace stance guards you through the next exchange.",
+              "message": "The Blue-Eyes glare guards you through the next exchange.",
               "amount": 4,
               "charges": 2
             }
@@ -218,8 +218,8 @@
         },
         {
           "id": "last-card-combo",
-          "name": "Final Turn Combo",
-          "description": "Turn one desperate draw into a clean finishing sequence.",
+          "name": "Heart of the Cards",
+          "description": "Topdeck the exact answer and turn one card into a duel-ending combo.",
           "level": 5,
           "manaCost": 10,
           "cooldownSeconds": 6.7,
@@ -228,7 +228,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your final turn combo detonates around {target} for {damage} damage.",
+              "message": "Heart of the Cards detonates around {target} for {damage} damage.",
               "formula": {
                 "base": 11,
                 "stat": "spark",
@@ -244,7 +244,7 @@
     {
       "id": "trainer",
       "name": "Trainer",
-      "description": "A companion-focused battler who calms panicked monsters, calls assists, and keeps the team upright.",
+      "description": "A Pokemon Trainer who fights beside a partner monster, burns through Potions, and knows exactly when to call for evolution.",
       "primaryStats": [
         "bond",
         "heart"
@@ -257,8 +257,8 @@
       "skills": [
         {
           "id": "buddy-bump",
-          "name": "Partner Tackle",
-          "description": "Send your partner in for a quick hit while their confidence pulls you back together.",
+          "name": "Quick Attack",
+          "description": "Send your partner Pokemon in first for priority damage and a morale boost.",
           "level": 1,
           "manaCost": 3,
           "cooldownSeconds": 3.4,
@@ -267,7 +267,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your partner tackles {target} for {damage} damage.",
+              "message": "Your partner Pokemon uses Quick Attack on {target} for {damage} damage.",
               "formula": {
                 "base": 3,
                 "stat": "bond",
@@ -292,7 +292,7 @@
         {
           "id": "snack-break",
           "name": "Potion Toss",
-          "description": "Lob a recovery item through the chaos and make the enemy stumble over it.",
+          "description": "Use a Potion mid-fight, because apparently the bag menu still works in Binder Bay.",
           "level": 2,
           "manaCost": 4,
           "cooldownSeconds": 4.6,
@@ -301,7 +301,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your potion toss trips up {target} for {damage} damage.",
+              "message": "Your Potion toss trips up {target} for {damage} damage.",
               "formula": {
                 "base": 4,
                 "stat": "bond",
@@ -312,7 +312,7 @@
             },
             {
               "type": "heal",
-              "message": "The quick recovery restores {healing} HP.",
+              "message": "The Potion restores {healing} HP.",
               "formula": {
                 "base": 2,
                 "stat": "bond",
@@ -325,8 +325,8 @@
         },
         {
           "id": "tag-team-tumble",
-          "name": "Double Battle Rush",
-          "description": "Coordinate a two-part rush that hits hard and gives your team room to recover.",
+          "name": "Double Battle",
+          "description": "Run a Double Battle pattern that hits twice and gives the team room to recover.",
           "level": 3,
           "manaCost": 6,
           "cooldownSeconds": 5.4,
@@ -335,7 +335,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your double battle rush rolls through {target} for {damage} damage.",
+              "message": "Your Double Battle rush rolls through {target} for {damage} damage.",
               "formula": {
                 "base": 6,
                 "stat": "heart",
@@ -359,8 +359,8 @@
         },
         {
           "id": "team-spirit-field",
-          "name": "Support Field",
-          "description": "Set a bright support zone that chips the foe while keeping your side steady.",
+          "name": "Light Screen",
+          "description": "Throw up Light Screen pressure: chip the foe while the party steadies itself.",
           "level": 4,
           "manaCost": 8,
           "cooldownSeconds": 5.8,
@@ -369,7 +369,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your support field pops against {target} for {damage} damage.",
+              "message": "Your Light Screen flashes against {target} for {damage} damage.",
               "formula": {
                 "base": 7,
                 "stat": "bond",
@@ -380,7 +380,7 @@
             },
             {
               "type": "heal",
-              "message": "The support field restores {healing} HP.",
+              "message": "The Light Screen steadies you for {healing} HP.",
               "formula": {
                 "base": 3,
                 "stat": "bond",
@@ -393,8 +393,8 @@
         },
         {
           "id": "evolution-cheer",
-          "name": "Evolution Burst",
-          "description": "Push your partner past the limit in a surge of damage and recovery.",
+          "name": "Mega Evolution",
+          "description": "Push your partner into a Mega Evolution surge of damage and recovery.",
           "level": 5,
           "manaCost": 10,
           "cooldownSeconds": 6.8,
@@ -403,7 +403,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your evolution burst blasts {target} for {damage} damage.",
+              "message": "Mega Evolution blasts {target} for {damage} damage.",
               "formula": {
                 "base": 9,
                 "stat": "heart",
@@ -414,7 +414,7 @@
             },
             {
               "type": "heal",
-              "message": "The evolution surge restores {healing} HP.",
+              "message": "The Mega Evolution surge restores {healing} HP.",
               "formula": {
                 "base": 3,
                 "stat": "heart",
@@ -430,7 +430,7 @@
     {
       "id": "planeswalker",
       "name": "Planeswalker",
-      "description": "A color-slinging spellcaster who stabilizes weird mana leaks by making them everybody else's problem.",
+      "description": "A Magic-slinging Planeswalker who fixes mana, stacks spells, floods the board with tokens, and ends fights with an ultimate.",
       "primaryStats": [
         "spark",
         "wit"
@@ -443,8 +443,8 @@
       "skills": [
         {
           "id": "cantrip-pop",
-          "name": "Cantrip Bolt",
-          "description": "Fire a clean spell that turns a small opening into reliable pressure.",
+          "name": "Lightning Bolt",
+          "description": "Cast the classic red answer: three words, one very clear problem solved.",
           "level": 1,
           "manaCost": 4,
           "cooldownSeconds": 3.6,
@@ -453,7 +453,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your cantrip bolt hits {target} for {damage} damage.",
+              "message": "Lightning Bolt hits {target} for {damage} damage.",
               "formula": {
                 "base": 4,
                 "stat": "spark",
@@ -466,8 +466,8 @@
         },
         {
           "id": "color-fix",
-          "name": "Mana Fix",
-          "description": "Tune messy mana into the exact color of trouble you need.",
+          "name": "Cultivate",
+          "description": "Fix your colors with Cultivate, then channel the spare mana into a hit.",
           "level": 2,
           "manaCost": 5,
           "cooldownSeconds": 4.7,
@@ -476,7 +476,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "You mana-fix a burst through {target} for {damage} damage.",
+              "message": "Cultivate fixes a burst through {target} for {damage} damage.",
               "formula": {
                 "base": 5,
                 "stat": "wit",
@@ -489,8 +489,8 @@
         },
         {
           "id": "token-swarm",
-          "name": "Token Rally",
-          "description": "Flood the field with small summons that become a very real problem together.",
+          "name": "Raise the Alarm",
+          "description": "Flood the board with tokens until the monster realizes the small bodies add up.",
           "level": 3,
           "manaCost": 6,
           "cooldownSeconds": 5.3,
@@ -499,7 +499,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "A token rally pelts {target} for {damage} damage.",
+              "message": "Raise the Alarm sends tokens at {target} for {damage} damage.",
               "formula": {
                 "base": 7,
                 "stat": "spark",
@@ -512,8 +512,8 @@
         },
         {
           "id": "counterflash",
-          "name": "Stack Reversal",
-          "description": "Reverse the enemy play on the stack and leave a warding shimmer behind.",
+          "name": "Counterspell",
+          "description": "Counter the enemy play and leave enough blue shimmer behind to blunt the next swing.",
           "level": 4,
           "manaCost": 8,
           "cooldownSeconds": 5.8,
@@ -522,7 +522,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your stack reversal snaps around {target} for {damage} damage.",
+              "message": "Counterspell snaps around {target} for {damage} damage.",
               "formula": {
                 "base": 8,
                 "stat": "wit",
@@ -533,7 +533,7 @@
             },
             {
               "type": "guard",
-              "message": "Residual wards bend the next attacks aside.",
+              "message": "Residual blue wards bend the next attacks aside.",
               "amount": 2,
               "charges": 2
             }
@@ -541,8 +541,8 @@
         },
         {
           "id": "mythic-overflow",
-          "name": "Mythic Surge",
-          "description": "Let the mana spike into a decisive mythic blast.",
+          "name": "Planeswalker Ultimate",
+          "description": "Cash in the loyalty, point at the board, and do the very unfair thing.",
           "level": 5,
           "manaCost": 10,
           "cooldownSeconds": 6.6,
@@ -551,7 +551,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your mythic surge crashes into {target} for {damage} damage.",
+              "message": "Your Planeswalker Ultimate crashes into {target} for {damage} damage.",
               "formula": {
                 "base": 11,
                 "stat": "spark",
@@ -567,7 +567,7 @@
     {
       "id": "pilot",
       "name": "Pilot",
-      "description": "A model-kit ace who pilots snap-together battle frames and solves problems with launch angles.",
+      "description": "A Gundam Pilot who treats loose card monsters like mobile suits: lock on, draw the beam saber, and launch from the catapult.",
       "primaryStats": [
         "might",
         "grace"
@@ -580,8 +580,8 @@
       "skills": [
         {
           "id": "booster-jab",
-          "name": "Thruster Jab",
-          "description": "Fire the boosters for a fast, close-range hit.",
+          "name": "Beam Saber Slash",
+          "description": "Draw the beam saber and make one clean mobile-suit cut.",
           "level": 1,
           "manaCost": 3,
           "cooldownSeconds": 3,
@@ -590,7 +590,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your thruster jab tags {target} for {damage} damage.",
+              "message": "Your Beam Saber Slash tags {target} for {damage} damage.",
               "formula": {
                 "base": 3,
                 "stat": "grace",
@@ -603,8 +603,8 @@
         },
         {
           "id": "shield-panel",
-          "name": "Shield Bash",
-          "description": "Slam forward behind a shield, dealing damage and absorbing the reply.",
+          "name": "Gundam Shield Bash",
+          "description": "Lead with the Gundam shield, dealing damage while absorbing the counterblow.",
           "level": 2,
           "manaCost": 4,
           "cooldownSeconds": 3.8,
@@ -613,7 +613,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your shield bash slams {target} for {damage} damage.",
+              "message": "Your Gundam Shield Bash slams {target} for {damage} damage.",
               "formula": {
                 "base": 4,
                 "stat": "might",
@@ -624,7 +624,7 @@
             },
             {
               "type": "guard",
-              "message": "The shield absorbs {guard} damage before it breaks away.",
+              "message": "The Gundam shield absorbs {guard} damage before it breaks away.",
               "amount": 3,
               "charges": 1
             }
@@ -632,8 +632,8 @@
         },
         {
           "id": "beam-marker",
-          "name": "Beam Lock",
-          "description": "Paint the target with a beam lock and fire before it can shake loose.",
+          "name": "Funnel Lock-On",
+          "description": "Send the funnels wide, paint the target, and let the lock-on do the talking.",
           "level": 3,
           "manaCost": 6,
           "cooldownSeconds": 4.6,
@@ -642,7 +642,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your beam lock burns across {target} for {damage} damage.",
+              "message": "Your Funnel Lock-On burns across {target} for {damage} damage.",
               "formula": {
                 "base": 6,
                 "stat": "grace",
@@ -655,8 +655,8 @@
         },
         {
           "id": "launch-rail",
-          "name": "Rail Launch",
-          "description": "Kick off a portable launch rail with enough force to brace through impact.",
+          "name": "Catapult Launch",
+          "description": "Launch from the carrier catapult with enough force to brace through impact.",
           "level": 4,
           "manaCost": 8,
           "cooldownSeconds": 5.2,
@@ -665,7 +665,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your rail launch crushes {target} for {damage} damage.",
+              "message": "Your Catapult Launch crushes {target} for {damage} damage.",
               "formula": {
                 "base": 8,
                 "stat": "might",
@@ -676,7 +676,7 @@
             },
             {
               "type": "guard",
-              "message": "The rail brace steadies you against the counterblow.",
+              "message": "The launch brace steadies you against the counterblow.",
               "amount": 2,
               "charges": 2
             }
@@ -684,8 +684,8 @@
         },
         {
           "id": "final-assembly",
-          "name": "Full Armor Finish",
-          "description": "Bring every module online for one heavy finishing strike.",
+          "name": "Full Armor Gundam",
+          "description": "Bring every Full Armor module online for one heavy finishing strike.",
           "level": 5,
           "manaCost": 10,
           "cooldownSeconds": 6.2,
@@ -694,7 +694,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your full armor finish hammers {target} for {damage} damage.",
+              "message": "Full Armor Gundam hammers {target} for {damage} damage.",
               "formula": {
                 "base": 10,
                 "stat": "might",
@@ -710,7 +710,7 @@
     {
       "id": "captain",
       "name": "Captain",
-      "description": "A rubber-limbed, treasure-map brawler whose crew logic is simple: nobody gets left behind.",
+      "description": "A Straw Hat-style Captain with Gum-Gum reach, crew-first instincts, and absolutely no interest in leaving treasure behind.",
       "primaryStats": [
         "heart",
         "might"
@@ -723,8 +723,8 @@
       "skills": [
         {
           "id": "dockside-wallop",
-          "name": "Deckhand Smash",
-          "description": "Open with a brawler strike straight from the ship deck.",
+          "name": "Gum-Gum Pistol",
+          "description": "Stretch across the street and hit the monster with a classic Gum-Gum opener.",
           "level": 1,
           "manaCost": 3,
           "cooldownSeconds": 3.2,
@@ -733,7 +733,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your deckhand smash hits {target} for {damage} damage.",
+              "message": "Your Gum-Gum Pistol hits {target} for {damage} damage.",
               "formula": {
                 "base": 4,
                 "stat": "might",
@@ -746,7 +746,7 @@
         },
         {
           "id": "crew-call",
-          "name": "Crew Rally",
+          "name": "Straw Hat Rally",
           "description": "Rally the crew for a hit that also steels you against the answer.",
           "level": 2,
           "manaCost": 4,
@@ -756,7 +756,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your crew rally rattles {target} for {damage} damage.",
+              "message": "Your Straw Hat Rally rattles {target} for {damage} damage.",
               "formula": {
                 "base": 5,
                 "stat": "heart",
@@ -767,7 +767,7 @@
             },
             {
               "type": "guard",
-              "message": "Crew spirit guards {guard} damage from incoming trouble.",
+              "message": "Straw Hat spirit guards {guard} damage from incoming trouble.",
               "amount": 3,
               "charges": 1
             }
@@ -775,8 +775,8 @@
         },
         {
           "id": "anchor-swing",
-          "name": "Anchor Breaker",
-          "description": "Swing a heavy anchor-line strike built to crack stubborn defenses.",
+          "name": "Gum-Gum Gatling",
+          "description": "Turn one windup into a whole storm of rubber-limbed punches.",
           "level": 3,
           "manaCost": 6,
           "cooldownSeconds": 5,
@@ -785,7 +785,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your anchor breaker clobbers {target} for {damage} damage.",
+              "message": "Your Gum-Gum Gatling clobbers {target} for {damage} damage.",
               "formula": {
                 "base": 7,
                 "stat": "might",
@@ -798,8 +798,8 @@
         },
         {
           "id": "treasure-rush",
-          "name": "Treasure Charge",
-          "description": "Charge toward the prize with enough nerve to shrug off the counterattack.",
+          "name": "Gear Second",
+          "description": "Kick into Gear Second, charge the prize, and shrug off the counterattack.",
           "level": 4,
           "manaCost": 8,
           "cooldownSeconds": 5.7,
@@ -808,7 +808,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your treasure charge crashes into {target} for {damage} damage.",
+              "message": "Gear Second crashes into {target} for {damage} damage.",
               "formula": {
                 "base": 8,
                 "stat": "heart",
@@ -819,7 +819,7 @@
             },
             {
               "type": "guard",
-              "message": "Your treasure charge leaves you too fired up to fold.",
+              "message": "Gear Second leaves you too fired up to fold.",
               "amount": 4,
               "charges": 1
             }
@@ -827,8 +827,8 @@
         },
         {
           "id": "captains-promise",
-          "name": "Captain's Oath",
-          "description": "Plant yourself between danger and the crew, then answer with a decisive swing.",
+          "name": "Gear Fifth",
+          "description": "Let the ridiculous freedom of Gear Fifth turn danger into a finishing gag.",
           "level": 5,
           "manaCost": 10,
           "cooldownSeconds": 6.5,
@@ -837,7 +837,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your captain's oath blasts {target} for {damage} damage.",
+              "message": "Gear Fifth blasts {target} for {damage} damage.",
               "formula": {
                 "base": 10,
                 "stat": "might",
@@ -859,7 +859,7 @@
     {
       "id": "arena-fighter",
       "name": "Arena Fighter",
-      "description": "A multi-series battler who borrows the right trick from the wrong rulebook at the perfect time.",
+      "description": "A Union Arena brawler who spends AP, checks triggers, raids into bigger bodies, and turns crossovers into win conditions.",
       "primaryStats": [
         "wit",
         "bond"
@@ -872,8 +872,8 @@
       "skills": [
         {
           "id": "guest-star",
-          "name": "Assist Call",
-          "description": "Call in a quick assist that clips the enemy and brings hype back to your side.",
+          "name": "AP Assist",
+          "description": "Spend AP for a crossover assist that clips the enemy and brings hype back to your side.",
           "level": 1,
           "manaCost": 3,
           "cooldownSeconds": 3.5,
@@ -882,7 +882,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your assist call blindsides {target} for {damage} damage.",
+              "message": "Your AP Assist blindsides {target} for {damage} damage.",
               "formula": {
                 "base": 3,
                 "stat": "bond",
@@ -906,8 +906,8 @@
         },
         {
           "id": "rulebook-remix",
-          "name": "Rule Shift",
-          "description": "Shift the matchup rules just long enough to make the foe misplay.",
+          "name": "Special Trigger",
+          "description": "Flip a Special Trigger and make the matchup rules briefly everyone else's problem.",
           "level": 2,
           "manaCost": 5,
           "cooldownSeconds": 4.5,
@@ -916,7 +916,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your rule shift scrambles {target} for {damage} damage.",
+              "message": "Your Special Trigger scrambles {target} for {damage} damage.",
               "formula": {
                 "base": 5,
                 "stat": "wit",
@@ -929,8 +929,8 @@
         },
         {
           "id": "panel-jump",
-          "name": "Scene Step",
-          "description": "Step between scenes, reappear with momentum, and blunt the response.",
+          "name": "Step Counter",
+          "description": "Use Step timing to hop lines, reappear with momentum, and blunt the response.",
           "level": 3,
           "manaCost": 6,
           "cooldownSeconds": 5.1,
@@ -939,7 +939,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your scene step lands on {target} for {damage} damage.",
+              "message": "Your Step Counter lands on {target} for {damage} damage.",
               "formula": {
                 "base": 6,
                 "stat": "grace",
@@ -950,7 +950,7 @@
             },
             {
               "type": "guard",
-              "message": "A scene transition blunts the next hit.",
+              "message": "A Step transition blunts the next hit.",
               "amount": 2,
               "charges": 2
             }
@@ -958,8 +958,8 @@
         },
         {
           "id": "team-up-splash",
-          "name": "Team-Up Rush",
-          "description": "Bring the whole lineup into frame for damage and a burst of recovery.",
+          "name": "Raid Team-Up",
+          "description": "Raid into the front line with the whole lineup behind you for damage and recovery.",
           "level": 4,
           "manaCost": 8,
           "cooldownSeconds": 5.9,
@@ -968,7 +968,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your team-up rush hits {target} for {damage} damage.",
+              "message": "Your Raid Team-Up hits {target} for {damage} damage.",
               "formula": {
                 "base": 8,
                 "stat": "bond",
@@ -979,7 +979,7 @@
             },
             {
               "type": "heal",
-              "message": "The team-up energy restores {healing} HP.",
+              "message": "The Raid energy restores {healing} HP.",
               "formula": {
                 "base": 2,
                 "stat": "bond",
@@ -992,8 +992,8 @@
         },
         {
           "id": "finale-crossover",
-          "name": "Crossover Finale",
-          "description": "Resolve every matchup at once with one crowded finishing blow.",
+          "name": "Final Trigger",
+          "description": "Flip the Final Trigger and turn the crossover pileup into one decisive blow.",
           "level": 5,
           "manaCost": 10,
           "cooldownSeconds": 6.9,
@@ -1002,7 +1002,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "Your crossover finale overwhelms {target} for {damage} damage.",
+              "message": "Your Final Trigger overwhelms {target} for {damage} damage.",
               "formula": {
                 "base": 11,
                 "stat": "wit",
