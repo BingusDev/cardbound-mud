@@ -10,7 +10,7 @@
     {
       "id": "binder-downtown",
       "name": "Duelist Downtown",
-      "description": "A Battle City-flavored shopping district where Duel Disks spark between buses, billboards, and snack kiosks.",
+      "description": "Battle City has leaked into the bus schedule: Duel Disks spark between buses, KaibaCorp-looking signs blink over snack kiosks, and every crosswalk feels like a declared Battle Phase.",
       "tags": [
         "starter",
         "city",
@@ -30,7 +30,7 @@
     {
       "id": "neon-mall",
       "name": "Neon Battle Mall",
-      "description": "A bright indoor maze of escalators, closed storefronts, Duel Terminal screens, and monsters using sale banners as capes.",
+      "description": "A neon indoor maze where Game Corner cabinets, Duel Terminal screens, judge calls, and five-color Magic leaks keep turning errands into side events.",
       "tags": [
         "mall",
         "quest",
@@ -50,7 +50,7 @@
     {
       "id": "summon-park",
       "name": "Poke-Gunpla Park",
-      "description": "A city park and toy hangar where Pokemon-sized companions, Gunpla frames, and ambitious kids all need supervision.",
+      "description": "A split park-and-toy district where Pokemon rescue tags hang from benches, Gunpla runners cover the grass, and every whistle sounds like a starting signal.",
       "tags": [
         "park",
         "hangar",
@@ -70,7 +70,7 @@
     {
       "id": "crossover-harbor",
       "name": "Union Harbor",
-      "description": "The waterfront convention grounds where One Piece booths, Union Arena stages, and every card genre try to have their finale at once.",
+      "description": "The waterfront convention grounds where Straw Hat banners, Union Arena AP counters, guest-star stages, and finale monsters all insist they are the main event.",
       "tags": [
         "harbor",
         "finale",
@@ -584,7 +584,7 @@
       "id": "crossover-calamity",
       "name": "Union Arena Calamity",
       "summary": "Open the final pavilion and stop every series from resolving its finale at the same time.",
-      "description": "Coordinator Vale has the Union Arena pass, the stage has the gate, and the pavilion has too many Final Triggers. Get the pass, open the Union Arena gate, and face the Genre-Jam Titan.",
+      "description": "Coordinator Vale has the Union Arena pass, the stage has the gate, and the pavilion has too many Final Triggers. Get the pass, open the Union Arena gate, and face the Final Trigger Titan.",
       "tags": [
         "main",
         "finale"
@@ -684,7 +684,7 @@
       "id": "binder-square",
       "zoneId": "binder-downtown",
       "name": "Cardbound Plaza",
-      "description": "Emergency cones, folding tables, Duel Disk chargers, and glowing booster wrappers fill the plaza. A giant sign blinks: KEEP CALM AND DECLARE YOUR PHASES.",
+      "description": "Emergency cones, folding tables, Duel Disk chargers, and glowing booster wrappers fill the plaza. A giant sign blinks: KEEP CALM, DECLARE YOUR PHASES, AND DO NOT SUMMON IN TRAFFIC.",
       "coords": {
         "x": 0,
         "y": 0,
@@ -727,7 +727,7 @@
       "id": "card-shop",
       "zoneId": "binder-downtown",
       "name": "Sleeve Queen Card Shop",
-      "description": "Binders lie open like emergency manuals. A Duel Terminal near the counter keeps asking if anyone would like to Normal Summon responsibly.",
+      "description": "Binders lie open like emergency manuals. A Duel Terminal near the counter keeps asking if anyone would like to Normal Summon responsibly, and a glass case labeled NOT FOR THE APOCALYPSE is already empty.",
       "coords": {
         "x": 0,
         "y": -1,
@@ -751,7 +751,8 @@
       },
       "items": [
         "sleeve-key",
-        "duel-disk-holster"
+        "duel-disk-holster",
+        "trap-card-sleeves"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -762,7 +763,7 @@
       "id": "sleeve-alley",
       "zoneId": "binder-downtown",
       "name": "Side Deck Alley",
-      "description": "A narrow alley glittering with penny sleeves, runaway dice, and one suspiciously heroic trash can covered in KaibaCorp stickers.",
+      "description": "A narrow alley glittering with penny sleeves, runaway dice, and KaibaCorp stickers. Someone chalked SIDE DECK HERE on the pavement and the pavement took that personally.",
       "coords": {
         "x": 1,
         "y": -1,
@@ -785,7 +786,8 @@
         }
       },
       "items": [
-        "energy-drink"
+        "energy-drink",
+        "millennium-puzzle-replica"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -796,7 +798,7 @@
       "id": "mall-gate",
       "zoneId": "binder-downtown",
       "name": "Duel Disk Turnstiles",
-      "description": "The mall entrance is blocked by turnstiles wired for Duel Disk access. Beyond them, escalators roar like dramatic theme music.",
+      "description": "The mall entrance is blocked by Duel Disk turnstiles. Each scanner hums like it is waiting for a dramatic wrist flick.",
       "coords": {
         "x": 1,
         "y": 0,
@@ -829,7 +831,7 @@
       "id": "food-court",
       "zoneId": "binder-downtown",
       "name": "Food Court Barricade",
-      "description": "Pretzel carts form a defensive wall. Someone has written DO NOT FEED THE BLUE-EYES on a napkin dispenser.",
+      "description": "Pretzel carts form a defensive wall. Someone has written DO NOT FEED THE BLUE-EYES on a napkin dispenser, then underlined BLUE-EYES three times.",
       "coords": {
         "x": 0,
         "y": 1,
@@ -865,7 +867,7 @@
       "id": "transit-platform",
       "zoneId": "binder-downtown",
       "name": "Rotom Transit Platform",
-      "description": "The buses have stopped, but their route signs keep flipping between Gym badges, boss-monster names, and one very smug Rotom face.",
+      "description": "The buses have stopped, but their route signs keep flipping between Gym badges, boss-monster names, and one Rotom face that keeps rating everyone two stars.",
       "coords": {
         "x": 1,
         "y": 0,
@@ -899,7 +901,7 @@
       "id": "main-concourse",
       "zoneId": "neon-mall",
       "name": "Neon Mall Concourse",
-      "description": "Escalators move on their own, ad screens shout combo advice, and a kiosk kid is using receipt paper to track every Duel Monster sighting.",
+      "description": "Escalators move on their own, ad screens shout combo advice, and Kiosk Kid Milo is using receipt paper to track every Duel Monster, Pokemon, and suspicious coupon knight sighting.",
       "coords": {
         "x": 0,
         "y": 0,
@@ -943,7 +945,7 @@
       "id": "arcade",
       "zoneId": "neon-mall",
       "name": "Game Corner Arcade",
-      "description": "Cabinets beep in panic. A claw machine has captured three tiny monsters and somehow elected itself the Game Corner champion.",
+      "description": "Cabinets beep in panic. A claw machine has captured three tiny monsters and somehow elected itself Game Corner champion.",
       "coords": {
         "x": 1,
         "y": 0,
@@ -979,7 +981,7 @@
       "id": "rooftop-stairs",
       "zoneId": "neon-mall",
       "name": "Rooftop Stairs",
-      "description": "Emergency lights chase each other up the stairwell while Magic card borders peel off the walls like stickered enchantments.",
+      "description": "Emergency lights chase each other up the stairwell while Magic card borders peel off the walls like stickered enchantments. Someone has written PLEASE HOLD PRIORITY on the handrail.",
       "coords": {
         "x": 2,
         "y": 0,
@@ -1009,7 +1011,7 @@
       "id": "broadcast-roof",
       "zoneId": "neon-mall",
       "name": "Rotom Broadcast Roof",
-      "description": "A pirate radio mast has been rebuilt from selfie sticks, foil card dividers, and a Rotom signal booster. The whole roof hums with heroic static.",
+      "description": "A pirate radio mast has been rebuilt from selfie sticks, foil card dividers, and a Rotom signal booster. The whole roof hums like a live Pokemon news alert.",
       "coords": {
         "x": 2,
         "y": 0,
@@ -1067,7 +1069,8 @@
         }
       },
       "items": [
-        "street-sneakers"
+        "street-sneakers",
+        "planeswalker-deckbox"
       ],
       "itemSpawns": [],
       "npcs": []
@@ -1076,7 +1079,7 @@
       "id": "mana-lab",
       "zoneId": "neon-mall",
       "name": "Pop-Up Magic Lab",
-      "description": "A science fair booth has grown into a five-color Magic lab of safety goggles, Mox shards, and equations ending in several exclamation marks.",
+      "description": "A science fair booth has grown into a five-color Magic lab of safety goggles, Mox shards, and equations ending in several exclamation marks. The whiteboard says DO NOT TAP THE PRISM.",
       "coords": {
         "x": 1,
         "y": 1,
@@ -1112,7 +1115,7 @@
       "id": "prism-vault",
       "zoneId": "neon-mall",
       "name": "Color Pie Vault",
-      "description": "A former storage room now contains a floating prism that sorts uncontained mana into colors, then immediately argues with itself.",
+      "description": "A former storage room now contains a floating prism that sorts uncontained mana into colors, then immediately argues with itself about color identity.",
       "coords": {
         "x": 2,
         "y": 1,
@@ -1132,7 +1135,8 @@
         }
       },
       "items": [
-        "prism-badge"
+        "prism-badge",
+        "black-lotus-proxy"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1143,7 +1147,7 @@
       "id": "toy-aisle",
       "zoneId": "neon-mall",
       "name": "Gunpla Toy Aisle",
-      "description": "Action figures and Gunpla runners stand in perfect formation beside half-empty shelves. Someone taped googly eyes over the security camera.",
+      "description": "Action figures and Gunpla runners stand in perfect formation beside half-empty shelves. A tiny Haro rolls past with a price tag stuck to its face.",
       "coords": {
         "x": -1,
         "y": 0,
@@ -1166,7 +1170,8 @@
         }
       },
       "items": [
-        "guest-star-sticker"
+        "guest-star-sticker",
+        "haro-backpack"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1177,7 +1182,7 @@
       "id": "union-stage",
       "zoneId": "neon-mall",
       "name": "Union Arena Preview Stage",
-      "description": "A small convention stage is covered in mismatched series banners. Every microphone introduces a different franchise.",
+      "description": "A small convention stage is covered in mismatched series banners. Every microphone introduces a different franchise, and the AP counter refuses to stay at zero.",
       "coords": {
         "x": -1,
         "y": 1,
@@ -1203,7 +1208,8 @@
         }
       },
       "items": [
-        "crossover-pass"
+        "crossover-pass",
+        "union-ap-counter"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1216,7 +1222,7 @@
       "id": "pocket-park",
       "zoneId": "summon-park",
       "name": "Poke Ball Park",
-      "description": "A duck pond has been covered with floating Poke Ball rescue tags. Tiny monsters chase frisbees while volunteers pretend this is manageable.",
+      "description": "A duck pond has been covered with floating Poke Ball rescue tags. Tiny monsters chase frisbees while volunteers pretend the tall grass is not spreading.",
       "coords": {
         "x": 0,
         "y": 0,
@@ -1239,7 +1245,8 @@
         }
       },
       "items": [
-        "capture-tags"
+        "capture-tags",
+        "gym-badge-pin"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1251,7 +1258,7 @@
       "id": "ranger-station",
       "zoneId": "summon-park",
       "name": "Pokemon Ranger Card Table",
-      "description": "A ranger table is covered with clipboards, water bottles, and a hand-drawn chart titled CUTE DOES NOT MEAN SAFE TO PET.",
+      "description": "A ranger table is covered with clipboards, water bottles, and a hand-drawn chart titled CUTE DOES NOT MEAN SAFE TO PET. A Pokedex phone keeps buzzing anyway.",
       "coords": {
         "x": -1,
         "y": 0,
@@ -1274,7 +1281,8 @@
         }
       },
       "items": [
-        "capture-tags"
+        "capture-tags",
+        "pokedex-phone"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1286,7 +1294,7 @@
       "id": "training-lot",
       "zoneId": "summon-park",
       "name": "Gunpla Training Lot",
-      "description": "Parking spaces have been repainted as mobile-suit lanes. Cones, chalk arrows, and one very stern whistle keep the chaos almost organized.",
+      "description": "Parking spaces have been repainted as mobile-suit lanes. Cones, chalk arrows, and one very stern whistle keep the Gunpla chaos almost organized.",
       "coords": {
         "x": -1,
         "y": 1,
@@ -1312,7 +1320,8 @@
         }
       },
       "items": [
-        "servo-key"
+        "servo-key",
+        "beam-rifle-keychain"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1324,7 +1333,7 @@
       "id": "frame-hangar",
       "zoneId": "summon-park",
       "name": "White Base Snap-Frame Hangar",
-      "description": "Gunpla frames hang from fishing line, half heroic and half unfinished. A catapult rail points directly at several warning signs.",
+      "description": "Gunpla frames hang from fishing line, half heroic and half unfinished. A White Base-style catapult rail points directly at several warning signs and one very nervous shelf.",
       "coords": {
         "x": -2,
         "y": 1,
@@ -1361,7 +1370,7 @@
       "id": "harbor-walk",
       "zoneId": "crossover-harbor",
       "name": "Union Harbor Walk",
-      "description": "Food trucks, convention booths, and emergency tape line the waterfront. The bay reflects monsters that are not actually above it yet.",
+      "description": "Food trucks, convention booths, and emergency tape line the waterfront. The bay reflects monsters that are not actually above it yet, which everyone agrees is rude.",
       "coords": {
         "x": 0,
         "y": 0,
@@ -1387,7 +1396,8 @@
         }
       },
       "items": [
-        "captain-token"
+        "captain-token",
+        "devil-fruit-gummy"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1399,7 +1409,7 @@
       "id": "captain-pier",
       "zoneId": "crossover-harbor",
       "name": "Straw Hat Captain Pier",
-      "description": "A One Piece-themed booth has become a leadership seminar with barrels, Jolly Roger banners, and suspiciously stretchy hazards.",
+      "description": "A One Piece-themed booth has become a leadership seminar with barrels, Jolly Roger banners, and hazards that keep stretching farther than physics requested.",
       "coords": {
         "x": -1,
         "y": 0,
@@ -1422,7 +1432,8 @@
         }
       },
       "items": [
-        "captain-token"
+        "captain-token",
+        "straw-hat-sash"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1433,7 +1444,7 @@
       "id": "crossover-pavilion",
       "zoneId": "crossover-harbor",
       "name": "Union Arena Pavilion",
-      "description": "The final pavilion is a storm of card frames, Gunpla parts, snack wrappers, AP counters, and heroic speeches arriving out of order.",
+      "description": "The final pavilion is a storm of card frames, Gunpla parts, snack wrappers, AP counters, and heroic speeches arriving out of order. The stage manager has given up and started tracking triggers.",
       "coords": {
         "x": -1,
         "y": -1,
@@ -1458,7 +1469,8 @@
         }
       },
       "items": [
-        "finale-binder"
+        "finale-binder",
+        "final-trigger-lanyard"
       ],
       "itemSpawns": [],
       "npcs": [
@@ -1675,6 +1687,170 @@
           "wit": 1
         }
       }
+    },
+    {
+      "id": "millennium-puzzle-replica",
+      "name": "Millennium Puzzle replica",
+      "description": "A heavy gold puzzle on a chain. It probably will not house an ancient spirit, but it absolutely improves dramatic pauses.",
+      "type": "equipment",
+      "value": 16,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "spark": 1
+        }
+      }
+    },
+    {
+      "id": "trap-card-sleeves",
+      "name": "Trap Card sleeves",
+      "description": "Purple-backed sleeves that make every set card look like it has been waiting all episode.",
+      "type": "equipment",
+      "value": 10,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "heart": 1
+        }
+      }
+    },
+    {
+      "id": "pokedex-phone",
+      "name": "Pokedex phone",
+      "description": "A red phone that identifies monsters, judges your walking pace, and keeps asking if you remembered to save.",
+      "type": "equipment",
+      "value": 14,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "bond": 1
+        }
+      }
+    },
+    {
+      "id": "gym-badge-pin",
+      "name": "Gym Badge pin",
+      "description": "A shiny badge pin that makes helpful monsters listen slightly harder and unhelpful monsters pose for longer.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "head",
+        "statBonuses": {
+          "heart": 1,
+          "bond": 1
+        }
+      }
+    },
+    {
+      "id": "black-lotus-proxy",
+      "name": "Black Lotus proxy",
+      "description": "A very fake, very powerful-looking proxy that still makes every Magic player in the room inhale sharply.",
+      "type": "equipment",
+      "value": 18,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "spark": 2
+        }
+      }
+    },
+    {
+      "id": "planeswalker-deckbox",
+      "name": "Planeswalker deckbox",
+      "description": "A sturdy deckbox with five-color dividers and a sticky note reading DO NOT SHUFFLE DURING AN EARTHQUAKE.",
+      "type": "equipment",
+      "value": 13,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "spark": 1
+        }
+      }
+    },
+    {
+      "id": "beam-rifle-keychain",
+      "name": "Beam rifle keychain",
+      "description": "A tiny beam rifle charm that makes lock-on beeps whenever someone says this is probably safe.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "might": 1,
+          "spark": 1
+        }
+      }
+    },
+    {
+      "id": "haro-backpack",
+      "name": "Haro backpack",
+      "description": "A round green backpack with little ears, too many pockets, and a surprising amount of emotional support.",
+      "type": "equipment",
+      "value": 13,
+      "equipment": {
+        "slot": "body",
+        "statBonuses": {
+          "heart": 1,
+          "bond": 1
+        }
+      }
+    },
+    {
+      "id": "straw-hat-sash",
+      "name": "Straw Hat sash",
+      "description": "A red sash that makes every walk toward danger feel like the start of a crew speech.",
+      "type": "equipment",
+      "value": 13,
+      "equipment": {
+        "slot": "body",
+        "statBonuses": {
+          "heart": 1,
+          "might": 1
+        }
+      }
+    },
+    {
+      "id": "devil-fruit-gummy",
+      "name": "Devil Fruit gummy",
+      "description": "A swirly gummy that tastes like courage, bad decisions, and absolutely no swimming afterward.",
+      "type": "consumable",
+      "value": 8,
+      "consumable": {
+        "hp": 3,
+        "mana": 5
+      }
+    },
+    {
+      "id": "union-ap-counter",
+      "name": "Union Arena AP counter",
+      "description": "A clicky counter that tracks AP, panic, and how many guest stars have entered from stage left.",
+      "type": "equipment",
+      "value": 14,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "grace": 1
+        }
+      }
+    },
+    {
+      "id": "final-trigger-lanyard",
+      "name": "Final Trigger lanyard",
+      "description": "A convention lanyard that flashes whenever the scene is about to become everyone else's problem.",
+      "type": "equipment",
+      "value": 15,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "spark": 1,
+          "bond": 1
+        }
+      }
     }
   ],
   "npcs": [
@@ -1793,9 +1969,9 @@
     },
     {
       "id": "rogue-topdeck",
-      "name": "Rogue Duelist Token",
+      "name": "Kuriboh Topdeck",
       "species": "runaway Duel Monster",
-      "description": "A caped Duel Monster dramatically topdecks itself every few seconds and gasps each time.",
+      "description": "A caped little Duel Monster dramatically topdecks itself every few seconds and squeaks like destiny has tiny feet.",
       "stats": {
         "heart": 7,
         "wit": 8,
@@ -1814,8 +1990,8 @@
         }
       },
       "combat": {
-        "attackName": "topdeck slash",
-        "defeatMessage": "The Rogue Duelist Token spins into a sleeve and sulks in foil silence.",
+        "attackName": "topdeck nibble",
+        "defeatMessage": "The Kuriboh Topdeck puffs into a harmless furball of foil and destiny.",
         "respawnSeconds": 30,
         "xp": 16,
         "tickets": 5,
@@ -1824,19 +2000,29 @@
             "itemId": "foil-snack",
             "chance": 0.45,
             "quantity": 1
+          },
+          {
+            "itemId": "millennium-puzzle-replica",
+            "chance": 0.12,
+            "quantity": 1
+          },
+          {
+            "itemId": "trap-card-sleeves",
+            "chance": 0.22,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Rogue Duelist Token points at you, then at the sky, then at its own reflection."
+          "The Kuriboh Topdeck points at you, then at the sky, then at its own reflection."
         ],
         "topics": {}
       },
       "card": {
         "page": "Duel Monsters Page",
         "rarity": "uncommon",
-        "flavor": "A dramatic opener that loudly believes every draw was destiny."
+        "flavor": "A tiny dramatic opener that loudly believes every draw was destiny."
       }
     },
     {
@@ -1862,8 +2048,8 @@
         }
       },
       "combat": {
-        "attackName": "wrapper chomp",
-        "defeatMessage": "The Snack Mimic unwraps into ordinary trash and one edible snack.",
+        "attackName": "Rare Candy chomp",
+        "defeatMessage": "The Rare Candy Mimic unwraps into ordinary trash and one suspiciously useful snack.",
         "respawnSeconds": 30,
         "xp": 13,
         "tickets": 4,
@@ -1872,12 +2058,17 @@
             "itemId": "energy-drink",
             "chance": 0.35,
             "quantity": 1
+          },
+          {
+            "itemId": "devil-fruit-gummy",
+            "chance": 0.08,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "crinkle crinkle"
+          "The Rare Candy Mimic crinkles like it is considering evolution."
         ],
         "topics": {}
       },
@@ -1996,9 +2187,9 @@
     },
     {
       "id": "coupon-knight",
-      "name": "Raincheck Paladin",
+      "name": "Obnoxious Coupon Guard",
       "species": "discount champion",
-      "description": "A cardboard paladin with a lance made of expired coupons and the confidence of a clearance-bin rare.",
+      "description": "A clearance-bin paladin with expired coupons for armor and the stubborn refusal to be destroyed by battle.",
       "stats": {
         "heart": 7,
         "wit": 6,
@@ -2014,8 +2205,8 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "raincheck lance",
-        "defeatMessage": "The Raincheck Paladin yields and prints a raincheck.",
+        "attackName": "coupon counter slash",
+        "defeatMessage": "The Obnoxious Coupon Guard finally accepts that the sale ended yesterday.",
         "respawnSeconds": 30,
         "xp": 18,
         "tickets": 5,
@@ -2024,12 +2215,17 @@
             "itemId": "foil-snack",
             "chance": 0.4,
             "quantity": 1
+          },
+          {
+            "itemId": "trap-card-sleeves",
+            "chance": 0.2,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Coupon Knight declares, \"Buy one peril, get one free!\""
+          "The Obnoxious Coupon Guard declares, \"Buy one peril, get one free!\""
         ],
         "topics": {}
       },
@@ -2041,9 +2237,9 @@
     },
     {
       "id": "pixel-drake",
-      "name": "Game Corner Drake",
+      "name": "Game Corner Charizard Cabinet",
       "species": "arcade dragon",
-      "description": "A blocky little dragon made of arcade pixels, Prize Tickets, and poor impulse control.",
+      "description": "A cabinet-sized pixel dragon with a prize counter in its chest and a boss jingle where common sense should be.",
       "stats": {
         "heart": 7,
         "wit": 7,
@@ -2062,8 +2258,8 @@
         }
       },
       "combat": {
-        "attackName": "coin-op burst",
-        "defeatMessage": "The Pixel Drake drops into attract mode and stops biting.",
+        "attackName": "coin-op flamethrower",
+        "defeatMessage": "The Game Corner Charizard Cabinet drops into attract mode and stops biting.",
         "respawnSeconds": 30,
         "xp": 18,
         "tickets": 4,
@@ -2072,12 +2268,17 @@
             "itemId": "capture-tags",
             "chance": 0.35,
             "quantity": 1
+          },
+          {
+            "itemId": "pokedex-phone",
+            "chance": 0.16,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Pixel Drake makes a coin-in sound with its mouth."
+          "The Game Corner Charizard Cabinet makes a coin-in sound with its mouth."
         ],
         "topics": {}
       },
@@ -2133,9 +2334,9 @@
     },
     {
       "id": "weather-wyrm",
-      "name": "Weather Wyrm",
+      "name": "Izzet Weather Wyrm",
       "species": "Izzet forecast monster",
-      "description": "A serpentine forecast graphic escaped from a weather app and now predicts Lightning Bolts.",
+      "description": "A serpentine forecast graphic escaped from a weather app and overloaded with blue-red spell energy.",
       "stats": {
         "heart": 8,
         "wit": 8,
@@ -2154,8 +2355,8 @@
         }
       },
       "combat": {
-        "attackName": "storm front",
-        "defeatMessage": "The Weather Wyrm collapses into a seven-day forecast for mild embarrassment.",
+        "attackName": "Izzet storm front",
+        "defeatMessage": "The Izzet Weather Wyrm collapses into a seven-day forecast for mild embarrassment.",
         "respawnSeconds": 30,
         "xp": 22,
         "tickets": 6,
@@ -2163,6 +2364,11 @@
           {
             "itemId": "signal-booster",
             "chance": 0.3,
+            "quantity": 1
+          },
+          {
+            "itemId": "planeswalker-deckbox",
+            "chance": 0.18,
             "quantity": 1
           }
         ]
@@ -2235,9 +2441,9 @@
     },
     {
       "id": "cardboard-golem",
-      "name": "Bulk Rare Golem",
+      "name": "Colossal Bulkmaw",
       "species": "folded bulk rare",
-      "description": "A hulking golem folded from bulk rares, packing tape, and very big feelings.",
+      "description": "A hulking beast folded from bulk rares, packing tape, and the ancient Magic tradition of a very large green problem.",
       "stats": {
         "heart": 9,
         "wit": 5,
@@ -2253,8 +2459,8 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "bulk rare smash",
-        "defeatMessage": "The Bulk Rare Golem collapses into a recyclable heap.",
+        "attackName": "bulk trample",
+        "defeatMessage": "The Colossal Bulkmaw collapses into a recyclable stack of almost-playables.",
         "respawnSeconds": 30,
         "xp": 24,
         "tickets": 7,
@@ -2262,6 +2468,11 @@
           {
             "itemId": "prism-shard",
             "chance": 0.35,
+            "quantity": 1
+          },
+          {
+            "itemId": "black-lotus-proxy",
+            "chance": 0.08,
             "quantity": 1
           }
         ]
@@ -2280,9 +2491,9 @@
     },
     {
       "id": "mana-squall",
-      "name": "Mana Squall",
+      "name": "Five-Color Mana Squall",
       "species": "runaway spellstorm",
-      "description": "A swirling spellstorm that keeps becoming five colors and one bad idea.",
+      "description": "A swirling spellstorm that keeps becoming five colors and one extremely questionable commander deck.",
       "stats": {
         "heart": 8,
         "wit": 9,
@@ -2298,8 +2509,8 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "five-color burst",
-        "defeatMessage": "The Mana Squall sorts itself into a neat little Color Pie badge.",
+        "attackName": "five-color overload",
+        "defeatMessage": "The Five-Color Mana Squall sorts itself into a neat little Color Pie badge.",
         "respawnSeconds": 30,
         "xp": 26,
         "tickets": 8,
@@ -2307,6 +2518,11 @@
           {
             "itemId": "prism-badge",
             "chance": 0.45,
+            "quantity": 1
+          },
+          {
+            "itemId": "black-lotus-proxy",
+            "chance": 0.15,
             "quantity": 1
           }
         ]
@@ -2369,9 +2585,9 @@
     },
     {
       "id": "pocket-lizard",
-      "name": "Pocket Lizard",
+      "name": "Starter Pocket Lizard",
       "species": "small Pokemon-like monster",
-      "description": "A tiny bright-eyed monster sitting in a card sleeve like it is a sleeping bag.",
+      "description": "A tiny bright-eyed starter monster sitting in a card sleeve like it is a sleeping bag.",
       "stats": {
         "heart": 6,
         "wit": 6,
@@ -2390,7 +2606,7 @@
         }
       },
       "combat": {
-        "attackName": "Quick Attack",
+        "attackName": "starter Quick Attack",
         "defeatMessage": "The Pocket Lizard curls up, tagged and calm.",
         "respawnSeconds": 30,
         "xp": 16,
@@ -2400,12 +2616,17 @@
             "itemId": "capture-tags",
             "chance": 0.3,
             "quantity": 1
+          },
+          {
+            "itemId": "gym-badge-pin",
+            "chance": 0.22,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Pocket Lizard squeaks at the exact pitch of a new sidequest."
+          "The Starter Pocket Lizard squeaks at the exact pitch of a new sidequest."
         ],
         "topics": {}
       },
@@ -2417,9 +2638,9 @@
     },
     {
       "id": "practice-dummy",
-      "name": "Tutorial Dummy Deluxe",
+      "name": "Haro Tutorial Dummy",
       "species": "animated tutorial prop",
-      "description": "A foam dummy with a screen that says PRESS A TO HIT ME RESPONSIBLY.",
+      "description": "A foam dummy with a Haro face, a squeaky warning light, and a screen that says PRESS A TO HIT ME RESPONSIBLY.",
       "stats": {
         "heart": 10,
         "wit": 4,
@@ -2435,14 +2656,19 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "tutorial bop",
-        "defeatMessage": "The dummy gives you a B plus and falls over.",
+        "attackName": "Haro bop",
+        "defeatMessage": "The Haro Tutorial Dummy gives you a B plus and rolls over.",
         "respawnSeconds": 30,
         "xp": 18,
         "tickets": 2,
         "drops": [
           {
             "itemId": "servo-key",
+            "chance": 0.2,
+            "quantity": 1
+          },
+          {
+            "itemId": "haro-backpack",
             "chance": 0.2,
             "quantity": 1
           }
@@ -2506,9 +2732,9 @@
     },
     {
       "id": "plastic-mecha",
-      "name": "Gunpla Mecha",
+      "name": "Full Armor Gunpla Mecha",
       "species": "snap-frame mobile suit",
-      "description": "A towering snap-together mobile suit, half assembled and fully convinced it is ready for launch.",
+      "description": "A towering snap-together mobile suit wearing every optional armor plate at once and calling that readiness.",
       "stats": {
         "heart": 9,
         "wit": 7,
@@ -2524,8 +2750,8 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "beam rifle pointer",
-        "defeatMessage": "The Gunpla Mecha loses one dramatic shoulder piece and powers down.",
+        "attackName": "full armor beam rifle",
+        "defeatMessage": "The Full Armor Gunpla Mecha loses one dramatic shoulder piece and powers down.",
         "respawnSeconds": 30,
         "xp": 30,
         "tickets": 9,
@@ -2534,12 +2760,17 @@
             "itemId": "pilot-gloves",
             "chance": 0.25,
             "quantity": 1
+          },
+          {
+            "itemId": "beam-rifle-keychain",
+            "chance": 0.25,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Plastic Mecha points at the sky even though the ceiling is right there."
+          "The Full Armor Gunpla Mecha points at the sky even though the ceiling is right there."
         ],
         "topics": {}
       },
@@ -2607,7 +2838,7 @@
       "id": "rubber-band-brute",
       "name": "Gum-Gum Brute",
       "species": "stretchy card brawler",
-      "description": "A stretchy brawler made of rubber bands, pirate stickers, and unearned Gum-Gum confidence.",
+      "description": "A stretchy dockside brawler made of rubber bands, pirate stickers, and enough Gum-Gum confidence to ignore distance.",
       "stats": {
         "heart": 10,
         "wit": 6,
@@ -2626,7 +2857,7 @@
         }
       },
       "combat": {
-        "attackName": "Gum-Gum stretch punch",
+        "attackName": "Gum-Gum pistol punch",
         "defeatMessage": "The Gum-Gum Brute snaps back to normal size and looks embarrassed.",
         "respawnSeconds": 30,
         "xp": 28,
@@ -2636,12 +2867,17 @@
             "itemId": "captain-token",
             "chance": 0.4,
             "quantity": 1
+          },
+          {
+            "itemId": "straw-hat-sash",
+            "chance": 0.22,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Rubber-Band Brute winds up from approximately too far away."
+          "The Gum-Gum Brute winds up from approximately too far away."
         ],
         "topics": {}
       },
@@ -2697,9 +2933,9 @@
     },
     {
       "id": "crossover-glitch",
-      "name": "Union Arena Glitch",
+      "name": "Special Trigger Glitch",
       "species": "rule collision",
-      "description": "A flickering silhouette made of mismatched card frames, AP counters, and surprise guest stars.",
+      "description": "A flickering Union Arena silhouette made of mismatched card frames, AP counters, and guest-star timing errors.",
       "stats": {
         "heart": 8,
         "wit": 10,
@@ -2719,7 +2955,7 @@
       },
       "combat": {
         "attackName": "Special Trigger error",
-        "defeatMessage": "The Union Arena Glitch resolves into a harmless sticker sheet.",
+        "defeatMessage": "The Special Trigger Glitch resolves into a harmless sticker sheet.",
         "respawnSeconds": 30,
         "xp": 32,
         "tickets": 10,
@@ -2728,12 +2964,17 @@
             "itemId": "guest-star-sticker",
             "chance": 0.3,
             "quantity": 1
+          },
+          {
+            "itemId": "union-ap-counter",
+            "chance": 0.25,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Crossover Glitch speaks in three catchphrases at once."
+          "The Special Trigger Glitch speaks in three catchphrases at once."
         ],
         "topics": {}
       },
@@ -2745,9 +2986,9 @@
     },
     {
       "id": "genre-jam-titan",
-      "name": "Genre-Jam Titan",
+      "name": "Final Trigger Titan",
       "species": "Final Trigger monster",
-      "description": "A huge monster made from Duel capes, Pokemon companions, Magic prisms, Gunpla parts, Straw Hat banners, and Union Arena badges.",
+      "description": "A huge finale monster made from Duel capes, Pokemon companions, Magic prisms, Gunpla parts, Straw Hat banners, and Union Arena badges.",
       "stats": {
         "heart": 12,
         "wit": 10,
@@ -2763,8 +3004,8 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "Final Trigger strike",
-        "defeatMessage": "The Genre-Jam Titan splits into a dozen tired cards and one very relieved city.",
+        "attackName": "Final Trigger slam",
+        "defeatMessage": "The Final Trigger Titan splits into a dozen tired cards and one very relieved city.",
         "respawnSeconds": 30,
         "xp": 45,
         "tickets": 15,
@@ -2773,12 +3014,17 @@
             "itemId": "finale-binder",
             "chance": 0.5,
             "quantity": 1
+          },
+          {
+            "itemId": "final-trigger-lanyard",
+            "chance": 0.4,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Genre-Jam Titan raises six opening themes at once."
+          "The Final Trigger Titan raises six opening themes at once."
         ],
         "topics": {}
       },
@@ -2790,9 +3036,9 @@
     },
     {
       "id": "holo-topdeck",
-      "name": "Secret Rare Topdeck",
+      "name": "Secret Rare Kuriboh",
       "species": "foil variant Duel Monster",
-      "description": "A mirror-bright version of the Rogue Duelist Token that sparkles hard enough to interrupt traffic.",
+      "description": "A mirror-bright version of the Kuriboh Topdeck that sparkles hard enough to interrupt traffic.",
       "card": {
         "page": "Event Page",
         "rarity": "rare",
@@ -2818,8 +3064,8 @@
         }
       },
       "combat": {
-        "attackName": "secret rare flourish",
-        "defeatMessage": "The Secret Rare Topdeck flashes one last dramatic glint and slides into a premium sleeve.",
+        "attackName": "secret rare nibble",
+        "defeatMessage": "The Secret Rare Kuriboh flashes one last dramatic glint and slides into a premium sleeve.",
         "respawnSeconds": 90,
         "xp": 28,
         "tickets": 9,
@@ -2833,21 +3079,26 @@
             "itemId": "promo-foil-stamp",
             "chance": 0.35,
             "quantity": 1
+          },
+          {
+            "itemId": "millennium-puzzle-replica",
+            "chance": 0.25,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Secret Rare Topdeck reflects your heroic pose back at maximum brightness."
+          "The Secret Rare Kuriboh reflects your heroic pose back at maximum brightness."
         ],
         "topics": {}
       }
     },
     {
       "id": "prismatic-pocket-lizard",
-      "name": "Shiny Pocket Lizard",
+      "name": "Shiny Starter Lizard",
       "species": "shiny companion variant",
-      "description": "A pocket-sized companion monster refracting sunlight into tiny victory poses.",
+      "description": "A pocket-sized starter monster refracting sunlight into tiny victory poses.",
       "card": {
         "page": "Event Page",
         "rarity": "rare",
@@ -2874,7 +3125,7 @@
       },
       "combat": {
         "attackName": "rainbow pounce",
-        "defeatMessage": "The Shiny Pocket Lizard chirps, accepts a tag, and sparkles into your collection log.",
+        "defeatMessage": "The Shiny Starter Lizard chirps, accepts a tag, and sparkles into your collection log.",
         "respawnSeconds": 90,
         "xp": 26,
         "tickets": 8,
@@ -2888,12 +3139,17 @@
             "itemId": "promo-foil-stamp",
             "chance": 0.35,
             "quantity": 1
+          },
+          {
+            "itemId": "pokedex-phone",
+            "chance": 0.3,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Shiny Pocket Lizard squeaks in limited-edition colors."
+          "The Shiny Starter Lizard squeaks in limited-edition colors."
         ],
         "topics": {}
       }
@@ -2945,7 +3201,7 @@
       },
       "dialogue": {
         "greeting": [
-          "The Cabinet Boss Drake roars in sixteen-bit surround sound."
+          "The Game Corner Boss Drake roars in sixteen-bit surround sound."
         ],
         "topics": {}
       }
@@ -2992,6 +3248,11 @@
             "itemId": "promo-foil-stamp",
             "chance": 0.5,
             "quantity": 1
+          },
+          {
+            "itemId": "beam-rifle-keychain",
+            "chance": 0.35,
+            "quantity": 1
           }
         ]
       },
@@ -3027,7 +3288,7 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "hat trick",
+        "attackName": "Trap Hole hat trick",
         "defeatMessage": "The Trap Card Busker bows, sweeps the Trap Cards into a neat pile, and vanishes behind applause nobody ordered.",
         "respawnSeconds": 45,
         "xp": 18,
@@ -3090,7 +3351,7 @@
       },
       "dialogue": {
         "greeting": [
-          "The Plush Spark Buddy vibrates with the confidence of a toy aisle champion."
+          "The Plush Pikaclone Buddy vibrates with the confidence of a toy aisle champion."
         ],
         "topics": {}
       }
@@ -3123,7 +3384,7 @@
         }
       },
       "combat": {
-        "attackName": "rope-loop swing",
+        "attackName": "crew rope swing",
         "defeatMessage": "The Dockside Deckhand salutes, misses the pier post, and decides that still counts.",
         "respawnSeconds": 45,
         "xp": 24,
@@ -3138,7 +3399,7 @@
       },
       "dialogue": {
         "greeting": [
-          "The Dockside Deckhand shouts that the crew has arrived, then looks around for the crew."
+          "The Straw Hat Deckhand shouts that the crew has arrived, then looks around for the crew."
         ],
         "topics": {}
       }
@@ -3186,7 +3447,7 @@
       },
       "dialogue": {
         "greeting": [
-          "The Token Mascot jingles like a prize machine with plot relevance."
+          "The Prize Ticket Mascot jingles like a prize machine with plot relevance."
         ],
         "topics": {}
       }
@@ -3226,12 +3487,17 @@
             "itemId": "guest-star-sticker",
             "chance": 0.45,
             "quantity": 1
+          },
+          {
+            "itemId": "union-ap-counter",
+            "chance": 0.25,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Continuity Cameo introduces itself with a theme sting nobody recognizes."
+          "The Union Cameo introduces itself with a theme sting nobody recognizes."
         ],
         "topics": {}
       }
@@ -3261,7 +3527,7 @@
         "stationary": true
       },
       "combat": {
-        "attackName": "encore slam",
+        "attackName": "post-credits slam",
         "defeatMessage": "The Credits Colossus scrolls past SPECIAL THANKS and finally sits down.",
         "respawnSeconds": 90,
         "xp": 40,
@@ -3271,12 +3537,17 @@
             "itemId": "finale-binder",
             "chance": 0.35,
             "quantity": 1
+          },
+          {
+            "itemId": "final-trigger-lanyard",
+            "chance": 0.28,
+            "quantity": 1
           }
         ]
       },
       "dialogue": {
         "greeting": [
-          "The Credits Colossus raises a glowing card that says AND ONE MORE THING."
+          "The Post-Credits Colossus raises a glowing card that says AND ONE MORE THING."
         ],
         "topics": {}
       }

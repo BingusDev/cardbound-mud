@@ -29,7 +29,7 @@ test("world loads and builder validation is clean", () => {
 
   assert.equal(world.rooms.size, 22);
   assert.equal(world.quests.size, 6);
-  assert.equal(world.items.size, 20);
+  assert.equal(world.items.size, 32);
   assert.equal(world.npcs.size, 33);
   assert.equal(validation.ok, true);
   assert.deepEqual(validation.issues, []);
@@ -244,11 +244,11 @@ test("cardbound combat verbs attack, run, and recover are accepted", (t) => {
   const { game, player, store, world } = testGame(t, "combat-verbs");
 
   movePlayerToNpc(player, store, world, "rogue-topdeck");
-  const strike = game.runCommand(player, "strike rogue topdeck", []);
-  assert.match(strike.lines.join("\n"), /You challenge Rogue Duelist Token to a duel|You attack Rogue Duelist Token/i);
+  const attack = game.runCommand(player, "attack kuriboh topdeck", []);
+  assert.match(attack.lines.join("\n"), /You challenge Kuriboh Topdeck to a duel|You attack Kuriboh Topdeck/i);
 
-  const brokeAway = game.runCommand(player, "break", []);
-  assert.doesNotMatch(brokeAway.lines.join("\n"), /Unknown command/i);
+  const ran = game.runCommand(player, "run", []);
+  assert.doesNotMatch(ran.lines.join("\n"), /Unknown command/i);
   assert.match(game.runCommand(player, "combat", []).lines.join("\n"), /You are not in a duel/i);
 
   player.hp = Math.max(1, player.maxHp - 3);
@@ -271,8 +271,8 @@ test("each level 1 class can open combat against an early monster", (t) => {
     movePlayerToNpc(player, store, world, "rogue-topdeck");
     store.savePlayer(player);
 
-    const result = game.runCommand(player, "strike rogue topdeck", []);
-    assert.match(result.lines.join("\n"), /You challenge Rogue Duelist Token to a duel/i, `${job.name} should be able to start combat`);
+    const result = game.runCommand(player, "attack kuriboh topdeck", []);
+    assert.match(result.lines.join("\n"), /You challenge Kuriboh Topdeck to a duel/i, `${job.name} should be able to start combat`);
     assert.ok(player.hp > 0, `${job.name} should survive opening combat`);
     assert.ok(player.mana >= 0, `${job.name} Energy should remain valid`);
   }
@@ -288,24 +288,24 @@ test("defeated runaway monsters are logged into the collection binder", (t) => {
   const lookBefore = game.runCommand(player, "look rogue topdeck", []);
   assert.match(lookBefore.lines.join("\n"), /Collection Binder: not collected \(Duel Monsters Page, uncommon\)/i);
 
-  const strike = game.runCommand(player, "strike rogue topdeck", []);
-  assert.match(strike.lines.join("\n"), /Collection card logged: Rogue Duelist Token/i);
-  assert.doesNotMatch(strike.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
+  const attack = game.runCommand(player, "attack kuriboh topdeck", []);
+  assert.match(attack.lines.join("\n"), /Collection card logged: Kuriboh Topdeck/i);
+  assert.doesNotMatch(attack.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
   assert.equal(player.titles.includes("Duel Monsters Ace"), false);
   assert.deepEqual(player.binderCards, ["rogue-topdeck"]);
 
   movePlayerToNpc(player, store, world, "trapline-busker");
-  const secondStrike = game.runCommand(player, "strike trapline busker", []);
-  assert.match(secondStrike.lines.join("\n"), /Collection card logged: Trap Card Busker/i);
-  assert.match(secondStrike.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
+  const secondAttack = game.runCommand(player, "attack trapline busker", []);
+  assert.match(secondAttack.lines.join("\n"), /Collection card logged: Trap Card Busker/i);
+  assert.match(secondAttack.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
   assert.equal(player.titles.includes("Duel Monsters Ace"), true);
 
-  const binder = game.runCommand(player, "binder", []);
+  const binder = game.runCommand(player, "deck", []);
   assert.match(binder.lines.join("\n"), /Collection cards \(2\): First Pull active; \+1 max Energy/i);
   assert.match(binder.lines.join("\n"), /Duel Monsters Page:/i);
   assert.match(binder.lines.join("\n"), /Page chase:/i);
   assert.match(binder.lines.join("\n"), /Duel Monsters Page: complete, title Duel Monsters Ace/i);
-  assert.match(binder.lines.join("\n"), /Rogue Duelist Token/i);
+  assert.match(binder.lines.join("\n"), /Kuriboh Topdeck/i);
   assert.match(binder.lines.join("\n"), /Starter Deck \(locked at 3\)/i);
 
   const duelPage = game.runCommand(player, "binder duel", []);
@@ -321,13 +321,13 @@ test("event variants announce their event binder chase", (t) => {
   player.stats = { ...player.stats, might: 99, grace: 99 };
   store.savePlayer(player);
 
-  const strike = game.runCommand(player, "strike holo topdeck", []);
-  assert.match(strike.lines.join("\n"), /Collection card logged: Secret Rare Topdeck/i);
-  assert.match(strike.lines.join("\n"), /Secret Rare variant logged: Opening Night Foil/i);
+  const attack = game.runCommand(player, "attack secret rare kuriboh", []);
+  assert.match(attack.lines.join("\n"), /Collection card logged: Secret Rare Kuriboh/i);
+  assert.match(attack.lines.join("\n"), /Secret Rare variant logged: Opening Night Foil/i);
 
-  const eventPage = game.runCommand(player, "binder event", []);
+  const eventPage = game.runCommand(player, "pokedex event", []);
   assert.match(eventPage.lines.join("\n"), /Event Page:/i);
-  assert.match(eventPage.lines.join("\n"), /Secret Rare Topdeck/i);
+  assert.match(eventPage.lines.join("\n"), /Secret Rare Kuriboh/i);
 });
 
 test("binder milestones increase derived vitals without changing base stats", (t) => {
@@ -367,7 +367,7 @@ test("each zone has a fightable monster that can be logged", (t) => {
     player.roomId = room.id;
     player.stats = { ...player.stats, might: 99, grace: 99 };
     store.savePlayer(player);
-    const result = game.runCommand(player, `strike ${npc.name}`, []);
+    const result = game.runCommand(player, `attack ${npc.name}`, []);
     assert.match(result.lines.join("\n"), new RegExp(`Collection card logged: ${escapeRegExp(npc.name)}`, "i"));
     zonesWithCombat.add(zone.id);
   }

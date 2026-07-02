@@ -187,7 +187,7 @@ export class Game {
       return respond({ lines: this.combat.attack(player, arg) });
     }
 
-    if (verb === "flee" || verb === "break" || verb === "retreat" || verb === "escape") {
+    if (verb === "flee" || verb === "run" || verb === "break" || verb === "retreat" || verb === "escape") {
       return respond({ lines: this.combat.flee(player) });
     }
 
@@ -204,7 +204,7 @@ export class Game {
       return respond({ lines: this.profile(player) });
     }
 
-    if (verb === "binder" || verb === "cards" || verb === "collection") {
+    if (verb === "binder" || verb === "cards" || verb === "collection" || verb === "deck" || verb === "pokedex") {
       return respond({ lines: this.binder(player, arg) });
     }
 
@@ -272,7 +272,7 @@ export class Game {
       return respond({
         lines: [
           "Commands: look, look <npc|item|player>, north/east/south/west, go <direction>, say <message>, /me <action>, me <action>, inventory, inventory full, take <item>, drop <item>, use <item>, equip <item>, unequip <slot>, shop, buy <item>, sell <item>, talk <npc>, ask <npc> about <topic>, help.",
-          "Character: profile, score, binder/cards, describe me <description>, who.",
+          "Character: profile, score, binder/cards/deck/pokedex, describe me <description>, who.",
           "Quests: quests, quest <name>.",
           "Combat: attack/duel <npc>, run/flee, combat, recover/rest.",
           "Doors: open <direction|door>, unlock <direction|door>.",

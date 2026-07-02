@@ -68,13 +68,13 @@ Expected:
 - Basic attacks and class skills work.
 - HP and Energy update.
 - First-time defeated runaway monsters add a card to your Collection Binder.
-- `binder` shows collection pages, card rarity, flavor text, and milestone bonuses.
+- `binder`, `deck`, or `pokedex` shows collection pages, card rarity, flavor text, and milestone bonuses.
 - `binder <page>` filters to a page, for example `binder duel`.
 - `binder` shows `Page chase` progress, and completed multi-card pages grant titles such as `Duel Monsters Ace`.
 - The first collected card activates `First Pull` for +1 max Energy; three cards activate `Starter Deck` for +1 max HP.
-- Optional Secret Rare variants appear around the route, including `Secret Rare Topdeck`, `Shiny Pocket Lizard`, `Game Corner Boss Drake`, and `Cross-Promo Gundam`.
-- Extra page-depth monsters include `Trap Card Busker`, `Plush Pikaclone Buddy`, `Prize Ticket Mascot`, `Straw Hat Deckhand`, `Union Cameo`, and `Post-Credits Colossus`.
-- Event variants can drop a `Secret Rare foil stamp`.
+- Optional Secret Rare variants appear around the route, including `Secret Rare Kuriboh`, `Shiny Starter Lizard`, `Game Corner Boss Drake`, and `Cross-Promo Gundam`.
+- Extra page-depth monsters include `Kuriboh Topdeck`, `Trap Card Busker`, `Plush Pikaclone Buddy`, `Prize Ticket Mascot`, `Straw Hat Deckhand`, `Union Cameo`, and `Post-Credits Colossus`.
+- Event variants and series bosses can drop distinctive equipment such as `Millennium Puzzle replica`, `Black Lotus proxy`, `Beam rifle keychain`, and `Final Trigger lanyard`.
 - Recover restores missing HP/Energy out of combat.
 - Defeated enemies grant XP, Prize Tickets, and occasional drops.
 
@@ -87,8 +87,8 @@ inventory
 inventory full
 take Potion snack cake
 use Potion snack cake
-take duel disk holster
-equip duel disk holster
+take Trap Card sleeves
+equip Trap Card sleeves
 inventory full
 ```
 

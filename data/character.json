@@ -118,7 +118,7 @@
           "effects": [
             {
               "type": "damage",
-              "message": "You Normal Summon and strike {target} for {damage} damage.",
+              "message": "You Normal Summon a scrappy monster to hit {target} for {damage} damage.",
               "formula": {
                 "base": 4,
                 "stat": "wit",
@@ -290,7 +290,7 @@
           ]
         },
         {
-          "id": "snack-break",
+          "id": "potion-toss",
           "name": "Potion Toss",
           "description": "Use a Potion mid-fight, because apparently the bag menu still works in Cardbound City.",
           "level": 2,
@@ -685,7 +685,7 @@
         {
           "id": "final-assembly",
           "name": "Full Armor Gundam",
-          "description": "Bring every Full Armor module online for one heavy finishing strike.",
+          "description": "Bring every Full Armor module online for one heavy beam-finisher.",
           "level": 5,
           "manaCost": 10,
           "cooldownSeconds": 6.2,

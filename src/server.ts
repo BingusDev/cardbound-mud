@@ -463,6 +463,7 @@ function handleMessage(socket: WebSocket, message: ClientMessage) {
     const player = game.createCharacter(account.id, message.name, message.adminCode === adminCode ? adminCode : undefined, message.species, message.job);
     sendAccount(socket);
     enterWorld(socket, player, `Welcome, ${player.name}. Type help for commands.`, [
+      ...classIntroLines(player.job),
       "First steps: try look, talk Marshal Echo, ask Marshal Echo about key, then travel north/east/south/west.",
       "For roleplay, use /me <action> or me <action>."
     ]);
@@ -519,6 +520,36 @@ function enterWorld(socket: WebSocket, player: PlayerRecord, welcomeLine: string
   send(socket, { type: "log", lines: [welcomeLine, ...extraLines, ...game.look(player, playerNamesInRoom(player.roomId, socket))] });
   sendState(socket);
   broadcastToRoom(player.roomId, `${player.name} steps into the crossing light.`, socket);
+}
+
+function classIntroLines(job: PlayerRecord["job"]) {
+  const intros: Record<string, string[]> = {
+    duelist: [
+      "Your Duel Disk calibrates with a KaibaCorp chirp, and the Normal Summon zone glows like it has been waiting for a close-up.",
+      "Starter instinct: attack <monster> or duel <monster>, then use Normal Summon when your Energy is ready."
+    ],
+    trainer: [
+      "Your Pokedex phone pings a warning: nearby monsters are unregistered, overexcited, and probably snack-motivated.",
+      "Starter instinct: attack <monster>, then use Quick Attack when your partner is ready to move first."
+    ],
+    planeswalker: [
+      "A five-color mana shimmer crawls over your deckbox, then politely pretends it was always part of the sidewalk.",
+      "Starter instinct: attack <monster>, then use Lightning Bolt when the stack is clear enough for fireworks."
+    ],
+    pilot: [
+      "A Haro icon blinks on your wrist display while a tiny launch alarm counts down from nowhere in particular.",
+      "Starter instinct: attack <monster>, then use Beam Saber Slash once you have target lock."
+    ],
+    captain: [
+      "A Straw Hat sash snaps in the wind like the city itself just joined your crew.",
+      "Starter instinct: attack <monster>, then use Gum-Gum Pistol when the target is asking for a dramatic reach check."
+    ],
+    "arena-fighter": [
+      "Your Union Arena AP counter clicks to ready, then starts tracking every nearby crossover like it has opinions.",
+      "Starter instinct: attack <monster>, then use AP Assist when you want the board state to get loud."
+    ]
+  };
+  return intros[job] ?? ["Your deck hums with several incompatible rulesets and exactly enough confidence to make that work."];
 }
 
 function send(socket: WebSocket, message: ServerMessage) {

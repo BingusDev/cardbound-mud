@@ -1209,7 +1209,7 @@ function createDraftNpc() {
     mana: 0,
     disposition: "friendly",
     combat: {
-      attackName: "careful strike",
+      attackName: "careful attack",
       defeatMessage: "New NPC yields and retreats.",
       respawnSeconds: 60,
       xp: 0,
@@ -2456,7 +2456,7 @@ function newSkillDraft(job) {
 function newEffectDraft(stat) {
   return {
     type: "damage",
-    message: "Your new skill strikes {target} for {damage} damage.",
+    message: "Your new skill hits {target} for {damage} damage.",
     formula: {
       base: 3,
       stat,

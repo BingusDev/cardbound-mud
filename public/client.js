@@ -129,14 +129,14 @@ attackAction.addEventListener("click", () => {
     return;
   }
   if (!currentState?.combat?.inCombat) {
-    appendLog(["Choose a target with strike <npc> first."]);
+    appendLog(["Choose a target with attack <npc> or duel <npc> first."]);
     return;
   }
-  sendActionCommand("strike");
+  sendActionCommand("attack");
 });
 
 fleeAction.addEventListener("click", () => {
-  if (currentState?.combat?.inCombat) sendActionCommand("break");
+  if (currentState?.combat?.inCombat) sendActionCommand("run");
 });
 
 restAction.addEventListener("click", () => {
@@ -594,7 +594,7 @@ function renderCreationPreview() {
       ${characterConfig.stats.map((stat) => `<span>${escapeHtml(stat.name)} <b>${stats[stat.id] ?? 0}</b></span>`).join("")}
     </div>
     <div class="preview-skills">
-      <span>Starting ${levelOneSkills.map((skill) => escapeHtml(skill.name)).join(", ") || "basic strike"}</span>
+      <span>Starting ${levelOneSkills.map((skill) => escapeHtml(skill.name)).join(", ") || "basic attack"}</span>
       ${futureSkills.length ? `<span>Later ${futureSkills.map((skill) => `${escapeHtml(skill.name)} L${skill.level}`).join(", ")}</span>` : ""}
     </div>
   `;
@@ -702,10 +702,10 @@ function updateActionPanel() {
   attackAction.title = combat.isDead
     ? "You are waiting for the Life Point safety field to return you."
     : !combat.inCombat
-    ? "Type strike <npc> to choose a target."
+    ? "Type attack <npc> or duel <npc> to choose a target."
     : ready
       ? "Attack your current target."
-      : "Still getting ready. Click or type strike to try anyway.";
+      : "Still getting ready. Click or type attack to try anyway.";
 
   fleeAction.disabled = !combat.inCombat || combat.isDead;
   fleeAction.classList.toggle("locked", !combat.inCombat || combat.isDead);
