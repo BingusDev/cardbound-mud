@@ -32,8 +32,10 @@ west
 Expected:
 
 - `Duel Disk Lockdown` starts from Marshal Echo.
+- Marshal Echo adds a class-specific line; for example, Trainers hear Pokedex/Gym badge guidance and Pilots hear launch/catapult guidance.
 - Taking `Duel Disk keycard` is blocked before the quest starts.
 - The Duel Disk turnstile opens after the quest starts and you use the key from `Duel Disk Turnstiles`.
+- Completing main quests can grant a class reward such as `White Base launch patch`, `Chain Link token`, or `Union Arena AP die`.
 - Player labels show class only, for example `Duelist`.
 
 ## Main Quest Chain
@@ -74,6 +76,7 @@ Expected:
 - The first collected card activates `First Pull` for +1 max Energy; three cards activate `Starter Deck` for +1 max HP.
 - Optional Secret Rare variants appear around the route, including `Secret Rare Kuriboh`, `Shiny Starter Lizard`, `Game Corner Boss Drake`, and `Cross-Promo Gundam`.
 - Extra page-depth monsters include `Kuriboh Topdeck`, `Trap Card Busker`, `Plush Pikaclone Buddy`, `Prize Ticket Mascot`, `Straw Hat Deckhand`, `Union Cameo`, and `Post-Credits Colossus`.
+- Optional mini-bosses include `Blue-Eyes Traffic Dragon`, `Gym Leader Gyarados`, `Nicol Bolas Standee`, `Red Comet Gunpla`, `Mihawk Dockside Rival`, and `Union Arena Raid Boss`.
 - Event variants and series bosses can drop distinctive equipment such as `Millennium Puzzle replica`, `Black Lotus proxy`, `Beam rifle keychain`, and `Final Trigger lanyard`.
 - Recover restores missing HP/Energy out of combat.
 - Defeated enemies grant XP, Prize Tickets, and occasional drops.
@@ -107,5 +110,6 @@ Check:
 - World validation is clean.
 - New NPC defaults say Cardbound City/runaway card monster.
 - NPCs expose optional Collection Binder controls for page, rarity, flavor, variant, and event labels.
+- Quest rewards support class-item JSON maps for class-specific gear.
 - Character records show an internal origin plus class.
 - Config still contains one hidden internal origin for engine compatibility.

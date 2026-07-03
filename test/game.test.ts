@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import test, { type TestContext } from "node:test";
 import { adminWorldView } from "../src/adminWorld.js";
 import { CharacterConfig } from "../src/characterConfig.js";
@@ -29,8 +30,8 @@ test("world loads and builder validation is clean", () => {
 
   assert.equal(world.rooms.size, 22);
   assert.equal(world.quests.size, 6);
-  assert.equal(world.items.size, 32);
-  assert.equal(world.npcs.size, 33);
+  assert.equal(world.items.size, 38);
+  assert.equal(world.npcs.size, 39);
   assert.equal(validation.ok, true);
   assert.deepEqual(validation.issues, []);
 });
@@ -92,6 +93,17 @@ test("starting Duel Disk Lockdown permits the key and records progress", (t) => 
   assert.deepEqual(store.getQuestRecord(player.id, "starter-deck-panic")?.completedSteps.includes("take-sleeve-key"), true);
 });
 
+test("quest starter dialogue includes class-specific branches", (t) => {
+  const { game, player, store } = testGame(t, "class-dialogue");
+  player.job = "trainer";
+  store.savePlayer(player);
+
+  const start = game.runCommand(player, "ask Marshal Echo about key", []);
+
+  assert.match(start.lines.join("\n"), /Pokedex phone/i);
+  assert.match(start.lines.join("\n"), /Gym badge/i);
+});
+
 test("taking one item copy does not schedule a respawn while another spawned copy remains", (t) => {
   const { game, player, store } = testGame(t, "duplicate-item-take");
 
@@ -142,6 +154,45 @@ test("use key opens a matching nearby quest door after the quest is active", (t)
   assert.equal(state.isOpen, true);
 });
 
+test("store repairs player quest foreign keys left pointing at rebuilt player tables", (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "cardbound-fk-repair-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const dbPath = path.join(dir, "cardbound.sqlite");
+  const db = new DatabaseSync(dbPath);
+  db.exec(`
+    CREATE TABLE players (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE COLLATE NOCASE,
+      room_id TEXT NOT NULL,
+      hp INTEGER NOT NULL,
+      max_hp INTEGER NOT NULL,
+      mana INTEGER NOT NULL,
+      max_mana INTEGER NOT NULL,
+      inventory_json TEXT NOT NULL,
+      is_admin INTEGER NOT NULL DEFAULT 0,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE TABLE player_quests (
+      player_id INTEGER NOT NULL,
+      quest_id TEXT NOT NULL,
+      status TEXT NOT NULL,
+      completed_steps_json TEXT NOT NULL,
+      completed_at TEXT,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (player_id, quest_id),
+      FOREIGN KEY (player_id) REFERENCES "players_previous"(id) ON DELETE CASCADE
+    );
+  `);
+  db.close();
+
+  new Store(CharacterConfig.load(), dbPath);
+  const repaired = new DatabaseSync(dbPath);
+  const foreignKeys = repaired.prepare("PRAGMA foreign_key_list(player_quests)").all() as unknown as Array<{ table: string }>;
+  repaired.close();
+
+  assert.deepEqual(foreignKeys.map((key) => key.table), ["players"]);
+});
+
 test("all quests can complete in sequence", (t) => {
   const { game, player, store, world } = testGame(t, "quest-chain");
   const questIds = [
@@ -167,6 +218,24 @@ test("all quests can complete in sequence", (t) => {
     assert.equal(record?.status, "completed", `${quest.name} should complete`);
     assert.deepEqual(record?.completedSteps.sort(), quest.steps.map((step) => step.id).sort(), `${quest.name} should record every step`);
   }
+});
+
+test("quest completion grants a class-flavored item reward", (t) => {
+  const { game, player, store, world } = testGame(t, "class-reward");
+  player.job = "pilot";
+  store.savePlayer(player);
+  const quest = world.quests.get("starter-deck-panic");
+  assert.ok(quest);
+
+  runQuestTrigger(game, player, store, world, quest.startsOn);
+  let lastResult = "";
+  for (const step of quest.steps) {
+    if (store.getQuestRecord(player.id, quest.id)?.completedSteps.includes(step.id)) continue;
+    lastResult = runQuestTrigger(game, player, store, world, step.trigger).lines.join("\n");
+  }
+
+  assert.match(lastResult, /Class reward: White Base launch patch/i);
+  assert.equal(player.inventory.includes("pilot-launch-patch"), true);
 });
 
 test("say and emote commands produce room echoes", (t) => {
@@ -297,16 +366,24 @@ test("defeated runaway monsters are logged into the collection binder", (t) => {
   movePlayerToNpc(player, store, world, "trapline-busker");
   const secondAttack = game.runCommand(player, "attack trapline busker", []);
   assert.match(secondAttack.lines.join("\n"), /Collection card logged: Trap Card Busker/i);
-  assert.match(secondAttack.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
+  assert.doesNotMatch(secondAttack.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
+  assert.equal(player.titles.includes("Duel Monsters Ace"), false);
+
+  movePlayerToNpc(player, store, world, "blue-eyes-traffic-dragon");
+  player.stats = { ...player.stats, might: 999, grace: 999 };
+  store.savePlayer(player);
+  const bossAttack = game.runCommand(player, "attack blue-eyes traffic dragon", []);
+  assert.match(bossAttack.lines.join("\n"), /Collection card logged: Blue-Eyes Traffic Dragon/i);
+  assert.match(bossAttack.lines.join("\n"), /Collection page complete: Duel Monsters Page/i);
   assert.equal(player.titles.includes("Duel Monsters Ace"), true);
 
   const binder = game.runCommand(player, "deck", []);
-  assert.match(binder.lines.join("\n"), /Collection cards \(2\): First Pull active; \+1 max Energy/i);
+  assert.match(binder.lines.join("\n"), /Collection cards \(3\): First Pull, Starter Deck active; \+1 max HP, \+1 max Energy/i);
   assert.match(binder.lines.join("\n"), /Duel Monsters Page:/i);
   assert.match(binder.lines.join("\n"), /Page chase:/i);
   assert.match(binder.lines.join("\n"), /Duel Monsters Page: complete, title Duel Monsters Ace/i);
   assert.match(binder.lines.join("\n"), /Kuriboh Topdeck/i);
-  assert.match(binder.lines.join("\n"), /Starter Deck \(locked at 3\)/i);
+  assert.match(binder.lines.join("\n"), /Side Deck Tech \(locked at 6\)/i);
 
   const duelPage = game.runCommand(player, "binder duel", []);
   assert.match(duelPage.lines.join("\n"), /Duel Monsters Page:/i);
@@ -375,6 +452,32 @@ test("each zone has a fightable monster that can be logged", (t) => {
   assert.equal(zonesWithCombat.size, world.zones.size);
 });
 
+test("optional series mini-bosses are placed, fightable, and collectible", (t) => {
+  const { game, player, store, world } = testGame(t, "mini-bosses");
+  const bossIds = [
+    "blue-eyes-traffic-dragon",
+    "gym-leader-gyarados",
+    "nicol-bolas-standee",
+    "red-comet-gunpla",
+    "mihawk-dockside-rival",
+    "union-arena-raid-boss"
+  ];
+
+  for (const bossId of bossIds) {
+    movePlayerToNpc(player, store, world, bossId);
+    player.stats = { ...player.stats, might: 999, grace: 999 };
+    player.hp = player.maxHp;
+    store.savePlayer(player);
+
+    const npc = world.npcs.get(bossId);
+    assert.ok(npc, `${bossId} should exist`);
+    const result = game.runCommand(player, `attack ${npc.name}`, []);
+
+    assert.match(result.lines.join("\n"), new RegExp(`Collection card logged: ${escapeRegExp(npc.name)}`, "i"));
+    assert.equal(player.binderCards.includes(bossId), true);
+  }
+});
+
 function runQuestTrigger(game: Game, player: PlayerRecord, store: Store, world: World, trigger: QuestTrigger) {
   if (trigger.type === "ask" && trigger.npcId && trigger.topic) {
     movePlayerToNpc(player, store, world, trigger.npcId);
@@ -382,7 +485,7 @@ function runQuestTrigger(game: Game, player: PlayerRecord, store: Store, world: 
     assert.ok(npc, `Missing NPC ${trigger.npcId}`);
     const result = game.runCommand(player, `ask ${npc.name} about ${trigger.topic}`, []);
     assert.doesNotMatch(result.lines.join("\n"), /You do not see them here|uncertain what you mean/i);
-    return;
+    return result;
   }
 
   if (trigger.type === "talk" && trigger.npcId) {
@@ -391,7 +494,7 @@ function runQuestTrigger(game: Game, player: PlayerRecord, store: Store, world: 
     assert.ok(npc, `Missing NPC ${trigger.npcId}`);
     const result = game.runCommand(player, `talk ${npc.name}`, []);
     assert.doesNotMatch(result.lines.join("\n"), /You do not see them here/i);
-    return;
+    return result;
   }
 
   if (trigger.type === "take" && trigger.itemId) {
@@ -400,12 +503,12 @@ function runQuestTrigger(game: Game, player: PlayerRecord, store: Store, world: 
     assert.ok(item, `Missing item ${trigger.itemId}`);
     const result = game.runCommand(player, `take ${item.name}`, []);
     assert.doesNotMatch(result.lines.join("\n"), /You do not see that here|has not begun yet/i);
-    return;
+    return result;
   }
 
   if (trigger.type === "enterRoom" && trigger.roomId) {
     moveIntoRoom(game, player, store, world, trigger.roomId);
-    return;
+    return { lines: [] };
   }
 
   if ((trigger.type === "unlockDoor" || trigger.type === "openDoor") && trigger.doorId) {
@@ -416,7 +519,7 @@ function runQuestTrigger(game: Game, player: PlayerRecord, store: Store, world: 
     store.savePlayer(player);
     const result = key ? game.runCommand(player, `use ${key.name}`, []) : game.runCommand(player, "open door", []);
     assert.doesNotMatch(result.lines.join("\n"), /has not begun yet|locked/i);
-    return;
+    return result;
   }
 
   throw new Error(`Unsupported trigger ${JSON.stringify(trigger)}`);

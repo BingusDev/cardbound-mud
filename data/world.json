@@ -229,6 +229,18 @@
           "label": "Battle City Hall Monitor"
         },
         {
+          "type": "classItem",
+          "label": "starter class kit",
+          "classItems": {
+            "duelist": "duelist-chain-token",
+            "trainer": "trainer-buddy-band",
+            "planeswalker": "planeswalker-spark-pin",
+            "pilot": "pilot-launch-patch",
+            "captain": "captain-crew-charm",
+            "arena-fighter": "arena-action-point-die"
+          }
+        },
+        {
           "type": "flag",
           "label": "Flag: mall_route_open",
           "flag": "mall_route_open"
@@ -314,6 +326,18 @@
           "label": "Rotom Radio Regular"
         },
         {
+          "type": "classItem",
+          "label": "field upgrade",
+          "classItems": {
+            "duelist": "duel-disk-holster",
+            "trainer": "pokedex-phone",
+            "planeswalker": "planeswalker-deckbox",
+            "pilot": "beam-rifle-keychain",
+            "captain": "straw-hat-sash",
+            "arena-fighter": "union-ap-counter"
+          }
+        },
+        {
           "type": "flag",
           "label": "Flag: citywide_signal_live",
           "flag": "citywide_signal_live"
@@ -394,6 +418,18 @@
           "type": "item",
           "label": "trainer jacket",
           "itemId": "trainer-jacket"
+        },
+        {
+          "type": "classItem",
+          "label": "rescue-route reward",
+          "classItems": {
+            "duelist": "trap-card-sleeves",
+            "trainer": "trainer-jacket",
+            "planeswalker": "mana-pin",
+            "pilot": "haro-backpack",
+            "captain": "devil-fruit-gummy",
+            "arena-fighter": "guest-star-sticker"
+          }
         },
         {
           "type": "flag",
@@ -479,6 +515,18 @@
         {
           "type": "title",
           "label": "Five-Color Problem Solver"
+        },
+        {
+          "type": "classItem",
+          "label": "stabilized keepsake",
+          "classItems": {
+            "duelist": "millennium-puzzle-replica",
+            "trainer": "gym-badge-pin",
+            "planeswalker": "black-lotus-proxy",
+            "pilot": "pilot-gloves",
+            "captain": "captain-token",
+            "arena-fighter": "final-trigger-lanyard"
+          }
         },
         {
           "type": "flag",
@@ -572,6 +620,18 @@
         {
           "type": "title",
           "label": "White Base Catapult Crew"
+        },
+        {
+          "type": "classItem",
+          "label": "launch clearance bonus",
+          "classItems": {
+            "duelist": "promo-foil-stamp",
+            "trainer": "lucky-cap",
+            "planeswalker": "prism-badge",
+            "pilot": "beam-rifle-keychain",
+            "captain": "straw-hat-sash",
+            "arena-fighter": "union-ap-counter"
+          }
         },
         {
           "type": "flag",
@@ -670,6 +730,18 @@
           "type": "item",
           "label": "finale binder",
           "itemId": "finale-binder"
+        },
+        {
+          "type": "classItem",
+          "label": "finale class trophy",
+          "classItems": {
+            "duelist": "finale-binder",
+            "trainer": "finale-binder",
+            "planeswalker": "finale-binder",
+            "pilot": "finale-binder",
+            "captain": "finale-binder",
+            "arena-fighter": "union-ap-counter"
+          }
         },
         {
           "type": "flag",
@@ -825,7 +897,9 @@
       },
       "items": [],
       "itemSpawns": [],
-      "npcs": []
+      "npcs": [
+        "blue-eyes-traffic-dragon"
+      ]
     },
     {
       "id": "food-court",
@@ -1140,7 +1214,8 @@
       ],
       "itemSpawns": [],
       "npcs": [
-        "mana-squall"
+        "mana-squall",
+        "nicol-bolas-standee"
       ]
     },
     {
@@ -1215,7 +1290,8 @@
       "npcs": [
         "crossover-coordinator",
         "crossover-glitch",
-        "cross-promo-mecha"
+        "cross-promo-mecha",
+        "union-arena-raid-boss"
       ]
     },
     {
@@ -1251,7 +1327,8 @@
       "itemSpawns": [],
       "npcs": [
         "pocket-lizard",
-        "prismatic-pocket-lizard"
+        "prismatic-pocket-lizard",
+        "gym-leader-gyarados"
       ]
     },
     {
@@ -1363,7 +1440,8 @@
       "itemSpawns": [],
       "npcs": [
         "frame-mechanic",
-        "plastic-mecha"
+        "plastic-mecha",
+        "red-comet-gunpla"
       ]
     },
     {
@@ -1437,7 +1515,8 @@
       ],
       "itemSpawns": [],
       "npcs": [
-        "rubber-band-brute"
+        "rubber-band-brute",
+        "mihawk-dockside-rival"
       ]
     },
     {
@@ -1851,6 +1930,90 @@
           "bond": 1
         }
       }
+    },
+    {
+      "id": "duelist-chain-token",
+      "name": "Chain Link token",
+      "description": "A metal token stamped CL2 that clicks whenever you interrupt someone at exactly the dramatic moment.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "spark": 1
+        }
+      }
+    },
+    {
+      "id": "trainer-buddy-band",
+      "name": "Trainer buddy band",
+      "description": "A soft wristband with little Poke Ball stitching, useful for staying calm when your partner bolts into trouble.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "heart": 1,
+          "bond": 1
+        }
+      }
+    },
+    {
+      "id": "planeswalker-spark-pin",
+      "name": "Planeswalker spark pin",
+      "description": "A five-color pin that flickers like a tiny planeswalker spark whenever the stack gets argumentative.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "spark": 1
+        }
+      }
+    },
+    {
+      "id": "pilot-launch-patch",
+      "name": "White Base launch patch",
+      "description": "An embroidered patch reading CATAPULT CLEAR, which is comforting right up until someone asks what a catapult is doing indoors.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "body",
+        "statBonuses": {
+          "grace": 1,
+          "might": 1
+        }
+      }
+    },
+    {
+      "id": "captain-crew-charm",
+      "name": "Straw Hat crew charm",
+      "description": "A small charm shaped like a smiling skull, warm from too many speeches about never leaving the crew behind.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "heart": 1,
+          "might": 1
+        }
+      }
+    },
+    {
+      "id": "arena-action-point-die",
+      "name": "Union Arena AP die",
+      "description": "A chunky six-sided AP die that lands on exactly the number needed for a guest-star entrance suspiciously often.",
+      "type": "equipment",
+      "value": 12,
+      "equipment": {
+        "slot": "trinket",
+        "statBonuses": {
+          "wit": 1,
+          "grace": 1
+        }
+      }
     }
   ],
   "npcs": [
@@ -1895,7 +2058,27 @@
             "response": [
               "The mall turnstile needs a Duel Disk keycard. The card shop north kept the emergency one, because of course the card shop became important immediately.",
               "Grab it, open the mall gate, and check on the kiosk kid inside before he starts issuing quests on receipt paper."
-            ]
+            ],
+            "classResponses": {
+              "duelist": [
+                "Your Duel Disk earns an approving glance. Key first, dramatic entrance second, Battle Phase strictly away from pedestrians."
+              ],
+              "trainer": [
+                "Your Pokedex phone gets a quick tap. Treat the keycard like a Gym badge: earn access, keep moving, and do not let anything cute chew the scanner."
+              ],
+              "planeswalker": [
+                "The turnstile is basically a one-mana artifact with terrible UX. Tap the keycard, resolve the gate, and avoid priority arguments."
+              ],
+              "pilot": [
+                "Think of the mall gate as a catapult lock. Keycard in, lane clear, no indoor boost-dashing."
+              ],
+              "captain": [
+                "Captain type, huh? Get the key, rally the plaza, and try not to declare the food court your ship."
+              ],
+              "arena-fighter": [
+                "The gate wants a clean resource check. Spend the keycard, advance the board, and keep the crossover from snowballing."
+              ]
+            }
           },
           "outbreak": {
             "prompt": "outbreak",
@@ -2117,7 +2300,27 @@
             ],
             "response": [
               "The roof mast needs a Rotom antenna sticker and a signal booster. Get the sticker from transit, the booster from the roof, then tell the technician we can go citywide."
-            ]
+            ],
+            "classResponses": {
+              "duelist": [
+                "If the broadcast glitches, call it Chain Link 2 and keep talking until the city believes you."
+              ],
+              "trainer": [
+                "If Rotom starts editorializing, translate the important parts before it reviews everyone again."
+              ],
+              "planeswalker": [
+                "If the signal splits into five colors, please identify which color means do not explode."
+              ],
+              "pilot": [
+                "You are on antenna-launch supervision. If the mast says catapult, say absolutely not."
+              ],
+              "captain": [
+                "A crew voice would help. The kind that makes a panicking mall believe help is already on the way."
+              ],
+              "arena-fighter": [
+                "Guest-star warnings are your whole thing. Keep the callouts short enough to fit before the trigger resolves."
+              ]
+            }
           },
           "music": {
             "prompt": "music",
@@ -2424,7 +2627,27 @@
             ],
             "response": [
               "The Magic leak is sorting monsters by color identity and mood. Bring me a Mox prism shard, then check the vault before the colors start voting."
-            ]
+            ],
+            "classResponses": {
+              "duelist": [
+                "If the prism sets a face-down enchantment, do not ask why. Just remember where the trap line is."
+              ],
+              "trainer": [
+                "If the prism identifies as every type at once, smile politely and do not throw a ball at it."
+              ],
+              "planeswalker": [
+                "Finally, someone who can say color identity without everyone leaving the table."
+              ],
+              "pilot": [
+                "If the lab starts beeping, assume it is not a launch cue."
+              ],
+              "captain": [
+                "If a shard tries to join your crew, tell it probation starts after containment."
+              ],
+              "arena-fighter": [
+                "The prism is producing resources in the wrong phase. Please make that sound normal."
+              ]
+            }
           },
           "science": {
             "prompt": "science",
@@ -2578,7 +2801,27 @@
             ],
             "response": [
               "Grab Poke Ball rescue tags from the ranger table or arcade, tag the park sightings, and report back before the little ones discover the hot dog cart."
-            ]
+            ],
+            "classResponses": {
+              "duelist": [
+                "Set your traps gently. We are rescuing the little troublemakers, not sending them to the Shadow Realm."
+              ],
+              "trainer": [
+                "You already know the rhythm: approach, offer snacks, praise the good choice, dodge the tail."
+              ],
+              "planeswalker": [
+                "Please avoid summoning anything larger than the picnic shelter unless absolutely necessary."
+              ],
+              "pilot": [
+                "Low profile. The small ones spook when someone starts narrating a launch sequence."
+              ],
+              "captain": [
+                "Your job is morale. Tell them the crew is safe, then mean it."
+              ],
+              "arena-fighter": [
+                "No raid calls unless the whole group is ready. That includes the plush ones."
+              ]
+            }
           }
         }
       }
@@ -2725,7 +2968,27 @@
             ],
             "response": [
               "The White Base hangar door needs the Gunpla servo key from the training lot. Get in, check the catapult rail, and stop the plastic mecha before it discovers stairs."
-            ]
+            ],
+            "classResponses": {
+              "duelist": [
+                "If the Gunpla declares an attack, please remind it that model kits do not get Main Phase Two indoors."
+              ],
+              "trainer": [
+                "Talk to the Haro first. The mecha listens to it more than to me, which is upsetting but useful."
+              ],
+              "planeswalker": [
+                "If you can counterspell a catapult rail, now would be a beautiful time."
+              ],
+              "pilot": [
+                "Finally. Servo key, hangar door, target lock. Please pretend the safety briefing was longer."
+              ],
+              "captain": [
+                "Keep the crew back from the launch line. Yes, even if someone yells adventure."
+              ],
+              "arena-fighter": [
+                "If the frame raids into a bigger frame, I am walking into the ocean."
+              ]
+            }
           }
         }
       }
@@ -2926,7 +3189,27 @@
             ],
             "response": [
               "Take the Union Arena pass, get it through the stage gate, and stop the genre jam in the pavilion before every rulebook merges into soup."
-            ]
+            ],
+            "classResponses": {
+              "duelist": [
+                "If the finale starts monologuing, interrupt politely with the largest dragon you can legally justify."
+              ],
+              "trainer": [
+                "Call the targets like Gym leaders. The crowd calms down when the plan has badge energy."
+              ],
+              "planeswalker": [
+                "If you can planeswalk the rules back into separate sleeves, I will name a panel after you."
+              ],
+              "pilot": [
+                "You are on big-silhouette duty. Anything taller than the stage truss gets a beam-saber warning."
+              ],
+              "captain": [
+                "If the finale tries to swallow the harbor, give it the kind of speech that makes physics embarrassed."
+              ],
+              "arena-fighter": [
+                "This is your big moment and your home turf. Track the triggers, spend the AP, and keep the guests from overrunning the show."
+              ]
+            }
           }
         }
       }
@@ -3550,6 +3833,306 @@
           "The Post-Credits Colossus raises a glowing card that says AND ONE MORE THING."
         ],
         "topics": {}
+      }
+    },
+    {
+      "id": "blue-eyes-traffic-dragon",
+      "name": "Blue-Eyes Traffic Dragon",
+      "species": "Duel Monster mini-boss",
+      "description": "A brilliant white dragon wedged between two turnstiles, roaring at every red light like it personally invented right of way.",
+      "stats": {
+        "heart": 10,
+        "wit": 9,
+        "grace": 8,
+        "might": 12,
+        "spark": 11,
+        "bond": 5
+      },
+      "hp": 34,
+      "mana": 14,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "White Lightning road rage",
+        "defeatMessage": "The Blue-Eyes Traffic Dragon folds its wings, accepts a temporary parking citation, and vanishes into glittering cardstock.",
+        "respawnSeconds": 90,
+        "xp": 36,
+        "tickets": 12,
+        "drops": [
+          {
+            "itemId": "millennium-puzzle-replica",
+            "chance": 0.18,
+            "quantity": 1
+          },
+          {
+            "itemId": "trap-card-sleeves",
+            "chance": 0.3,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Blue-Eyes Traffic Dragon glares at the turnstile like it owes tribute."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Duel Monsters Page",
+        "rarity": "rare",
+        "flavor": "A city-traffic variant with too much attack power and no patience for crosswalks."
+      }
+    },
+    {
+      "id": "gym-leader-gyarados",
+      "name": "Gym Leader Gyarados",
+      "species": "Pokemon mini-boss",
+      "description": "A huge park-pond Gyarados wearing a whistle lanyard and judging every rescue tag like a Gym challenge.",
+      "stats": {
+        "heart": 10,
+        "wit": 8,
+        "grace": 10,
+        "might": 11,
+        "spark": 9,
+        "bond": 8
+      },
+      "hp": 32,
+      "mana": 12,
+      "disposition": "wild",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "Splash-then-Hyper-Beam",
+        "defeatMessage": "The Gym Leader Gyarados gives you a grudging nod, then splashes back into a pond that is definitely too small for it.",
+        "respawnSeconds": 90,
+        "xp": 34,
+        "tickets": 11,
+        "drops": [
+          {
+            "itemId": "pokedex-phone",
+            "chance": 0.22,
+            "quantity": 1
+          },
+          {
+            "itemId": "gym-badge-pin",
+            "chance": 0.32,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Gym Leader Gyarados lowers its head like the battle theme already started."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Pokemon Page",
+        "rarity": "rare",
+        "flavor": "A park-pond final exam for anyone who thought rescue tags meant easy mode."
+      }
+    },
+    {
+      "id": "nicol-bolas-standee",
+      "name": "Nicol Bolas Standee",
+      "species": "Magic mini-boss",
+      "description": "A cardboard Nicol Bolas standee animated by five-color mana and an unreasonable amount of villain posture.",
+      "stats": {
+        "heart": 9,
+        "wit": 12,
+        "grace": 8,
+        "might": 9,
+        "spark": 13,
+        "bond": 5
+      },
+      "hp": 35,
+      "mana": 20,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "elder dragon monologue",
+        "defeatMessage": "The Nicol Bolas Standee topples backward, still insisting this was all according to plan.",
+        "respawnSeconds": 90,
+        "xp": 38,
+        "tickets": 12,
+        "drops": [
+          {
+            "itemId": "black-lotus-proxy",
+            "chance": 0.24,
+            "quantity": 1
+          },
+          {
+            "itemId": "planeswalker-deckbox",
+            "chance": 0.28,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Nicol Bolas Standee demands priority and several spotlights."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Magic Page",
+        "rarity": "rare",
+        "flavor": "A villain display that became everyone else's problem the moment the prism hummed."
+      }
+    },
+    {
+      "id": "red-comet-gunpla",
+      "name": "Red Comet Gunpla",
+      "species": "Gundam mini-boss",
+      "description": "A red custom Gunpla moving three times faster than the safety cones can emotionally process.",
+      "stats": {
+        "heart": 9,
+        "wit": 9,
+        "grace": 13,
+        "might": 11,
+        "spark": 10,
+        "bond": 6
+      },
+      "hp": 36,
+      "mana": 14,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "three-times-faster saber pass",
+        "defeatMessage": "The Red Comet Gunpla skids to a heroic stop and salutes the catapult rail like it meant to do that.",
+        "respawnSeconds": 90,
+        "xp": 38,
+        "tickets": 12,
+        "drops": [
+          {
+            "itemId": "beam-rifle-keychain",
+            "chance": 0.32,
+            "quantity": 1
+          },
+          {
+            "itemId": "pilot-gloves",
+            "chance": 0.22,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Red Comet Gunpla blurs past the warning tape in a very expensive-looking arc."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Gundam Page",
+        "rarity": "rare",
+        "flavor": "A red custom frame that proves scale is optional and speed is rude."
+      }
+    },
+    {
+      "id": "mihawk-dockside-rival",
+      "name": "Mihawk Dockside Rival",
+      "species": "One Piece mini-boss",
+      "description": "A tiny-cardboard swordsman in a great hat, standing on a cooler like it is the deck of the most serious ship alive.",
+      "stats": {
+        "heart": 10,
+        "wit": 9,
+        "grace": 12,
+        "might": 12,
+        "spark": 8,
+        "bond": 6
+      },
+      "hp": 36,
+      "mana": 12,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "black-blade cooler duel",
+        "defeatMessage": "The Mihawk Dockside Rival sheathes its cardboard blade, nods once, and lets the pier breathe again.",
+        "respawnSeconds": 90,
+        "xp": 38,
+        "tickets": 12,
+        "drops": [
+          {
+            "itemId": "straw-hat-sash",
+            "chance": 0.28,
+            "quantity": 1
+          },
+          {
+            "itemId": "devil-fruit-gummy",
+            "chance": 0.35,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Mihawk Dockside Rival waits with the patience of someone who has already heard your opening speech."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "One Piece Page",
+        "rarity": "rare",
+        "flavor": "A dockside challenge for captains, crews, and anyone who brought a cooler to a sword fight."
+      }
+    },
+    {
+      "id": "union-arena-raid-boss",
+      "name": "Union Arena Raid Boss",
+      "species": "Union Arena mini-boss",
+      "description": "A stage-lit crossover boss carrying too many AP counters, too many guest-star badges, and exactly no chill.",
+      "stats": {
+        "heart": 10,
+        "wit": 12,
+        "grace": 10,
+        "might": 10,
+        "spark": 12,
+        "bond": 8
+      },
+      "hp": 38,
+      "mana": 18,
+      "disposition": "hostile",
+      "behavior": {
+        "stationary": true
+      },
+      "combat": {
+        "attackName": "raid trigger pileup",
+        "defeatMessage": "The Union Arena Raid Boss drops its AP counters in a neat pile and admits the crossover needed a judge.",
+        "respawnSeconds": 90,
+        "xp": 40,
+        "tickets": 14,
+        "drops": [
+          {
+            "itemId": "union-ap-counter",
+            "chance": 0.34,
+            "quantity": 1
+          },
+          {
+            "itemId": "final-trigger-lanyard",
+            "chance": 0.24,
+            "quantity": 1
+          }
+        ]
+      },
+      "dialogue": {
+        "greeting": [
+          "The Union Arena Raid Boss announces three guest stars before you can say hello."
+        ],
+        "topics": {}
+      },
+      "card": {
+        "page": "Union Arena Page",
+        "rarity": "rare",
+        "flavor": "A crossover pressure test with enough triggers to make the stage manager sweat."
       }
     }
   ]

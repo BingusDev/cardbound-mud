@@ -15,8 +15,9 @@ The tone is Saturday-morning chaos: dramatic monsters, improvised heroics, snack
   - Pilot
   - Captain
   - Arena Fighter
-- Collection Binder loop with series pages, rarity, flavor text, milestone bonuses, page-completion titles, Secret Rare variants, and `binder <page>` filtering
+- Collection Binder loop with series pages, rarity, flavor text, milestone bonuses, page-completion titles, Secret Rare variants, optional mini-boss cards, and `binder <page>` filtering
 - Series-specific equipment and drops, from Duel Disk gear and Pokedex tech to Black Lotus proxies, Gunpla accessories, Straw Hat keepsakes, and Union Arena counters
+- Main quest dialogue and quest-completion rewards can branch by class, so Duelists, Trainers, Planeswalkers, Pilots, Captains, and Arena Fighters get different flavor and gear
 - Event variants are always present in this playtest build so testers can find the chase without waiting on a rotation timer
 - No separate ancestry choice; the engine keeps one hidden internal origin for save compatibility
 - Data-driven world, NPCs, quests, items, classes, and stats

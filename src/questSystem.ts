@@ -152,6 +152,18 @@ export class QuestSystem {
         player.inventory.push(reward.itemId);
         lines.push(`Reward item: ${item?.name ?? reward.itemId}.`);
       }
+
+      if (reward.type === "classItem" && reward.classItems) {
+        const itemId = reward.classItems[player.job];
+        if (!itemId) continue;
+        const item = this.world.items.get(itemId);
+        if (player.inventory.includes(itemId) || Object.values(player.equipment).includes(itemId)) {
+          lines.push(`Class reward already owned: ${item?.name ?? itemId}.`);
+          continue;
+        }
+        player.inventory.push(itemId);
+        lines.push(`Class reward: ${item?.name ?? itemId}.`);
+      }
     }
 
     this.store.savePlayer(player);
@@ -189,6 +201,7 @@ export class QuestSystem {
     if (reward.type === "xp") return `${this.characterConfig.scaleXpReward(reward.amount ?? 0, "quest")} XP`;
     if (reward.type === "tickets") return `${reward.amount ?? 0} Prize Tickets`;
     if (reward.type === "title") return `Title: ${reward.label}`;
+    if (reward.type === "classItem") return `Class item: ${reward.label}`;
     if (reward.type === "flag") return "";
     return reward.label;
   }

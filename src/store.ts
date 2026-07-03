@@ -133,6 +133,7 @@ export class Store {
       );
     `);
     this.ensurePlayerProgressionColumns();
+    this.ensurePlayerQuestForeignKey();
     this.ensureRoomStateColumns();
     this.ensureDoorStateColumns();
   }
@@ -229,6 +230,30 @@ export class Store {
       INSERT INTO players (${desiredColumns.join(", ")})
         SELECT ${desiredColumns.join(", ")} FROM players_previous;
       DROP TABLE players_previous;
+    `);
+  }
+
+  private ensurePlayerQuestForeignKey() {
+    const foreignKeys = this.db.prepare("PRAGMA foreign_key_list(player_quests)").all() as unknown as Array<{ table: string }>;
+    if (foreignKeys.every((key) => key.table === "players")) return;
+
+    this.db.exec(`
+      PRAGMA foreign_keys = OFF;
+      CREATE TABLE player_quests_rebuilt (
+        player_id INTEGER NOT NULL,
+        quest_id TEXT NOT NULL,
+        status TEXT NOT NULL,
+        completed_steps_json TEXT NOT NULL,
+        completed_at TEXT,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (player_id, quest_id),
+        FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
+      );
+      INSERT OR IGNORE INTO player_quests_rebuilt (player_id, quest_id, status, completed_steps_json, completed_at, updated_at)
+        SELECT player_id, quest_id, status, completed_steps_json, completed_at, updated_at FROM player_quests;
+      DROP TABLE player_quests;
+      ALTER TABLE player_quests_rebuilt RENAME TO player_quests;
+      PRAGMA foreign_keys = ON;
     `);
   }
 

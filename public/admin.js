@@ -1646,6 +1646,7 @@ function renderQuestRewards() {
             ["xp", "xp"],
             ["tickets", "Prize Tickets"],
             ["item", "item"],
+            ["classItem", "class item"],
             ["title", "title"],
             ["flag", "flag"]
           ].map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}
@@ -1655,6 +1656,7 @@ function renderQuestRewards() {
       <label data-reward-control="amount">Amount<input type="number" value="${reward.amount ?? 0}" data-reward-field="amount" /></label>
       <label data-reward-control="preview">Scaled<input value="${escapeHtml(rewardPreview(reward))}" disabled /></label>
       <label data-reward-control="item">Item<select data-reward-field="itemId"></select></label>
+      <label data-reward-control="classItems" class="wide">Class Items JSON<textarea rows="4" data-reward-field="classItems">${escapeHtml(formatRewardClassItems(reward.classItems))}</textarea></label>
       <label data-reward-control="flag">Flag<input value="${escapeHtml(reward.flag ?? "")}" data-reward-field="flag" /></label>
       <button type="button">Remove</button>
     `;
@@ -1670,6 +1672,7 @@ function renderQuestRewards() {
         label: row.querySelector('[data-reward-field="label"]').value.trim(),
         amount: Number(row.querySelector('[data-reward-field="amount"]').value) || undefined,
         itemId: item.value,
+        classItems: parseRewardClassItems(row.querySelector('[data-reward-field="classItems"]').value),
         flag: row.querySelector('[data-reward-field="flag"]').value.trim()
       });
       updateRewardFieldVisibility(row);
@@ -1789,6 +1792,7 @@ function updateRewardFieldVisibility(row) {
   row.querySelector('[data-reward-control="amount"]').hidden = !["xp", "tickets"].includes(type);
   row.querySelector('[data-reward-control="preview"]').hidden = type !== "xp";
   row.querySelector('[data-reward-control="item"]').hidden = type !== "item";
+  row.querySelector('[data-reward-control="classItems"]').hidden = type !== "classItem";
   row.querySelector('[data-reward-control="flag"]').hidden = type !== "flag";
 }
 
@@ -1802,6 +1806,22 @@ function updatePrerequisiteFieldVisibility(row) {
 function rewardPreview(reward) {
   if (reward.type === "xp") return `${Math.max(0, Math.round((reward.amount ?? 0) * (characterConfig.leveling?.questXpMultiplier ?? 1)))} XP`;
   return "";
+}
+
+function formatRewardClassItems(classItems) {
+  return classItems ? JSON.stringify(classItems, null, 2) : "";
+}
+
+function parseRewardClassItems(value) {
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
+  } catch {
+    return undefined;
+  }
+  return undefined;
 }
 
 async function selectCharacter(characterId) {

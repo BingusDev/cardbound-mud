@@ -853,8 +853,13 @@ export class Game {
       ...this.quests.applyTrigger(player, { type: "ask", npcId: npc.id, topic: topic[0] }),
       `${npc.name}:`,
       ...topic[1].response.map((line) => `"${line}"`),
+      ...this.classDialogueResponse(player, topic[1]),
       ...flagLines
     ];
+  }
+
+  private classDialogueResponse(player: PlayerRecord, topic: { classResponses?: Record<string, string[]> }) {
+    return (topic.classResponses?.[player.job] ?? []).map((line) => `"${line}"`);
   }
 
   private dialogueTopicAvailable(player: PlayerRecord, topic: { requiresFlag?: string }) {

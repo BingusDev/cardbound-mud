@@ -209,10 +209,11 @@ export type QuestScriptAction =
   | { type: "unlockDoor"; doorId: string; line?: string };
 
 export interface QuestRewardDefinition {
-  type: "title" | "tickets" | "xp" | "item" | "flag";
+  type: "title" | "tickets" | "xp" | "item" | "classItem" | "flag";
   label: string;
   amount?: number;
   itemId?: string;
+  classItems?: Record<string, string>;
   flag?: string;
 }
 
@@ -332,6 +333,7 @@ export interface NpcDialogueTopic {
   prompt?: string;
   aliases: string[];
   response: string[];
+  classResponses?: Record<string, string[]>;
   requiresFlag?: string;
   setsFlag?: string;
 }

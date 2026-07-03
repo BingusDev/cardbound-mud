@@ -149,10 +149,11 @@ export const worldSchema = z.object({
       ),
       rewards: z.array(
         z.object({
-          type: z.enum(["title", "tickets", "xp", "item", "flag"]),
+          type: z.enum(["title", "tickets", "xp", "item", "classItem", "flag"]),
           label: z.string(),
           amount: z.number().optional(),
           itemId: z.string().optional(),
+          classItems: z.record(z.string()).optional(),
           flag: z.string().optional()
         })
       )
@@ -218,6 +219,7 @@ export const worldSchema = z.object({
             prompt: z.string().optional(),
             aliases: z.array(z.string()),
             response: z.array(z.string()),
+            classResponses: z.record(z.array(z.string())).optional(),
             requiresFlag: z.string().optional(),
             setsFlag: z.string().optional()
           })

@@ -88,10 +88,11 @@ const questInputSchema = z.object({
   ).default([]),
   rewards: z.array(
     z.object({
-      type: z.enum(["title", "tickets", "xp", "item", "flag"]),
+      type: z.enum(["title", "tickets", "xp", "item", "classItem", "flag"]),
       label: z.string().trim().min(1),
       amount: z.number().optional(),
       itemId: z.string().trim().optional(),
+      classItems: z.record(z.string().trim()).optional(),
       flag: z.string().trim().optional()
     })
   ).default([])
@@ -174,6 +175,7 @@ const npcInputSchema = z.object({
         prompt: z.string().trim().optional(),
         aliases: z.array(z.string().trim()).default([]),
         response: z.array(z.string().trim()).default([]),
+        classResponses: z.record(z.array(z.string().trim())).optional(),
         requiresFlag: z.string().trim().optional(),
         setsFlag: z.string().trim().optional()
       })
@@ -596,6 +598,10 @@ export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
     for (const reward of quest.rewards) {
       if (reward.itemId && !itemIds.has(reward.itemId)) issues.push(`${quest.name} rewards missing item '${reward.itemId}'.`);
       if (reward.itemId) rewardItemIds.add(reward.itemId);
+      for (const [job, itemId] of Object.entries(reward.classItems ?? {})) {
+        if (!itemIds.has(itemId)) issues.push(`${quest.name} class reward for '${job}' references missing item '${itemId}'.`);
+        rewardItemIds.add(itemId);
+      }
     }
   }
 
@@ -642,7 +648,19 @@ function normalizeNpc(npc: z.infer<typeof npcInputSchema>): NpcDefinition {
     },
     dialogue: {
       greeting: cleanList(npc.dialogue.greeting),
-      topics: Object.fromEntries(Object.entries(npc.dialogue.topics).map(([key, topic]) => [key, cleanObject({ ...topic, aliases: cleanList(topic.aliases), response: cleanList(topic.response) })]))
+      topics: Object.fromEntries(
+        Object.entries(npc.dialogue.topics).map(([key, topic]) => [
+          key,
+          cleanObject({
+            ...topic,
+            aliases: cleanList(topic.aliases),
+            response: cleanList(topic.response),
+            classResponses: topic.classResponses
+              ? Object.fromEntries(Object.entries(topic.classResponses).map(([job, lines]) => [job, cleanList(lines)]))
+              : undefined
+          })
+        ])
+      )
     },
     merchant: npc.merchant ? { ...npc.merchant, items: cleanList(npc.merchant.items) } : undefined
   };
