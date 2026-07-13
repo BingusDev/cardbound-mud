@@ -4,6 +4,7 @@ import type {
   ExitDefinition,
   ExitView,
   ItemDefinition,
+  ItemRarity,
   MerchantDefinition,
   NpcDefinition,
   PlayerPresence,
@@ -108,8 +109,18 @@ export class Game {
     private readonly store: Store,
     private readonly characterConfig: CharacterConfig
   ) {
-    this.combat = new CombatSystem(world, store, characterConfig, (player) => this.effectiveStats(player));
     this.quests = new QuestSystem(world, store, characterConfig);
+    this.combat = new CombatSystem(
+      world,
+      store,
+      characterConfig,
+      (player) => this.effectiveStats(player),
+      (player, npc) => [
+        ...this.quests.applyTrigger(player, { type: "defeat", npcId: npc.id }),
+        ...this.quests.applyTrigger(player, { type: "binderCards", count: player.binderCards.length })
+      ],
+      (player, npc) => this.blockedQuestNpcReason(player, npc.id)
+    );
   }
 
   login(name: string, adminCode?: string, species?: PlayerRecord["species"], job?: PlayerRecord["job"]) {
@@ -191,7 +202,11 @@ export class Game {
       return respond({ lines: this.combat.flee(player) });
     }
 
-    if (verb === "combat") {
+    if (verb === "brace" || verb === "block") {
+      return respond({ lines: this.combat.brace(player) });
+    }
+
+    if (verb === "combat" || verb === "status") {
       return respond({ lines: this.combat.status(player) });
     }
 
@@ -202,6 +217,10 @@ export class Game {
 
     if (verb === "profile" || verb === "score") {
       return respond({ lines: this.profile(player) });
+    }
+
+    if (verb === "mechanic" || verb === "rotation") {
+      return respond({ lines: this.classMechanic(player) });
     }
 
     if (verb === "binder" || verb === "cards" || verb === "collection" || verb === "deck" || verb === "pokedex") {
@@ -272,9 +291,9 @@ export class Game {
       return respond({
         lines: [
           "Commands: look, look <npc|item|player>, north/east/south/west, go <direction>, say <message>, /me <action>, me <action>, inventory, inventory full, take <item>, drop <item>, use <item>, equip <item>, unequip <slot>, shop, buy <item>, sell <item>, talk <npc>, ask <npc> about <topic>, help.",
-          "Character: profile, score, binder/cards/deck/pokedex, describe me <description>, who.",
+          "Character: profile, score, mechanic/rotation, binder/cards/deck/pokedex, describe me <description>, who.",
           "Quests: quests, quest <name>.",
-          "Combat: attack/duel <npc>, run/flee, combat, recover/rest.",
+          "Combat: attack/duel <npc>, brace/block, run/flee, combat/status, recover/rest.",
           "Doors: open <direction|door>, unlock <direction|door>.",
           player.isAdmin ? "Admin: your account can use the Cardbound Builder at /admin.html." : ""
         ].filter(Boolean)
@@ -325,9 +344,11 @@ export class Game {
       inventory: this.inventoryItems(player),
       equipment: Object.fromEntries(this.equipmentItems(player)),
       combat: this.combat.view(player),
+      classMechanic: this.combat.mechanicInfo(player),
       jobSkills: this.unlockedSkills(player),
       lockedJobSkills: this.lockedSkills(player),
       quests: this.quests.views(player),
+      progressionHint: this.storyProgressionHint(player),
       playersHere,
       isAdmin: player.isAdmin
     };
@@ -402,12 +423,55 @@ export class Game {
     return startsByRoom;
   }
 
+  private storyProgressionHint(player: PlayerRecord) {
+    const questViews = this.quests.views(player);
+    if (questViews.some((quest) => quest.status !== "completed")) return undefined;
+    const recordedQuestIds = new Set(questViews.map((quest) => quest.id));
+
+    for (const quest of this.world.quests.values()) {
+      if (recordedQuestIds.has(quest.id)) continue;
+      const structuralPrerequisites = (quest.prerequisites ?? []).filter((prerequisite) => prerequisite.type !== "binderCards" && prerequisite.type !== "level");
+      if (!this.questPrerequisitesMet(player, structuralPrerequisites)) continue;
+      const levelGate = (quest.prerequisites ?? [])
+        .filter((prerequisite) => prerequisite.type === "level")
+        .reduce((highest, prerequisite) => Math.max(highest, prerequisite.level), 0);
+      const collectionGate = (quest.prerequisites ?? [])
+        .filter((prerequisite) => prerequisite.type === "binderCards")
+        .reduce((highest, prerequisite) => Math.max(highest, prerequisite.count), 0);
+      const requirements: string[] = [];
+      const actions: string[] = [];
+      if (levelGate > player.level) {
+        const targetXp = this.characterConfig.xpForLevel(levelGate);
+        const remainingXp = Math.max(0, targetXp - player.xp);
+        requirements.push(`level ${levelGate} (${player.xp}/${targetXp} XP)`);
+        actions.push(`earn ${remainingXp} more XP`);
+      }
+      if (collectionGate > player.binderCards.length) {
+        const remainingCards = collectionGate - player.binderCards.length;
+        requirements.push(`${collectionGate} unique Collection cards (${player.binderCards.length}/${collectionGate})`);
+        actions.push(`defeat ${remainingCards} unlogged runaway${remainingCards === 1 ? "" : "s"}`);
+      }
+      if (requirements.length) {
+        const action = actions.join(" and ");
+        return `Next story gate: ${quest.name} requires ${requirements.join(" and ")}. ${action.charAt(0).toUpperCase()}${action.slice(1)}.`;
+      }
+      const startHint = this.questStartCommand(quest);
+      return `Next story assignment ready: ${quest.name}.${startHint ? ` Try: ${startHint}.` : ""}`;
+    }
+
+    if (questViews.length === this.world.quests.size && questViews.every((quest) => quest.status === "completed")) {
+      return "Current story chapter complete. Keep collecting and preparing for the next district.";
+    }
+    return undefined;
+  }
+
   private questPrerequisitesMet(player: PlayerRecord, prerequisites: QuestDefinition["prerequisites"]) {
     for (const prerequisite of prerequisites ?? []) {
       if (prerequisite.type === "level" && player.level < prerequisite.level) return false;
       if (prerequisite.type === "flag" && !player.flags.includes(prerequisite.flag)) return false;
       if (prerequisite.type === "item" && !player.inventory.includes(prerequisite.itemId)) return false;
       if (prerequisite.type === "quest" && this.store.getQuestRecord(player.id, prerequisite.questId)?.status !== "completed") return false;
+      if (prerequisite.type === "binderCards" && player.binderCards.length < prerequisite.count) return false;
     }
     return true;
   }
@@ -510,7 +574,7 @@ export class Game {
 
     return [
       items.length ? "You carry:" : "You are carrying nothing.",
-      ...items.map((item) => `- ${item.name}: ${this.itemSummary(item)}`),
+      ...items.map((item) => `- ${item.name}: ${this.itemSummary(item, player)}`),
       equipment.length ? "Equipped:" : "Equipped: nothing.",
       ...equipment.map(([slot, item]) => `- ${slot}: ${item.name}: ${this.itemSummary(item)}`)
     ];
@@ -609,6 +673,14 @@ export class Game {
     return this.questGateMessage(player, quests, "using that door");
   }
 
+  private blockedQuestNpcReason(player: PlayerRecord, npcId: string) {
+    const quests = this.questsForStepTrigger({ type: "defeat", npcId });
+    if (!quests.length) return undefined;
+    if (quests.some((quest) => this.store.getQuestRecord(player.id, quest.id))) return undefined;
+    const npc = this.world.npcs.get(npcId);
+    return this.questGateMessage(player, quests, `challenging ${npc?.name ?? "that story opponent"}`);
+  }
+
   private questGateMessage(player: PlayerRecord, quests: QuestDefinition[], action: string) {
     const available = quests.filter((quest) => this.questPrerequisitesMet(player, quest.prerequisites ?? []));
     const quest = available[0] ?? quests[0];
@@ -627,9 +699,15 @@ export class Game {
         if (prerequisite.type === "quest" && this.store.getQuestRecord(player.id, prerequisite.questId)?.status !== "completed") {
           return this.world.quests.get(prerequisite.questId)?.name ?? prerequisite.questId;
         }
-        if (prerequisite.type === "level" && player.level < prerequisite.level) return `reaching level ${prerequisite.level}`;
+        if (prerequisite.type === "level" && player.level < prerequisite.level) {
+          const targetXp = this.characterConfig.xpForLevel(prerequisite.level);
+          return `reaching level ${prerequisite.level} (${player.xp}/${targetXp} XP; ${Math.max(0, targetXp - player.xp)} remaining)`;
+        }
         if (prerequisite.type === "item" && !player.inventory.includes(prerequisite.itemId)) return `finding ${this.world.items.get(prerequisite.itemId)?.name ?? prerequisite.itemId}`;
         if (prerequisite.type === "flag" && !player.flags.includes(prerequisite.flag)) return "the needed story step";
+        if (prerequisite.type === "binderCards" && player.binderCards.length < prerequisite.count) {
+          return `logging ${prerequisite.count} unique Collection cards (${player.binderCards.length}/${prerequisite.count}; ${prerequisite.count - player.binderCards.length} remaining)`;
+        }
         return undefined;
       })
       .filter((label): label is string => Boolean(label));
@@ -707,8 +785,8 @@ export class Game {
     this.reconcileDerivedVitals(player);
     this.store.savePlayer(player);
     return previous
-      ? [`You replace ${previous.name} with ${item.name} in your ${slot} slot.`]
-      : [`You equip ${item.name} in your ${slot} slot.`];
+      ? [`You replace ${previous.name} with ${item.name} in your ${slot} slot.`, ...this.equipmentComparisonLines(item, previous)]
+      : [`You equip ${item.name} in your ${slot} slot.`, ...this.equipmentComparisonLines(item)];
   }
 
   private unequip(player: PlayerRecord, query: string) {
@@ -779,10 +857,10 @@ export class Game {
     }
 
     const item = this.roomItems(player.roomId).find((candidate) => matches(candidate, query));
-    if (item) return [item.name, item.description];
+    if (item) return [item.name, this.itemSummary(item, player)];
 
     const carried = this.findInventoryItem(player, query) ?? this.equipmentItems(player).find(([, equipped]) => matches(equipped, query))?.[1];
-    if (carried) return [carried.name, this.itemSummary(carried)];
+    if (carried) return [carried.name, this.itemSummary(carried, player)];
 
     const playerPresence = playersInRoom.find((presence) => cleanCommandQuery(presence.name) === cleanCommandQuery(query));
     if (playerPresence) {
@@ -841,6 +919,15 @@ export class Game {
         .map(([key, value]) => value.prompt ?? key);
       return [`${npc.name} checks their notes, uncertain what you mean. Try asking about: ${topics.join(", ")}.`];
     }
+
+    const gatedQuest = [...this.world.quests.values()].find((quest) => {
+      if (this.store.getQuestRecord(player.id, quest.id)) return false;
+      return quest.startsOn.type === "ask"
+        && quest.startsOn.npcId === npc.id
+        && quest.startsOn.topic === topic[0]
+        && !this.questPrerequisitesMet(player, quest.prerequisites ?? []);
+    });
+    if (gatedQuest) return [`${npc.name}:`, this.questGateMessage(player, [gatedQuest], "starting that assignment")];
 
     const flagLines: string[] = [];
     if (topic[1].setsFlag && !player.flags.includes(topic[1].setsFlag)) {
@@ -1036,6 +1123,47 @@ export class Game {
     ];
   }
 
+  private classMechanic(player: PlayerRecord) {
+    const job = this.characterConfig.jobDefinition(player.job);
+    const mechanic = job.mechanic;
+    if (!mechanic) return [`${job.name} does not have a signature combat mechanic yet.`];
+    const unlocked = job.skills.filter((skill) => skill.level <= player.level);
+    const builders = unlocked.filter((skill) => (skill.mechanicGain ?? 0) > 0).map((skill) => `${skill.name} +${skill.mechanicGain}`);
+    const spenders = unlocked
+      .filter((skill) => (skill.mechanicCost ?? 0) > 0 || skill.mechanicSpendAll)
+      .map((skill) => `${skill.name} ${skill.mechanicSpendAll ? `spends all (needs ${Math.max(1, skill.mechanicCost ?? 0)})` : `-${skill.mechanicCost}`}`);
+    const passives = unlocked.filter((skill) => skill.passive).map((skill) => `${skill.name}: ${skill.description}`);
+    const mechanicInfo = this.combat.mechanicInfo(player);
+    const nextUnlock = job.skills
+      .filter((skill) => skill.level > player.level)
+      .sort((left, right) => left.level - right.level)[0];
+    const stackBonuses = mechanicInfo
+      ? [
+          mechanicInfo.damagePerStack ? `+${mechanicInfo.damagePerStack} damage` : "",
+          mechanicInfo.healingPerStack ? `+${mechanicInfo.healingPerStack} healing` : "",
+          mechanicInfo.guardPerStack ? `+${mechanicInfo.guardPerStack} guard` : ""
+        ].filter(Boolean)
+      : [];
+    const advancedRules = mechanicInfo
+      ? [
+          mechanicInfo.startStacks ? `Start each duel with ${mechanicInfo.startStacks}.` : "",
+          mechanicInfo.energyPerStackSpent ? `Spending restores ${mechanicInfo.energyPerStackSpent} Energy per stack.` : "",
+          mechanicInfo.healingPerStackSpent ? `Spending restores ${mechanicInfo.healingPerStackSpent} HP per stack.` : "",
+          mechanicInfo.retainStacksOnSpendAll ? `Spend-all techniques retain up to ${mechanicInfo.retainStacksOnSpendAll}, while always consuming at least one.` : ""
+        ].filter(Boolean)
+      : [];
+    return [
+      `${job.name} mechanic: ${mechanic.name} (${mechanicInfo?.stacks ?? 0}/${mechanicInfo?.maxStacks ?? mechanic.maxStacks}).`,
+      mechanic.description,
+      `Build: ${[mechanicInfo?.basicAttackGain ? `basic attack +${mechanicInfo.basicAttackGain}` : "", ...builders].filter(Boolean).join(", ")}.`,
+      stackBonuses.length ? `Each stack currently grants ${stackBonuses.join(", ")}.` : "",
+      spenders.length ? `Spend: ${spenders.join(", ")}.` : "Spend: your first payoff unlocks at a later level.",
+      ...advancedRules,
+      ...passives.map((passive) => `Passive: ${passive}`),
+      nextUnlock ? `Next class unlock: ${nextUnlock.name} at level ${nextUnlock.level}.` : "All current class techniques unlocked."
+    ].filter(Boolean);
+  }
+
   private binder(player: PlayerRecord, query = "") {
     const cards = player.binderCards.map((cardId) => binderCardInfo(this.world, cardId));
     const groupedCards = groupBinderCards(cards);
@@ -1044,8 +1172,10 @@ export class Game {
     if (query && !selectedPage) {
       return [`No collection page matches '${query}'. Try: ${pageProgress.map((page) => page.page).join(", ")}.`];
     }
+    const storyHint = this.storyProgressionHint(player);
     const lines = [
       `Collection cards (${cards.length}): ${binderProgressSummary(cards.length)}.`,
+      ...(storyHint ? [storyHint] : []),
       "Milestones:",
       ...binderMilestoneLines(cards.length),
       "Page chase:",
@@ -1074,19 +1204,55 @@ export class Game {
     return this.inventoryItems(player).find((item) => matches(item, query));
   }
 
-  private itemSummary(item: ItemDefinition) {
+  private itemSummary(item: ItemDefinition, player?: PlayerRecord) {
     const details: string[] = [item.description];
+    if (item.rarity) details.push(`Rarity: ${rarityLabel(item.rarity)}.`);
     if (item.type) details.push(`Type: ${item.type}.`);
     if (Number.isFinite(item.value)) details.push(`Value: ${item.value} Prize Tickets.`);
-    const bonuses = Object.entries(item.equipment?.statBonuses ?? {})
-      .filter((entry): entry is [string, number] => Boolean(entry[1]))
-      .map(([stat, value]) => `${value > 0 ? "+" : ""}${value} ${stat}`);
+    if (item.equipment) details.push(`Slot: ${item.equipment.slot}.`);
+    const bonuses = this.statBonusLabels(item.equipment?.statBonuses ?? {});
     if (bonuses.length) details.push(`Bonuses: ${bonuses.join(", ")}.`);
+    if (player && item.equipment) details.push(...this.equipmentComparisonLines(item, this.equippedItemForSlot(player, item.equipment.slot)));
     const consumable = [];
     if (item.consumable?.hp) consumable.push(`${item.consumable.hp} HP`);
     if (item.consumable?.mana) consumable.push(`${item.consumable.mana} Energy`);
     if (consumable.length) details.push(`Restores: ${consumable.join(", ")}.`);
     return details.join(" ");
+  }
+
+  private equippedItemForSlot(player: PlayerRecord, slot: EquipmentSlot) {
+    const itemId = player.equipment[slot];
+    return itemId ? this.world.items.get(itemId) : undefined;
+  }
+
+  private equipmentComparisonLines(item: ItemDefinition, previous?: ItemDefinition) {
+    if (!item.equipment) return [];
+    if (previous?.id === item.id) return [`Currently equipped in your ${item.equipment.slot} slot.`];
+    const newBonuses = this.statBonusLabels(item.equipment.statBonuses);
+    const oldBonuses = previous?.equipment ? this.statBonusLabels(previous.equipment.statBonuses) : [];
+    const lines = [
+      `Equipped ${item.equipment.slot}: ${previous ? `${previous.name} (${oldBonuses.join(", ") || "no bonuses"})` : "nothing"}.`,
+      `New item: ${item.name} (${newBonuses.join(", ") || "no bonuses"}).`
+    ];
+    const delta = this.statDeltaLabels(previous?.equipment?.statBonuses ?? {}, item.equipment.statBonuses);
+    if (delta.length) lines.push(`Change: ${delta.join(", ")}.`);
+    return lines;
+  }
+
+  private statBonusLabels(bonuses: Partial<PlayerStats>) {
+    return Object.entries(bonuses)
+      .filter((entry): entry is [string, number] => Boolean(entry[1]))
+      .map(([stat, value]) => `${value > 0 ? "+" : ""}${value} ${this.characterConfig.statName(stat)}`);
+  }
+
+  private statDeltaLabels(previous: Partial<PlayerStats>, next: Partial<PlayerStats>) {
+    const statIds = new Set([...Object.keys(previous), ...Object.keys(next)]);
+    return [...statIds]
+      .map((statId) => {
+        const delta = (next[statId] ?? 0) - (previous[statId] ?? 0);
+        return delta ? `${delta > 0 ? "+" : ""}${delta} ${this.characterConfig.statName(statId)}` : undefined;
+      })
+      .filter((label): label is string => Boolean(label));
   }
 
   private findMerchant(roomId: string, query: string) {
@@ -1298,6 +1464,16 @@ function binderRarityForNpc(npc: NpcDefinition): BinderCardInfo["rarity"] {
 function firstSentence(value: string) {
   const sentence = value.trim().match(/^[^.!?]+[.!?]/)?.[0];
   return sentence ?? value.trim();
+}
+
+function rarityLabel(rarity: ItemRarity) {
+  return {
+    common: "Common",
+    uncommon: "Uncommon",
+    rare: "Rare",
+    boss: "Boss Drop",
+    promo: "Promo"
+  }[rarity];
 }
 
 function binderPageProgress(world: World, player: PlayerRecord) {

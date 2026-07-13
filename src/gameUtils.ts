@@ -26,7 +26,8 @@ export function triggerMatches(expected: QuestTrigger, actual: QuestTrigger) {
     (!expected.topic || expected.topic.toLowerCase() === actual.topic?.toLowerCase()) &&
     (!expected.itemId || expected.itemId === actual.itemId) &&
     (!expected.roomId || expected.roomId === actual.roomId) &&
-    (!expected.doorId || expected.doorId === actual.doorId)
+    (!expected.doorId || expected.doorId === actual.doorId) &&
+    (!expected.count || (actual.count ?? 0) >= expected.count)
   );
 }
 

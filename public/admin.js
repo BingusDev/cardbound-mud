@@ -114,6 +114,7 @@ let selectedNpcId = "";
 let creatingNpc = false;
 let npcDrops = [];
 let npcTopics = [];
+let npcSpecials = [];
 let selectedQuestId = "";
 let creatingQuest = false;
 let questPrerequisites = [];
@@ -1020,6 +1021,7 @@ function fillItemForm(item) {
   setValue("itemNameInput", item.name);
   setValue("itemDescriptionInput", item.description);
   setValue("itemTypeInput", item.type ?? "misc");
+  setValue("itemRarityInput", item.rarity ?? "common");
   setValue("itemValueInput", item.value ?? 0);
   setValue("itemHpInput", item.consumable?.hp ?? 0);
   setValue("itemManaInput", item.consumable?.mana ?? 0);
@@ -1069,6 +1071,7 @@ async function saveItem() {
     name: getValue("itemNameInput"),
     description: getValue("itemDescriptionInput"),
     type,
+    rarity: getValue("itemRarityInput"),
     value: Number(getValue("itemValueInput")),
     consumable: type === "consumable" ? consumable : undefined,
     equipment:
@@ -1167,6 +1170,7 @@ function fillNpcForm(npc) {
   setValue("npcTicketsInput", npc.combat.tickets);
   setValue("npcRespawnInput", npc.combat.respawnSeconds);
   setValue("npcAttackNameInput", npc.combat.attackName);
+  setValue("npcEncounterInput", npc.combat.encounter ? JSON.stringify(npc.combat.encounter, null, 2) : "");
   setValue("npcDefeatMessageInput", npc.combat.defeatMessage);
   setValue("npcGreetingInput", npc.dialogue.greeting.join("\n"));
   setChecked("npcMerchantBuysInput", npc.merchant?.buys ?? false);
@@ -1175,6 +1179,7 @@ function fillNpcForm(npc) {
   fillMerchantItems(npc.merchant?.items ?? []);
   for (const stat of characterConfig.stats ?? []) setValue(`npc-stat-${stat.id}`, npc.stats[stat.id] ?? stat.base ?? 0);
   npcDrops = (npc.combat.drops ?? []).map((drop) => ({ ...drop }));
+  npcSpecials = structuredClone(npc.combat.specials ?? []);
   npcTopics = Object.entries(npc.dialogue.topics ?? {}).map(([key, topic]) => ({
     key,
     prompt: topic.prompt ?? "",
@@ -1245,6 +1250,13 @@ function duplicateSelectedNpc() {
 async function saveNpc() {
   if (!world) return;
   if (!confirmValidationSave("NPC")) return;
+  let encounter;
+  try {
+    encounter = parseOptionalJsonObject(getValue("npcEncounterInput"), "Boss Encounter JSON");
+  } catch (error) {
+    setStatus(error.message, "bad");
+    return;
+  }
   const existing = world.npcs.find((npc) => npc.id === selectedNpcId);
   const npc = {
     id: getValue("npcIdInput"),
@@ -1269,6 +1281,8 @@ async function saveNpc() {
       respawnSeconds: Number(getValue("npcRespawnInput")),
       xp: Number(getValue("npcXpInput")),
       tickets: Number(getValue("npcTicketsInput")),
+      specials: npcSpecials.length ? structuredClone(npcSpecials) : undefined,
+      encounter,
       drops: npcDrops.filter((drop) => drop.itemId).map((drop) => ({
         itemId: drop.itemId,
         chance: Math.max(0, Math.min(1, Number(drop.chance))),
@@ -1314,6 +1328,19 @@ async function saveNpc() {
   } catch (error) {
     setStatus(error.message, "bad");
   }
+}
+
+function parseOptionalJsonObject(value, label) {
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  let parsed;
+  try {
+    parsed = JSON.parse(trimmed);
+  } catch {
+    throw new Error(`${label} is not valid JSON.`);
+  }
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error(`${label} must be a JSON object.`);
+  return parsed;
 }
 
 function readNpcBehaviorForm() {
@@ -1541,13 +1568,14 @@ function renderQuestPrerequisites() {
     row.innerHTML = `
       <label>Type
         <select data-prereq-field="type">
-          ${["level", "flag", "item", "quest"].map((type) => `<option value="${type}">${type}</option>`).join("")}
+          ${["level", "flag", "item", "quest", "binderCards"].map((type) => `<option value="${type}">${type}</option>`).join("")}
         </select>
       </label>
       <label data-prereq-control="level">Level<input data-prereq-field="level" type="number" min="1" value="${prerequisite.level ?? 1}" /></label>
       <label data-prereq-control="flag">Flag<input data-prereq-field="flag" value="${escapeHtml(prerequisite.flag ?? "")}" /></label>
       <label data-prereq-control="item">Item<select data-prereq-field="itemId"></select></label>
       <label data-prereq-control="quest">Quest<select data-prereq-field="questId"></select></label>
+      <label data-prereq-control="binderCards">Collection Cards<input data-prereq-field="count" type="number" min="1" value="${prerequisite.count ?? 1}" /></label>
       <button type="button">Remove</button>
     `;
     const type = row.querySelector('[data-prereq-field="type"]');
@@ -1567,7 +1595,8 @@ function renderQuestPrerequisites() {
         level: nextType === "level" ? Number(row.querySelector('[data-prereq-field="level"]').value) : undefined,
         flag: nextType === "flag" ? row.querySelector('[data-prereq-field="flag"]').value.trim() : "",
         itemId: nextType === "item" ? item.value : "",
-        questId: nextType === "quest" ? quest.value : ""
+        questId: nextType === "quest" ? quest.value : "",
+        count: nextType === "binderCards" ? Number(row.querySelector('[data-prereq-field="count"]').value) : undefined
       });
       updatePrerequisiteFieldVisibility(row);
     };
@@ -1690,7 +1719,7 @@ function renderQuestRewards() {
 
 function renderTriggerFields(container, prefix) {
   container.innerHTML = `
-    <p class="trigger-help">Talk/ask fire through NPC dialogue, take fires when an item is picked up, enterRoom fires on travel, and door triggers fire when a door changes state.</p>
+    <p class="trigger-help">Talk/ask fire through NPC dialogue, take fires when an item is picked up, enterRoom fires on travel, door triggers fire when a door changes state, defeat fires when a monster is beaten, and binderCards checks Collection count.</p>
     <label data-trigger-control="type">Type
       <select id="${prefix}-type">
         <option value="talk">talk</option>
@@ -1699,6 +1728,8 @@ function renderTriggerFields(container, prefix) {
         <option value="enterRoom">enterRoom</option>
         <option value="unlockDoor">unlockDoor</option>
         <option value="openDoor">openDoor</option>
+        <option value="defeat">defeat</option>
+        <option value="binderCards">binderCards</option>
       </select>
     </label>
     <label data-trigger-control="npc">NPC<select id="${prefix}-npc"></select></label>
@@ -1706,6 +1737,7 @@ function renderTriggerFields(container, prefix) {
     <label data-trigger-control="item">Item<select id="${prefix}-item"></select></label>
     <label data-trigger-control="room">Room<select id="${prefix}-room"></select></label>
     <label data-trigger-control="door">Door<select id="${prefix}-door"></select></label>
+    <label data-trigger-control="count">Collection Cards<input id="${prefix}-count" type="number" min="1" /></label>
   `;
   fillTriggerOptions(prefix);
   wireTrigger(prefix);
@@ -1726,6 +1758,7 @@ function setTriggerValues(prefix, trigger) {
   setValue(`${prefix}-item`, trigger.itemId ?? "");
   setValue(`${prefix}-room`, trigger.roomId ?? "");
   setValue(`${prefix}-door`, trigger.doorId ?? "");
+  setValue(`${prefix}-count`, trigger.count ?? 1);
   updateTriggerFieldVisibility(prefix);
 }
 
@@ -1733,11 +1766,12 @@ function readTriggerValues(prefix) {
   const type = getValue(`${prefix}-type`);
   return cleanObject({
     type,
-    npcId: ["talk", "ask"].includes(type) ? getValue(`${prefix}-npc`) : "",
+    npcId: ["talk", "ask", "defeat"].includes(type) ? getValue(`${prefix}-npc`) : "",
     topic: type === "ask" ? getValue(`${prefix}-topic`) : "",
     itemId: type === "take" ? getValue(`${prefix}-item`) : "",
     roomId: type === "enterRoom" ? getValue(`${prefix}-room`) : "",
-    doorId: ["unlockDoor", "openDoor"].includes(type) ? getValue(`${prefix}-door`) : ""
+    doorId: ["unlockDoor", "openDoor"].includes(type) ? getValue(`${prefix}-door`) : "",
+    count: type === "binderCards" ? Number(getValue(`${prefix}-count`)) || 1 : undefined
   });
 }
 
@@ -1772,11 +1806,12 @@ function wireTrigger(prefix) {
 function updateTriggerFieldVisibility(prefix) {
   const type = getValue(`${prefix}-type`);
   const controls = {
-    npc: ["talk", "ask"].includes(type),
+    npc: ["talk", "ask", "defeat"].includes(type),
     topic: type === "ask",
     item: type === "take",
     room: type === "enterRoom",
-    door: ["unlockDoor", "openDoor"].includes(type)
+    door: ["unlockDoor", "openDoor"].includes(type),
+    count: type === "binderCards"
   };
   const typeElement = document.querySelector(`#${prefix}-type`);
   const container = typeElement?.closest(".trigger-grid");
@@ -2257,17 +2292,17 @@ function renderCombatConfig() {
         <label>Base Run Chance<input data-config-combat="baseFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.baseFleeChance ?? 0.35}" /></label>
         <label>Tempo Run Bonus<input data-config-combat="graceFleeBonus" type="number" min="0" max="1" step="0.001" value="${combat.graceFleeBonus ?? 0.035}" /></label>
         <label>Maximum Run Chance<input data-config-combat="maximumFleeChance" type="number" min="0" max="1" step="0.01" value="${combat.maximumFleeChance ?? 0.85}" /></label>
-        <label>Death Respawn Seconds<input data-config-combat="deathRespawnSeconds" type="number" min="1" value="${combat.deathRespawnSeconds ?? 60}" /></label>
+        <label>Death Respawn Seconds<input data-config-combat="deathRespawnSeconds" type="number" min="1" value="${combat.deathRespawnSeconds ?? 20}" /></label>
         <label>Out of Combat Recovery HP<input data-config-combat="outOfCombatRecoveryHp" type="number" min="0" value="${combat.outOfCombatRecoveryHp ?? 1}" /></label>
         <label>Out of Combat Recovery Seconds<input data-config-combat="outOfCombatRecoverySeconds" type="number" min="1" value="${combat.outOfCombatRecoverySeconds ?? 20}" /></label>
         <label>NPC Spawn Seconds<input data-config-combat="npcSpawnSeconds" type="number" min="0" value="${combat.npcSpawnSeconds ?? 20}" /></label>
         <label>NPC Despawn Seconds<input data-config-combat="npcDespawnSeconds" type="number" min="0" value="${combat.npcDespawnSeconds ?? 10}" /></label>
         <label>Players Per NPC<input data-config-combat="npcPlayersPerInstance" type="number" min="1" value="${combat.npcPlayersPerInstance ?? 1}" /></label>
         <label>Max NPCs Per Type<input data-config-combat="npcMaxInstancesPerType" type="number" min="1" value="${combat.npcMaxInstancesPerType ?? 4}" /></label>
-        <label>Recover Energy Amount<input data-config-combat="restManaRecoveryAmount" type="number" min="0" value="${combat.restManaRecoveryAmount ?? 2}" /></label>
-        <label>Recover Energy Seconds<input data-config-combat="restManaRecoverySeconds" type="number" min="1" value="${combat.restManaRecoverySeconds ?? 10}" /></label>
-        <label>Recover HP Amount<input data-config-combat="restHpRecoveryAmount" type="number" min="0" value="${combat.restHpRecoveryAmount ?? 1}" /></label>
-        <label>Recover HP Seconds<input data-config-combat="restHpRecoverySeconds" type="number" min="1" value="${combat.restHpRecoverySeconds ?? 10}" /></label>
+        <label>Recover Energy Amount<input data-config-combat="restManaRecoveryAmount" type="number" min="0" value="${combat.restManaRecoveryAmount ?? 3}" /></label>
+        <label>Recover Energy Seconds<input data-config-combat="restManaRecoverySeconds" type="number" min="1" value="${combat.restManaRecoverySeconds ?? 6}" /></label>
+        <label>Recover HP Amount<input data-config-combat="restHpRecoveryAmount" type="number" min="0" value="${combat.restHpRecoveryAmount ?? 3}" /></label>
+        <label>Recover HP Seconds<input data-config-combat="restHpRecoverySeconds" type="number" min="1" value="${combat.restHpRecoverySeconds ?? 6}" /></label>
         <label>Checkpoint Recovery Multiplier<input data-config-combat="sanctuaryRestMultiplier" type="number" min="1" step="0.1" value="${combat.sanctuaryRestMultiplier ?? 2}" /></label>
       </div>
       <fieldset class="drop-editor">
@@ -2341,9 +2376,19 @@ function renderJobsConfig() {
             <label>ID<input data-field="id" value="${escapeHtml(job.id)}" /></label>
             <label>Name<input data-field="name" value="${escapeHtml(job.name)}" /></label>
             <label>Primary Stats<input data-field="primaryStats" value="${escapeHtml((job.primaryStats ?? []).join(", "))}" /></label>
+            <label>Starting Modifiers<input data-field="modifiers" value="${escapeHtml(formatStatMap(job.modifiers))}" /></label>
             <label>Growth / Level<input data-field="growthPerLevel" value="${escapeHtml(formatStatMap(job.growthPerLevel))}" /></label>
+            <label>Starter Item ID<input data-field="starterItemId" value="${escapeHtml(job.starterItemId ?? "")}" /></label>
+            <label>Mechanic ID<input data-field="mechanicId" value="${escapeHtml(job.mechanic?.id ?? "")}" /></label>
+            <label>Mechanic Name<input data-field="mechanicName" value="${escapeHtml(job.mechanic?.name ?? "")}" /></label>
+            <label>Max Mechanic<input data-field="mechanicMaxStacks" type="number" min="1" value="${job.mechanic?.maxStacks ?? 1}" /></label>
+            <label>Basic Attack Gain<input data-field="mechanicBasicAttackGain" type="number" min="0" value="${job.mechanic?.basicAttackGain ?? 0}" /></label>
+            <label>Damage / Stack<input data-field="mechanicDamagePerStack" type="number" min="0" step="0.1" value="${job.mechanic?.damagePerStack ?? 0}" /></label>
+            <label>Healing / Stack<input data-field="mechanicHealingPerStack" type="number" min="0" step="0.1" value="${job.mechanic?.healingPerStack ?? 0}" /></label>
+            <label>Guard / Stack<input data-field="mechanicGuardPerStack" type="number" min="0" step="0.1" value="${job.mechanic?.guardPerStack ?? 0}" /></label>
           </div>
           <label>Description<textarea data-field="description" rows="3">${escapeHtml(job.description ?? "")}</textarea></label>
+          <label>Mechanic Description<textarea data-field="mechanicDescription" rows="2">${escapeHtml(job.mechanic?.description ?? "")}</textarea></label>
           <div class="config-skill-list">
             ${(job.skills ?? [])
               .map(
@@ -2378,8 +2423,26 @@ function renderSkillEditor(skill, jobIndex, skillIndex) {
           </select>
         </label>
         <label><span>Requires Combat</span><input data-skill-field="requiresCombat" type="checkbox"${skill.requiresCombat ? " checked" : ""} /></label>
+        <label>Mechanic Gain<input data-skill-field="mechanicGain" type="number" min="0" value="${skill.mechanicGain ?? 0}" /></label>
+        <label>Mechanic Cost<input data-skill-field="mechanicCost" type="number" min="0" value="${skill.mechanicCost ?? 0}" /></label>
+        <label><span>Spend All Mechanic</span><input data-skill-field="mechanicSpendAll" type="checkbox"${skill.mechanicSpendAll ? " checked" : ""} /></label>
+        <label><span>Passive Unlock</span><input data-skill-field="passiveEnabled" type="checkbox"${skill.passive ? " checked" : ""} /></label>
       </div>
       <label>Description<textarea data-skill-field="description" rows="3">${escapeHtml(skill.description ?? "")}</textarea></label>
+      <fieldset class="drop-editor" data-passive-fields${skill.passive ? "" : " hidden"}>
+        <legend>Passive Mechanic Modifiers</legend>
+        <div class="mini-grid">
+          <label>Starting Stacks<input data-passive-field="startStacks" type="number" min="0" value="${skill.passive?.startStacks ?? 0}" /></label>
+          <label>Max Stacks Bonus<input data-passive-field="maxStacksBonus" type="number" min="0" value="${skill.passive?.maxStacksBonus ?? 0}" /></label>
+          <label>Basic Gain Bonus<input data-passive-field="basicAttackGainBonus" type="number" min="0" value="${skill.passive?.basicAttackGainBonus ?? 0}" /></label>
+          <label>Damage / Stack Bonus<input data-passive-field="damagePerStackBonus" type="number" min="0" step="0.1" value="${skill.passive?.damagePerStackBonus ?? 0}" /></label>
+          <label>Healing / Stack Bonus<input data-passive-field="healingPerStackBonus" type="number" min="0" step="0.1" value="${skill.passive?.healingPerStackBonus ?? 0}" /></label>
+          <label>Guard / Stack Bonus<input data-passive-field="guardPerStackBonus" type="number" min="0" step="0.1" value="${skill.passive?.guardPerStackBonus ?? 0}" /></label>
+          <label>Energy / Stack Spent<input data-passive-field="energyPerStackSpent" type="number" min="0" step="0.1" value="${skill.passive?.energyPerStackSpent ?? 0}" /></label>
+          <label>Healing / Stack Spent<input data-passive-field="healingPerStackSpent" type="number" min="0" step="0.1" value="${skill.passive?.healingPerStackSpent ?? 0}" /></label>
+          <label>Retain After Spend All<input data-passive-field="retainStacksOnSpendAll" type="number" min="0" value="${skill.passive?.retainStacksOnSpendAll ?? 0}" /></label>
+        </div>
+      </fieldset>
       <div class="config-effect-list">
         ${effects.map((effect, effectIndex) => renderEffectEditor(effect, jobIndex, skillIndex, effectIndex, skill.scalesWith)).join("")}
       </div>
@@ -2456,6 +2519,10 @@ function wireSkillEditorActions() {
     select.addEventListener("change", () => updateEffectFieldVisibility(select.closest("[data-config-effect]")));
     updateEffectFieldVisibility(select.closest("[data-config-effect]"));
   });
+  configEditor.querySelectorAll('[data-skill-field="passiveEnabled"]').forEach((checkbox) => {
+    checkbox.addEventListener("change", () => updatePassiveFieldVisibility(checkbox.closest("[data-config-skill]")));
+    updatePassiveFieldVisibility(checkbox.closest("[data-config-skill]"));
+  });
 }
 
 function newSkillDraft(job) {
@@ -2510,6 +2577,12 @@ function updateEffectFieldVisibility(row) {
   row.querySelectorAll("[data-effect-guard]").forEach((field) => {
     field.hidden = type !== "guard";
   });
+}
+
+function updatePassiveFieldVisibility(row) {
+  if (!row) return;
+  const enabled = row.querySelector('[data-skill-field="passiveEnabled"]').checked;
+  row.querySelector("[data-passive-fields]").hidden = !enabled;
 }
 
 async function saveConfig() {
@@ -2588,14 +2661,32 @@ function readDamageFormula(name) {
 }
 
 function readJobsConfig() {
-  return [...configEditor.querySelectorAll("[data-config-job]")].map((row) => ({
+  return [...configEditor.querySelectorAll("[data-config-job]")].map((row) => cleanObject({
     id: row.querySelector('[data-field="id"]').value.trim(),
     name: row.querySelector('[data-field="name"]').value.trim(),
     description: row.querySelector('[data-field="description"]').value.trim(),
     primaryStats: splitList(row.querySelector('[data-field="primaryStats"]').value),
+    modifiers: parseStatMap(row.querySelector('[data-field="modifiers"]').value),
     growthPerLevel: parseStatMap(row.querySelector('[data-field="growthPerLevel"]').value),
+    starterItemId: row.querySelector('[data-field="starterItemId"]').value.trim() || undefined,
+    mechanic: readJobMechanic(row),
     skills: [...row.querySelectorAll("[data-config-skill]")].map(readSkillEditor)
   }));
+}
+
+function readJobMechanic(row) {
+  const id = row.querySelector('[data-field="mechanicId"]').value.trim();
+  if (!id) return undefined;
+  return {
+    id,
+    name: row.querySelector('[data-field="mechanicName"]').value.trim(),
+    description: row.querySelector('[data-field="mechanicDescription"]').value.trim(),
+    maxStacks: Number(row.querySelector('[data-field="mechanicMaxStacks"]').value),
+    basicAttackGain: Number(row.querySelector('[data-field="mechanicBasicAttackGain"]').value),
+    damagePerStack: Number(row.querySelector('[data-field="mechanicDamagePerStack"]').value),
+    healingPerStack: Number(row.querySelector('[data-field="mechanicHealingPerStack"]').value),
+    guardPerStack: Number(row.querySelector('[data-field="mechanicGuardPerStack"]').value)
+  };
 }
 
 function readSkillEditor(row) {
@@ -2609,8 +2700,21 @@ function readSkillEditor(row) {
     cooldownSeconds: Number(row.querySelector('[data-skill-field="cooldownSeconds"]').value),
     requiresCombat: row.querySelector('[data-skill-field="requiresCombat"]').checked,
     scalesWith,
+    mechanicGain: Number(row.querySelector('[data-skill-field="mechanicGain"]').value) || undefined,
+    mechanicCost: Number(row.querySelector('[data-skill-field="mechanicCost"]').value) || undefined,
+    mechanicSpendAll: row.querySelector('[data-skill-field="mechanicSpendAll"]').checked || undefined,
+    passive: readSkillPassive(row),
     effects: [...row.querySelectorAll("[data-config-effect]")].map((effectRow) => readEffectEditor(effectRow, scalesWith))
   });
+}
+
+function readSkillPassive(row) {
+  if (!row.querySelector('[data-skill-field="passiveEnabled"]').checked) return undefined;
+  return cleanNumberObject(
+    Object.fromEntries(
+      [...row.querySelectorAll("[data-passive-field]")].map((input) => [input.dataset.passiveField, Number(input.value)])
+    )
+  );
 }
 
 function readEffectEditor(row, fallbackStat) {
@@ -2662,15 +2766,26 @@ function parseStatMap(value) {
 function renderValidation() {
   validationList.innerHTML = "";
   const issues = world?.validation?.issues ?? [];
+  const warnings = world?.validation?.warnings ?? [];
   const issueCount = issues.length;
+  const warningCount = warnings.length;
   builderStatus?.classList.toggle("collapsed", !validationExpanded);
   validationToggle?.setAttribute("aria-expanded", String(validationExpanded));
-  if (validationToggle) validationToggle.textContent = issueCount ? `Checks: ${issueCount} issue${issueCount === 1 ? "" : "s"}` : "Checks: OK";
+  if (validationToggle) {
+    const counts = [
+      issueCount ? `${issueCount} issue${issueCount === 1 ? "" : "s"}` : "",
+      warningCount ? `${warningCount} warning${warningCount === 1 ? "" : "s"}` : ""
+    ].filter(Boolean);
+    validationToggle.textContent = counts.length ? `Checks: ${counts.join(", ")}` : "Checks: OK";
+  }
   if (!world?.validation) return;
   if (!validationExpanded) return;
-  if (!issueCount) {
+  if (!issueCount && !warningCount) {
     const item = document.createElement("li");
-    item.textContent = "No builder issues found.";
+    const progression = world.validation.progression;
+    item.textContent = progression
+      ? `Progression proof passed: ${progression.completedQuests}/${progression.totalQuests} quests, ${progression.reachableRooms}/${progression.totalRooms} rooms, and ${progression.collectibleOpponents} Collection opponents are reachable.`
+      : "No builder issues found.";
     item.className = "validation-ok";
     validationList.append(item);
     return;
@@ -2679,6 +2794,12 @@ function renderValidation() {
     const item = document.createElement("li");
     item.textContent = issue;
     item.className = "validation-bad";
+    validationList.append(item);
+  }
+  for (const warning of warnings) {
+    const item = document.createElement("li");
+    item.textContent = warning;
+    item.className = "validation-warning";
     validationList.append(item);
   }
 }
@@ -2889,8 +3010,12 @@ function uniqueTopicKey(baseId) {
 }
 
 function itemSpawnsForRoom(room) {
-  if (room.itemSpawns?.length) return room.itemSpawns;
-  return (room.items ?? []).map((itemId) => ({ itemId, quantity: 1, respawnSeconds: 0, startsAvailable: true }));
+  const explicit = room.itemSpawns ?? [];
+  const explicitItemIds = new Set(explicit.map((spawn) => spawn.itemId));
+  const legacy = (room.items ?? [])
+    .filter((itemId) => !explicitItemIds.has(itemId))
+    .map((itemId) => ({ itemId, quantity: 1, respawnSeconds: 0, startsAvailable: true }));
+  return explicit.length ? [...explicit, ...legacy] : legacy;
 }
 
 function setValue(id, value) {
@@ -2904,6 +3029,10 @@ function getValue(id) {
 
 function setChecked(id, checked) {
   document.querySelector(`#${id}`).checked = checked;
+}
+
+function getChecked(id) {
+  return document.querySelector(`#${id}`).checked;
 }
 
 function splitList(value) {

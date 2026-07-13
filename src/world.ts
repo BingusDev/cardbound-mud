@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
+import { analyzeWorldProgression } from "./progressionValidation.js";
 import type {
   Direction,
   DoorDefinition,
@@ -14,14 +15,16 @@ import type {
 } from "./types.js";
 
 const directions = ["north", "east", "south", "west", "up", "down"] as const;
-const questTriggerSchema = z.object({
-  type: z.enum(["talk", "ask", "take", "enterRoom", "unlockDoor", "openDoor"]),
-  npcId: z.string().optional(),
-  topic: z.string().optional(),
-  itemId: z.string().optional(),
-  roomId: z.string().optional(),
-  doorId: z.string().optional()
-});
+const questTriggerSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("talk"), npcId: z.string().min(1) }).strict(),
+  z.object({ type: z.literal("ask"), npcId: z.string().min(1), topic: z.string().min(1) }).strict(),
+  z.object({ type: z.literal("take"), itemId: z.string().min(1) }).strict(),
+  z.object({ type: z.literal("enterRoom"), roomId: z.string().min(1) }).strict(),
+  z.object({ type: z.literal("unlockDoor"), doorId: z.string().min(1) }).strict(),
+  z.object({ type: z.literal("openDoor"), doorId: z.string().min(1) }).strict(),
+  z.object({ type: z.literal("defeat"), npcId: z.string().min(1) }).strict(),
+  z.object({ type: z.literal("binderCards"), count: z.number().int().min(1) }).strict()
+]);
 const questScriptActionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("message"), lines: z.array(z.string()) }),
   z.object({ type: z.literal("setFlag"), flag: z.string() }),
@@ -32,7 +35,8 @@ const questPrerequisiteSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("level"), level: z.number().int().min(1) }),
   z.object({ type: z.literal("flag"), flag: z.string() }),
   z.object({ type: z.literal("item"), itemId: z.string() }),
-  z.object({ type: z.literal("quest"), questId: z.string() })
+  z.object({ type: z.literal("quest"), questId: z.string() }),
+  z.object({ type: z.literal("binderCards"), count: z.number().int().min(1) })
 ]);
 const exitDefinitionSchema = z.object({
   to: z.string(),
@@ -63,6 +67,7 @@ const itemDefinitionSchema = z.object({
   name: z.string(),
   description: z.string(),
   type: z.enum(["misc", "consumable", "equipment", "key"]).default("misc"),
+  rarity: z.enum(["common", "uncommon", "rare", "boss", "promo"]).optional(),
   value: z.number().int().min(0).optional(),
   consumable: z.object({ hp: z.number().int().min(0).optional(), mana: z.number().int().min(0).optional() }).optional(),
   equipment: z.object({
@@ -83,6 +88,56 @@ const npcCardSchema = z.object({
   variant: z.boolean().optional(),
   event: z.string().optional()
 });
+const npcEncounterSchema = z.object({
+  telegraphs: z.array(z.object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    warning: z.string().min(1),
+    roomWarning: z.string().optional(),
+    counterType: z.enum(["damage", "guard", "mechanicSpend", "brace"]),
+    counterAmount: z.number().positive().default(1),
+    counterHint: z.string().min(1),
+    successMessage: z.string().min(1),
+    failureMessage: z.string().min(1),
+    roomFailureMessage: z.string().optional(),
+    delaySeconds: z.number().min(1),
+    initialDelaySeconds: z.number().min(0).default(4),
+    cooldownSeconds: z.number().min(1),
+    damageMultiplier: z.number().min(0),
+    bracedDamageMultiplier: z.number().min(0).max(1).default(0.4),
+    staggerSeconds: z.number().min(0).default(2)
+  })).default([]),
+  phases: z.array(z.object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    description: z.string().min(1),
+    startsAtHpPercent: z.number().min(0).max(100),
+    enterMessage: z.string().min(1),
+    damageMultiplier: z.number().min(0).default(1),
+    attackCooldownMultiplier: z.number().min(0.25).default(1)
+  })).default([])
+}).superRefine((encounter, context) => {
+  const telegraphIds = new Set<string>();
+  for (const [index, telegraph] of encounter.telegraphs.entries()) {
+    if (telegraphIds.has(telegraph.id)) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["telegraphs", index, "id"], message: "Telegraph ids must be unique." });
+    }
+    telegraphIds.add(telegraph.id);
+    if (telegraph.counterType === "brace" && telegraph.counterAmount !== 1) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["telegraphs", index, "counterAmount"], message: "Brace counters must require exactly one brace." });
+    }
+  }
+  const phaseIds = new Set<string>();
+  encounter.phases.forEach((phase, index) => {
+    if (phaseIds.has(phase.id)) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["phases", index, "id"], message: "Phase ids must be unique." });
+    }
+    phaseIds.add(phase.id);
+    if (index > 0 && phase.startsAtHpPercent >= encounter.phases[index - 1].startsAtHpPercent) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["phases", index, "startsAtHpPercent"], message: "Phase thresholds must be unique and strictly descending." });
+    }
+  });
+}).optional();
 
 export const worldSchema = z.object({
   metadata: z.object({
@@ -204,6 +259,17 @@ export const worldSchema = z.object({
         respawnSeconds: z.number(),
         xp: z.number(),
         tickets: z.number(),
+        specials: z.array(
+          z.object({
+            name: z.string(),
+            message: z.string(),
+            roomMessage: z.string().optional(),
+            chance: z.number().min(0).max(1),
+            cooldownSeconds: z.number().min(0),
+            damageMultiplier: z.number().min(0)
+          })
+        ).optional(),
+        encounter: npcEncounterSchema,
         drops: z.array(
           z.object({
             itemId: z.string(),
@@ -243,6 +309,10 @@ export class World {
   readonly defaultSpawnId: string;
 
   constructor(file: WorldFile) {
+    const progressionAnalysis = analyzeWorldProgression(file);
+    const progressionError = progressionAnalysis.issues.find((issue) => issue.severity === "error");
+    if (progressionError) throw new Error(progressionError.message);
+
     this.metadata = file.metadata;
     this.startRoomId = file.startRoomId;
     this.defaultSpawnId = file.defaultSpawnId;
@@ -360,7 +430,12 @@ export class World {
         }
       }
     }
+
   }
+}
+
+export function questProgressionIssues(file: WorldFile) {
+  return analyzeWorldProgression(file).issues.filter((issue) => issue.severity === "error").map((issue) => issue.message);
 }
 
 function normalizeItem(item: ItemDefinition): ItemDefinition {
@@ -383,10 +458,14 @@ export function validateWorldFile(file: WorldFile) {
 
 export function normalizeRoom(room: RoomDefinition): RoomDefinition {
   const legacySpawns = (room.items ?? []).map((itemId) => ({ itemId, quantity: 1, startsAvailable: true }));
+  const explicitSpawns = room.itemSpawns ?? [];
+  const explicitItemIds = new Set(explicitSpawns.map((spawn) => spawn.itemId));
   return {
     ...room,
     items: room.items ?? [],
-    itemSpawns: room.itemSpawns?.length ? room.itemSpawns : legacySpawns
+    itemSpawns: explicitSpawns.length
+      ? [...explicitSpawns, ...legacySpawns.filter((spawn) => !explicitItemIds.has(spawn.itemId))]
+      : legacySpawns
   };
 }
 

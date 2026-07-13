@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
+import { analyzeWorldProgression } from "./progressionValidation.js";
 import type { Direction, ItemDefinition, NpcDefinition, QuestDefinition, RoomDefinition, WorldFile, ZoneDefinition } from "./types.js";
 import { loadWorldFile, validateWorldFile } from "./world.js";
 
@@ -31,14 +32,16 @@ const itemSpawnInputSchema = z.object({
   respawnSeconds: z.number().int().min(0).optional(),
   startsAvailable: z.boolean().default(true)
 });
-const questTriggerInputSchema = z.object({
-  type: z.enum(["talk", "ask", "take", "enterRoom", "unlockDoor", "openDoor"]),
-  npcId: z.string().trim().optional(),
-  topic: z.string().trim().optional(),
-  itemId: z.string().trim().optional(),
-  roomId: z.string().trim().optional(),
-  doorId: z.string().trim().optional()
-});
+const questTriggerInputSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("talk"), npcId: z.string().trim().min(1) }).strict(),
+  z.object({ type: z.literal("ask"), npcId: z.string().trim().min(1), topic: z.string().trim().min(1) }).strict(),
+  z.object({ type: z.literal("take"), itemId: z.string().trim().min(1) }).strict(),
+  z.object({ type: z.literal("enterRoom"), roomId: z.string().trim().min(1) }).strict(),
+  z.object({ type: z.literal("unlockDoor"), doorId: z.string().trim().min(1) }).strict(),
+  z.object({ type: z.literal("openDoor"), doorId: z.string().trim().min(1) }).strict(),
+  z.object({ type: z.literal("defeat"), npcId: z.string().trim().min(1) }).strict(),
+  z.object({ type: z.literal("binderCards"), count: z.number().int().min(1) }).strict()
+]);
 const questScriptActionInputSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("message"),
@@ -63,7 +66,8 @@ const questPrerequisiteInputSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("level"), level: z.number().int().min(1) }),
   z.object({ type: z.literal("flag"), flag: z.string().trim().min(1) }),
   z.object({ type: z.literal("item"), itemId: z.string().trim().min(1) }),
-  z.object({ type: z.literal("quest"), questId: z.string().trim().min(1) })
+  z.object({ type: z.literal("quest"), questId: z.string().trim().min(1) }),
+  z.object({ type: z.literal("binderCards"), count: z.number().int().min(1) })
 ]);
 const questInputSchema = z.object({
   id: z.string().trim().min(1),
@@ -123,6 +127,7 @@ const itemInputSchema = z.object({
   name: z.string().trim().min(1),
   description: z.string().trim().min(1),
   type: z.enum(["misc", "consumable", "equipment", "key"]).default("misc"),
+  rarity: z.enum(["common", "uncommon", "rare", "boss", "promo"]).optional(),
   value: z.number().int().min(0).optional(),
   consumable: z.object({ hp: z.number().int().min(0).optional(), mana: z.number().int().min(0).optional() }).optional(),
   equipment: z.object({
@@ -143,6 +148,56 @@ const npcCardInputSchema = z.object({
   variant: z.boolean().optional(),
   event: z.string().trim().optional()
 });
+const npcEncounterInputSchema = z.object({
+  telegraphs: z.array(z.object({
+    id: z.string().trim().min(1),
+    name: z.string().trim().min(1),
+    warning: z.string().trim().min(1),
+    roomWarning: z.string().trim().optional(),
+    counterType: z.enum(["damage", "guard", "mechanicSpend", "brace"]),
+    counterAmount: z.number().positive().default(1),
+    counterHint: z.string().trim().min(1),
+    successMessage: z.string().trim().min(1),
+    failureMessage: z.string().trim().min(1),
+    roomFailureMessage: z.string().trim().optional(),
+    delaySeconds: z.number().min(1),
+    initialDelaySeconds: z.number().min(0).default(4),
+    cooldownSeconds: z.number().min(1),
+    damageMultiplier: z.number().min(0),
+    bracedDamageMultiplier: z.number().min(0).max(1).default(0.4),
+    staggerSeconds: z.number().min(0).default(2)
+  })).default([]),
+  phases: z.array(z.object({
+    id: z.string().trim().min(1),
+    name: z.string().trim().min(1),
+    description: z.string().trim().min(1),
+    startsAtHpPercent: z.number().min(0).max(100),
+    enterMessage: z.string().trim().min(1),
+    damageMultiplier: z.number().min(0).default(1),
+    attackCooldownMultiplier: z.number().min(0.25).default(1)
+  })).default([])
+}).superRefine((encounter, context) => {
+  const telegraphIds = new Set<string>();
+  encounter.telegraphs.forEach((telegraph, index) => {
+    if (telegraphIds.has(telegraph.id)) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["telegraphs", index, "id"], message: "Telegraph ids must be unique." });
+    }
+    telegraphIds.add(telegraph.id);
+    if (telegraph.counterType === "brace" && telegraph.counterAmount !== 1) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["telegraphs", index, "counterAmount"], message: "Brace counters must require exactly one brace." });
+    }
+  });
+  const phaseIds = new Set<string>();
+  encounter.phases.forEach((phase, index) => {
+    if (phaseIds.has(phase.id)) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["phases", index, "id"], message: "Phase ids must be unique." });
+    }
+    phaseIds.add(phase.id);
+    if (index > 0 && phase.startsAtHpPercent >= encounter.phases[index - 1].startsAtHpPercent) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["phases", index, "startsAtHpPercent"], message: "Phase thresholds must be unique and strictly descending." });
+    }
+  });
+}).optional();
 const npcInputSchema = z.object({
   id: z.string().trim().min(1),
   name: z.string().trim().min(1),
@@ -160,6 +215,17 @@ const npcInputSchema = z.object({
     respawnSeconds: z.number().int().min(0),
     xp: z.number().int().min(0),
     tickets: z.number().int().min(0),
+    specials: z.array(
+      z.object({
+        name: z.string().trim().min(1),
+        message: z.string().trim().min(1),
+        roomMessage: z.string().trim().optional(),
+        chance: z.number().min(0).max(1),
+        cooldownSeconds: z.number().min(0),
+        damageMultiplier: z.number().min(0)
+      })
+    ).optional(),
+    encounter: npcEncounterInputSchema,
     drops: z.array(
       z.object({
         itemId: z.string().trim().min(1),
@@ -479,12 +545,13 @@ function backupFile(filePath: string, label: string) {
 
 export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
   const issues: string[] = [];
+  const progressionAnalysis = analyzeWorldProgression(file);
+  const warnings = progressionAnalysis.issues.filter((issue) => issue.severity === "warning").map((issue) => issue.message);
   const roomIds = new Set(file.rooms.map((room) => room.id));
   const zoneIds = new Set(file.zones.map((zone) => zone.id));
   const doorIds = new Set(file.doors.map((door) => door.id));
   const itemIds = new Set(file.items.map((item) => item.id));
   const npcIds = new Set(file.npcs.map((npc) => npc.id));
-  const questIds = new Set(file.quests.map((quest) => quest.id));
   const seenCoords = new Map<string, string>();
   const placedNpcIds = new Set<string>();
   const placedItemIds = new Set<string>();
@@ -493,6 +560,8 @@ export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
   const triggerRoomIds = new Set<string>();
   const rewardItemIds = new Set<string>();
   const grantedFlags = new Set<string>();
+
+  issues.push(...progressionAnalysis.issues.filter((issue) => issue.severity === "error").map((issue) => issue.message));
 
   for (const zone of file.zones) {
     if (!roomIds.has(zone.defaultSpawnRoomId)) issues.push(`${zone.name} default spawn room '${zone.defaultSpawnRoomId}' is missing.`);
@@ -504,7 +573,10 @@ export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
     if (!Object.keys(room.exits).length) issues.push(`${room.name} has no exits.`);
     const zone = file.zones.find((candidate) => candidate.id === room.zoneId);
     if (zone?.levelRange) {
-      const combatNpcs = room.npcs.map((npcId) => file.npcs.find((npc) => npc.id === npcId)).filter((npc): npc is NpcDefinition => Boolean(npc));
+      const combatNpcs = room.npcs.flatMap((npcId) => {
+        const npc = file.npcs.find((candidate) => candidate.id === npcId);
+        return npc ? [npc] : [];
+      });
       if (combatNpcs.some((npc) => npc.combat.xp <= 0 && npc.disposition !== "friendly")) {
         issues.push(`${room.name} has a combat NPC with no XP reward.`);
       }
@@ -517,7 +589,6 @@ export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
     for (const spawn of room.itemSpawns) {
       if (!itemIds.has(spawn.itemId)) issues.push(`${room.name} spawns missing item '${spawn.itemId}'.`);
       placedItemIds.add(spawn.itemId);
-      if ((spawn.respawnSeconds ?? 0) <= 0 && spawn.quantity > 0) issues.push(`${room.name} spawn for '${spawn.itemId}' has no respawn timer.`);
     }
     for (const itemId of room.items) placedItemIds.add(itemId);
     for (const npcId of room.npcs) {
@@ -582,9 +653,8 @@ export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
     if (!quest.rewards.length) issues.push(`${quest.name} has no rewards.`);
     for (const prerequisite of quest.prerequisites ?? []) {
       if (prerequisite.type === "item" && !itemIds.has(prerequisite.itemId)) issues.push(`${quest.name} requires missing item '${prerequisite.itemId}'.`);
-      if (prerequisite.type === "quest" && !questIds.has(prerequisite.questId)) issues.push(`${quest.name} requires missing quest '${prerequisite.questId}'.`);
-      if (prerequisite.type === "quest" && prerequisite.questId === quest.id) issues.push(`${quest.name} requires itself.`);
       if (prerequisite.type === "flag" && !grantedFlags.has(prerequisite.flag)) issues.push(`${quest.name} requires flag '${prerequisite.flag}' that no dialogue topic grants.`);
+      if (prerequisite.type === "binderCards" && prerequisite.count < 1) issues.push(`${quest.name} requires an invalid Collection card count.`);
     }
     validateTrigger(`${quest.name} start`, quest.startsOn, issues, { roomIds, itemIds, npcIds, doorIds });
     collectTriggerRefs(quest.startsOn, { triggerItemIds, triggerNpcIds, triggerRoomIds });
@@ -613,7 +683,16 @@ export function validateBuilderWorld(file = loadWorldFile(worldPath)) {
 
   return {
     ok: issues.length === 0,
-    issues
+    issues: [...new Set(issues)],
+    warnings: [...new Set(warnings)],
+    progression: {
+      reachableRooms: progressionAnalysis.reachableRoomIds.length,
+      totalRooms: file.rooms.length,
+      obtainableItems: progressionAnalysis.obtainableItemIds.length,
+      collectibleOpponents: progressionAnalysis.collectibleNpcIds.length,
+      completedQuests: progressionAnalysis.completedQuestIds.length,
+      totalQuests: file.quests.length
+    }
   };
 }
 
@@ -712,6 +791,7 @@ function validateTrigger(
   if (trigger.itemId && !ids.itemIds.has(trigger.itemId)) issues.push(`${label} references missing item '${trigger.itemId}'.`);
   if (trigger.npcId && !ids.npcIds.has(trigger.npcId)) issues.push(`${label} references missing NPC '${trigger.npcId}'.`);
   if (trigger.doorId && !ids.doorIds.has(trigger.doorId)) issues.push(`${label} references missing door '${trigger.doorId}'.`);
+  if (trigger.type === "binderCards" && (!trigger.count || trigger.count < 1)) issues.push(`${label} needs a positive Collection card count.`);
 }
 
 function validateScriptActions(

@@ -1,28 +1,28 @@
 import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
-import type { CharacterConfigFile, JobDefinition, PlayerStats, SpeciesDefinition } from "./types.js";
+import type { CharacterConfigFile, JobDefinition, PlayerStats, SkillPassiveDefinition, SpeciesDefinition } from "./types.js";
 
 const backupDir = path.join(process.cwd(), "data", "admin-backups");
 
 const statSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  description: z.string().trim().min(1),
   base: z.number()
 });
 
 const speciesSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  description: z.string().trim().min(1),
   modifiers: z.record(z.number()),
   growthPerLevel: z.record(z.number())
 });
 
 const damageFormulaSchema = z.object({
   base: z.number(),
-  stat: z.string(),
+  stat: z.string().trim().min(1),
   divisor: z.number(),
   randomMin: z.number(),
   randomMax: z.number()
@@ -31,41 +31,73 @@ const damageFormulaSchema = z.object({
 const skillEffectSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("damage"),
-    message: z.string(),
+    message: z.string().trim().min(1),
     formula: damageFormulaSchema
   }),
   z.object({
     type: z.literal("heal"),
-    message: z.string(),
+    message: z.string().trim().min(1),
     formula: damageFormulaSchema
   }),
   z.object({
     type: z.literal("guard"),
-    message: z.string(),
+    message: z.string().trim().min(1),
     amount: z.number(),
     charges: z.number()
   })
 ]);
 
+const skillPassiveSchema = z.object({
+  startStacks: z.number().int().min(0).optional(),
+  maxStacksBonus: z.number().int().min(0).optional(),
+  basicAttackGainBonus: z.number().int().min(0).optional(),
+  damagePerStackBonus: z.number().min(0).optional(),
+  healingPerStackBonus: z.number().min(0).optional(),
+  guardPerStackBonus: z.number().min(0).optional(),
+  energyPerStackSpent: z.number().min(0).optional(),
+  healingPerStackSpent: z.number().min(0).optional(),
+  retainStacksOnSpendAll: z.number().int().min(0).optional()
+}).refine((passive) => Object.values(passive).some((value) => (value ?? 0) > 0), {
+  message: "A passive needs at least one positive mechanic modifier."
+});
+
 const skillSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  level: z.number(),
-  manaCost: z.number(),
-  cooldownSeconds: z.number(),
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  level: z.number().int().min(1),
+  manaCost: z.number().min(0),
+  cooldownSeconds: z.number().min(0),
   requiresCombat: z.boolean(),
-  scalesWith: z.string(),
+  scalesWith: z.string().trim().min(1),
+  mechanicGain: z.number().int().min(0).optional(),
+  mechanicCost: z.number().int().min(0).optional(),
+  mechanicSpendAll: z.boolean().optional(),
+  passive: skillPassiveSchema.optional(),
   effect: skillEffectSchema.optional(),
   effects: z.array(skillEffectSchema).optional()
 });
 
+const classMechanicSchema = z.object({
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  maxStacks: z.number().int().min(1),
+  basicAttackGain: z.number().int().min(0).default(0),
+  damagePerStack: z.number().min(0).default(0),
+  healingPerStack: z.number().min(0).default(0),
+  guardPerStack: z.number().min(0).default(0)
+});
+
 const jobSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  primaryStats: z.array(z.string()),
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  primaryStats: z.array(z.string().trim().min(1)),
+  modifiers: z.record(z.number()).default({}),
   growthPerLevel: z.record(z.number()),
+  starterItemId: z.string().trim().min(1).optional(),
+  mechanic: classMechanicSchema.optional(),
   skills: z.array(skillSchema)
 });
 
@@ -183,11 +215,16 @@ export class CharacterConfig {
 
   leveledStats(baseStats: PlayerStats, species: string | undefined, job: string | undefined, level: number): PlayerStats {
     const stats = { ...baseStats };
+    const jobDefinition = this.jobDefinition(job);
+    for (const stat of this.stats) {
+      stats[stat.id] = (stats[stat.id] ?? stat.base) + (jobDefinition.modifiers?.[stat.id] ?? 0);
+    }
+
     const gainedLevels = Math.max(0, Math.floor(level) - 1);
     if (gainedLevels <= 0) return stats;
 
     const speciesGrowth = this.speciesDefinition(species).growthPerLevel;
-    const jobGrowth = this.jobDefinition(job).growthPerLevel;
+    const jobGrowth = jobDefinition.growthPerLevel;
     for (const stat of this.stats) {
       const growth = (speciesGrowth[stat.id] ?? 0) + (jobGrowth[stat.id] ?? 0);
       stats[stat.id] = (stats[stat.id] ?? stat.base) + Math.floor(growth * gainedLevels);
@@ -244,6 +281,7 @@ export class CharacterConfig {
 
   private validate() {
     const statIds = new Set(this.stats.map((stat) => stat.id));
+    const mechanicIds = new Set<string>();
     for (const definition of this.species) {
       for (const statId of [...Object.keys(definition.modifiers), ...Object.keys(definition.growthPerLevel)]) {
         if (!statIds.has(statId)) {
@@ -252,14 +290,74 @@ export class CharacterConfig {
       }
     }
     for (const definition of this.jobs) {
-      for (const statId of [...definition.primaryStats, ...Object.keys(definition.growthPerLevel)]) {
+      const skillIds = new Set<string>();
+      const skillNames = new Set<string>();
+      for (const statId of [...definition.primaryStats, ...Object.keys(definition.modifiers ?? {}), ...Object.keys(definition.growthPerLevel)]) {
         if (!statIds.has(statId)) {
           throw new Error(`Class '${definition.id}' references missing stat '${statId}'.`);
         }
       }
+      if (definition.mechanic) {
+        const mechanicSkills = definition.skills.filter((skill) => skill.mechanicGain || skill.mechanicCost || skill.mechanicSpendAll);
+        if (!mechanicSkills.length) throw new Error(`Class '${definition.id}' defines a mechanic but no skills use it.`);
+        if (mechanicIds.has(definition.mechanic.id)) throw new Error(`Class mechanic id '${definition.mechanic.id}' is used more than once.`);
+        mechanicIds.add(definition.mechanic.id);
+        if (definition.mechanic.basicAttackGain > definition.mechanic.maxStacks) {
+          throw new Error(`Class '${definition.id}' gains more ${definition.mechanic.name} from a basic attack than it can hold.`);
+        }
+        if (!definition.mechanic.basicAttackGain && !definition.skills.some((skill) => (skill.mechanicGain ?? 0) > 0)) {
+          throw new Error(`Class '${definition.id}' has no way to build ${definition.mechanic.name}.`);
+        }
+        if (!definition.skills.some((skill) => (skill.mechanicCost ?? 0) > 0 || skill.mechanicSpendAll)) {
+          throw new Error(`Class '${definition.id}' has no way to spend ${definition.mechanic.name}.`);
+        }
+      }
       for (const skill of definition.skills) {
+        const normalizedId = skill.id.trim().toLowerCase();
+        const normalizedName = skill.name.trim().toLowerCase();
+        if (skillIds.has(normalizedId)) throw new Error(`Class '${definition.id}' uses skill id '${skill.id}' more than once.`);
+        if (skillNames.has(normalizedName)) throw new Error(`Class '${definition.id}' uses skill name '${skill.name}' more than once.`);
+        skillIds.add(normalizedId);
+        skillNames.add(normalizedName);
+        if (skill.level > this.leveling.maxLevel) {
+          throw new Error(`Skill '${skill.id}' unlocks above the maximum level of ${this.leveling.maxLevel}.`);
+        }
+        if (skill.effect && skill.effects !== undefined) {
+          throw new Error(`Skill '${skill.id}' cannot define both effect and effects.`);
+        }
+        if (!skill.passive && !(skill.effects?.length || skill.effect)) {
+          throw new Error(`Skill '${skill.id}' needs an active effect or a passive definition.`);
+        }
+        if ((skill.effects?.length || skill.effect) && skill.cooldownSeconds <= 0) {
+          throw new Error(`Active skill '${skill.id}' needs a positive cooldown.`);
+        }
+        if (skill.passive && !(skill.effects?.length || skill.effect) && (skill.manaCost || skill.cooldownSeconds || skill.requiresCombat)) {
+          throw new Error(`Passive skill '${skill.id}' cannot require combat, Energy, or a cooldown.`);
+        }
         if (!statIds.has(skill.scalesWith)) {
           throw new Error(`Skill '${skill.id}' references missing scalesWith stat '${skill.scalesWith}'.`);
+        }
+        if (!definition.mechanic && (skill.mechanicGain || skill.mechanicCost || skill.mechanicSpendAll || skill.passive)) {
+          throw new Error(`Skill '${skill.id}' uses a class mechanic but class '${definition.id}' does not define one.`);
+        }
+        const unlockedPassives = definition.skills.filter((candidate) => candidate.level <= skill.level && candidate.passive).map((candidate) => candidate.passive!);
+        const passiveTotal = (field: keyof SkillPassiveDefinition) => unlockedPassives.reduce((total, passive) => total + (passive[field] ?? 0), 0);
+        const passiveMaxBonus = passiveTotal("maxStacksBonus");
+        const effectiveMaxStacks = (definition.mechanic?.maxStacks ?? 0) + passiveMaxBonus;
+        if (definition.mechanic && (skill.mechanicGain ?? 0) > effectiveMaxStacks) {
+          throw new Error(`Skill '${skill.id}' gains more ${definition.mechanic.name} than the class can hold.`);
+        }
+        if (definition.mechanic && (skill.mechanicCost ?? 0) > effectiveMaxStacks) {
+          throw new Error(`Skill '${skill.id}' costs more ${definition.mechanic.name} than the class can hold.`);
+        }
+        if (definition.mechanic && definition.mechanic.basicAttackGain + passiveTotal("basicAttackGainBonus") > effectiveMaxStacks) {
+          throw new Error(`Class '${definition.id}' gains more ${definition.mechanic.name} from a basic attack than it can hold at level ${skill.level}.`);
+        }
+        if (passiveTotal("startStacks") > effectiveMaxStacks) {
+          throw new Error(`Passive '${skill.id}' starts with more ${definition.mechanic?.name ?? "mechanic"} than the class can hold.`);
+        }
+        if (passiveTotal("retainStacksOnSpendAll") > effectiveMaxStacks) {
+          throw new Error(`Passive '${skill.id}' retains more ${definition.mechanic?.name ?? "mechanic"} than the class can hold.`);
         }
         const effects = skill.effects ?? (skill.effect ? [skill.effect] : []);
         for (const effect of effects) {

@@ -159,7 +159,7 @@ export interface DoorDefinition {
   keyItemId?: string;
 }
 
-export type QuestTriggerType = "talk" | "ask" | "take" | "enterRoom" | "unlockDoor" | "openDoor";
+export type QuestTriggerType = "talk" | "ask" | "take" | "enterRoom" | "unlockDoor" | "openDoor" | "defeat" | "binderCards";
 
 export interface QuestDefinition {
   id: string;
@@ -178,7 +178,8 @@ export type QuestPrerequisiteDefinition =
   | { type: "level"; level: number }
   | { type: "flag"; flag: string }
   | { type: "item"; itemId: string }
-  | { type: "quest"; questId: string };
+  | { type: "quest"; questId: string }
+  | { type: "binderCards"; count: number };
 
 export interface QuestTrigger {
   type: QuestTriggerType;
@@ -187,6 +188,7 @@ export interface QuestTrigger {
   itemId?: string;
   roomId?: string;
   doorId?: string;
+  count?: number;
 }
 
 export interface QuestStepDefinition {
@@ -256,6 +258,7 @@ export interface ItemDefinition {
   name: string;
   description: string;
   type: "misc" | "consumable" | "equipment" | "key";
+  rarity?: ItemRarity;
   value?: number;
   consumable?: {
     hp?: number;
@@ -267,6 +270,7 @@ export interface ItemDefinition {
   };
 }
 
+export type ItemRarity = "common" | "uncommon" | "rare" | "boss" | "promo";
 export type EquipmentSlot = "trinket" | "head" | "body" | "feet";
 
 export interface NpcDefinition {
@@ -316,6 +320,51 @@ export interface NpcCombatDefinition {
   xp: number;
   tickets: number;
   drops: NpcDropDefinition[];
+  specials?: NpcSpecialAttackDefinition[];
+  encounter?: NpcEncounterDefinition;
+}
+
+export interface NpcEncounterDefinition {
+  telegraphs?: NpcTelegraphDefinition[];
+  phases?: NpcPhaseDefinition[];
+}
+
+export interface NpcTelegraphDefinition {
+  id: string;
+  name: string;
+  warning: string;
+  roomWarning?: string;
+  counterType: "damage" | "guard" | "mechanicSpend" | "brace";
+  counterAmount: number;
+  counterHint: string;
+  successMessage: string;
+  failureMessage: string;
+  roomFailureMessage?: string;
+  delaySeconds: number;
+  initialDelaySeconds: number;
+  cooldownSeconds: number;
+  damageMultiplier: number;
+  bracedDamageMultiplier: number;
+  staggerSeconds: number;
+}
+
+export interface NpcPhaseDefinition {
+  id: string;
+  name: string;
+  description: string;
+  startsAtHpPercent: number;
+  enterMessage: string;
+  damageMultiplier: number;
+  attackCooldownMultiplier: number;
+}
+
+export interface NpcSpecialAttackDefinition {
+  name: string;
+  message: string;
+  roomMessage?: string;
+  chance: number;
+  cooldownSeconds: number;
+  damageMultiplier: number;
 }
 
 export interface NpcDropDefinition {
@@ -398,9 +447,11 @@ export interface PlayerView {
   inventory: ItemDefinition[];
   equipment: Partial<Record<EquipmentSlot, ItemDefinition>>;
   combat: CombatView;
+  classMechanic?: CombatMechanicView;
   jobSkills: SkillDefinition[];
   lockedJobSkills: SkillDefinition[];
   quests: QuestView[];
+  progressionHint?: string;
   playersHere: PlayerPresence[];
   isAdmin: boolean;
 }
@@ -450,9 +501,46 @@ export interface CombatView {
   isDead: boolean;
   serverNow: number;
   targetName?: string;
+  targetHp?: number;
+  targetMaxHp?: number;
+  mechanic?: CombatMechanicView;
+  bossPhase?: BossPhaseView;
+  telegraph?: BossTelegraphView;
   nextPlayerReadyAt?: number;
   playerCooldownMs?: number;
   respawnAt?: number;
+}
+
+export interface BossPhaseView {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface BossTelegraphView {
+  id: string;
+  name: string;
+  counterHint: string;
+  progress: number;
+  required: number;
+  resolvesAt: number;
+  braced: boolean;
+}
+
+export interface CombatMechanicView {
+  id: string;
+  name: string;
+  description: string;
+  stacks: number;
+  maxStacks: number;
+  basicAttackGain: number;
+  damagePerStack: number;
+  healingPerStack: number;
+  guardPerStack: number;
+  startStacks: number;
+  energyPerStackSpent: number;
+  healingPerStackSpent: number;
+  retainStacksOnSpendAll: number;
 }
 
 export interface SpeciesDefinition {
@@ -468,8 +556,22 @@ export interface JobDefinition {
   name: string;
   description: string;
   primaryStats: StatName[];
+  modifiers?: Partial<PlayerStats>;
   growthPerLevel: Partial<PlayerStats>;
+  starterItemId?: string;
+  mechanic?: ClassMechanicDefinition;
   skills: SkillDefinition[];
+}
+
+export interface ClassMechanicDefinition {
+  id: string;
+  name: string;
+  description: string;
+  maxStacks: number;
+  basicAttackGain: number;
+  damagePerStack: number;
+  healingPerStack: number;
+  guardPerStack: number;
 }
 
 export interface SkillDefinition {
@@ -481,8 +583,24 @@ export interface SkillDefinition {
   cooldownSeconds: number;
   requiresCombat: boolean;
   scalesWith: StatName;
+  mechanicGain?: number;
+  mechanicCost?: number;
+  mechanicSpendAll?: boolean;
+  passive?: SkillPassiveDefinition;
   effect?: SkillEffectDefinition;
   effects?: SkillEffectDefinition[];
+}
+
+export interface SkillPassiveDefinition {
+  startStacks?: number;
+  maxStacksBonus?: number;
+  basicAttackGainBonus?: number;
+  damagePerStackBonus?: number;
+  healingPerStackBonus?: number;
+  guardPerStackBonus?: number;
+  energyPerStackSpent?: number;
+  healingPerStackSpent?: number;
+  retainStacksOnSpendAll?: number;
 }
 
 export type SkillEffectDefinition = DamageSkillEffect | HealSkillEffect | GuardSkillEffect;

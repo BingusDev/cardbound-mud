@@ -19,17 +19,17 @@
     "baseFleeChance": 0.35,
     "graceFleeBonus": 0.035,
     "maximumFleeChance": 0.85,
-    "deathRespawnSeconds": 45,
+    "deathRespawnSeconds": 20,
     "outOfCombatRecoveryHp": 1,
     "outOfCombatRecoverySeconds": 20,
     "npcSpawnSeconds": 20,
     "npcDespawnSeconds": 10,
     "npcPlayersPerInstance": 1,
     "npcMaxInstancesPerType": 4,
-    "restManaRecoveryAmount": 2,
-    "restManaRecoverySeconds": 10,
-    "restHpRecoveryAmount": 1,
-    "restHpRecoverySeconds": 10,
+    "restManaRecoveryAmount": 3,
+    "restManaRecoverySeconds": 6,
+    "restHpRecoveryAmount": 3,
+    "restHpRecoverySeconds": 6,
     "sanctuaryRestMultiplier": 2,
     "playerDamage": {
       "base": 2,
@@ -115,6 +115,7 @@
           "cooldownSeconds": 3.3,
           "requiresCombat": true,
           "scalesWith": "wit",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -144,6 +145,7 @@
           "cooldownSeconds": 4.4,
           "requiresCombat": true,
           "scalesWith": "wit",
+          "mechanicGain": 2,
           "effects": [
             {
               "type": "damage",
@@ -167,6 +169,7 @@
           "cooldownSeconds": 5.2,
           "requiresCombat": true,
           "scalesWith": "spark",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -193,25 +196,26 @@
           "description": "Call your inner Blue-Eyes White Dragon moment for damage and dramatic protection.",
           "level": 4,
           "manaCost": 8,
-          "cooldownSeconds": 5.9,
+          "cooldownSeconds": 5.7,
           "requiresCombat": true,
           "scalesWith": "heart",
+          "mechanicCost": 2,
           "effects": [
             {
               "type": "damage",
               "message": "Your Blue-Eyes entrance staggers {target} for {damage} damage.",
               "formula": {
-                "base": 8,
+                "base": 10,
                 "stat": "heart",
                 "divisor": 3,
                 "randomMin": 2,
-                "randomMax": 5
+                "randomMax": 6
               }
             },
             {
               "type": "guard",
               "message": "The Blue-Eyes glare guards you through the next exchange.",
-              "amount": 4,
+              "amount": 5,
               "charges": 2
             }
           ]
@@ -222,24 +226,176 @@
           "description": "Topdeck the exact answer and turn one card into a duel-ending combo.",
           "level": 5,
           "manaCost": 10,
-          "cooldownSeconds": 6.7,
+          "cooldownSeconds": 6.2,
           "requiresCombat": true,
           "scalesWith": "spark",
+          "mechanicCost": 1,
+          "mechanicSpendAll": true,
           "effects": [
             {
               "type": "damage",
               "message": "Heart of the Cards detonates around {target} for {damage} damage.",
               "formula": {
-                "base": 11,
+                "base": 14,
                 "stat": "spark",
                 "divisor": 3,
-                "randomMin": 3,
-                "randomMax": 6
+                "randomMin": 4,
+                "randomMax": 8
               }
             }
           ]
+        },
+        {
+          "id": "extended-chain",
+          "name": "Extended Chain",
+          "description": "You can carry one response deeper. Chain Links now cap at five, strengthening every chained hit and Trap Card guard.",
+          "level": 6,
+          "manaCost": 0,
+          "cooldownSeconds": 0,
+          "requiresCombat": false,
+          "scalesWith": "wit",
+          "passive": {
+            "maxStacksBonus": 1
+          }
+        },
+        {
+          "id": "set-five-pass",
+          "name": "Set Five, Pass",
+          "description": "Load the back row with answers, chip the opponent with a face-down feint, and dare them to play into it.",
+          "level": 7,
+          "manaCost": 6,
+          "cooldownSeconds": 5,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "mechanicGain": 3,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "A face-down feint clips {target} for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "wit",
+                "divisor": 4,
+                "randomMin": 0,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Your loaded back row guards {guard} damage from the next attacks.",
+              "amount": 3,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "solemn-judgment",
+          "name": "Solemn Judgment",
+          "description": "Pay two Chain Links to reject the enemy play and seal the field behind a layered negation.",
+          "level": 8,
+          "manaCost": 8,
+          "cooldownSeconds": 5.7,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "mechanicCost": 2,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Solemn Judgment rejects {target}'s play for {damage} damage.",
+              "formula": {
+                "base": 8,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The negation seals the field, guarding {guard} damage for three attacks.",
+              "amount": 4,
+              "charges": 3
+            }
+          ]
+        },
+        {
+          "id": "dark-magician-combination",
+          "name": "Dark Magician Combination",
+          "description": "Spend three Chain Links on a master-and-apprentice spell sequence that leaves one warding circle behind.",
+          "level": 9,
+          "manaCost": 10,
+          "cooldownSeconds": 6.2,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "mechanicCost": 3,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "A master-and-apprentice combination crashes into {target} for {damage} damage.",
+              "formula": {
+                "base": 17,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 4,
+                "randomMax": 7
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The spell circle guards {guard} damage from the counterattack.",
+              "amount": 3,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "exodia-obliterate",
+          "name": "Exodia, Obliterate!",
+          "description": "Cash in a complete five-link chain, reveal the forbidden win condition, and end the duel in one impossible answer.",
+          "level": 10,
+          "manaCost": 12,
+          "cooldownSeconds": 6.9,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "mechanicCost": 5,
+          "mechanicSpendAll": true,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "The five-piece win condition answers {target} with {damage} damage: OBLITERATE!",
+              "formula": {
+                "base": 25,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 6,
+                "randomMax": 10
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The forbidden aura guards {guard} damage while the dust settles.",
+              "amount": 4,
+              "charges": 2
+            }
+          ]
         }
-      ]
+      ],
+      "modifiers": {
+        "wit": 2,
+        "spark": 1,
+        "might": -1
+      },
+      "mechanic": {
+        "id": "chain-links",
+        "name": "Chain Links",
+        "description": "Build a response chain with attacks and setup skills. Every link strengthens Duelist damage and Trap Card guards; finishers cash the chain in.",
+        "maxStacks": 4,
+        "basicAttackGain": 1,
+        "damagePerStack": 1,
+        "healingPerStack": 0,
+        "guardPerStack": 1
+      },
+      "starterItemId": "starter-duel-token"
     },
     {
       "id": "trainer",
@@ -264,6 +420,7 @@
           "cooldownSeconds": 3.4,
           "requiresCombat": true,
           "scalesWith": "bond",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -298,6 +455,7 @@
           "cooldownSeconds": 4.6,
           "requiresCombat": true,
           "scalesWith": "bond",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -332,6 +490,7 @@
           "cooldownSeconds": 5.4,
           "requiresCombat": true,
           "scalesWith": "heart",
+          "mechanicGain": 2,
           "effects": [
             {
               "type": "damage",
@@ -363,31 +522,38 @@
           "description": "Throw up Light Screen pressure: chip the foe while the party steadies itself.",
           "level": 4,
           "manaCost": 8,
-          "cooldownSeconds": 5.8,
+          "cooldownSeconds": 5.6,
           "requiresCombat": true,
           "scalesWith": "bond",
+          "mechanicCost": 2,
           "effects": [
             {
               "type": "damage",
               "message": "Your Light Screen flashes against {target} for {damage} damage.",
               "formula": {
-                "base": 7,
+                "base": 8,
                 "stat": "bond",
                 "divisor": 3,
-                "randomMin": 1,
-                "randomMax": 4
+                "randomMin": 2,
+                "randomMax": 5
               }
             },
             {
               "type": "heal",
               "message": "The Light Screen steadies you for {healing} HP.",
               "formula": {
-                "base": 3,
+                "base": 4,
                 "stat": "bond",
                 "divisor": 4,
                 "randomMin": 1,
                 "randomMax": 3
               }
+            },
+            {
+              "type": "guard",
+              "message": "Light Screen blunts the next hits for {guard} damage.",
+              "amount": 3,
+              "charges": 2
             }
           ]
         },
@@ -397,26 +563,28 @@
           "description": "Push your partner into a Mega Evolution surge of damage and recovery.",
           "level": 5,
           "manaCost": 10,
-          "cooldownSeconds": 6.8,
+          "cooldownSeconds": 6.2,
           "requiresCombat": true,
           "scalesWith": "heart",
+          "mechanicCost": 1,
+          "mechanicSpendAll": true,
           "effects": [
             {
               "type": "damage",
               "message": "Mega Evolution blasts {target} for {damage} damage.",
               "formula": {
-                "base": 9,
+                "base": 12,
                 "stat": "heart",
                 "divisor": 3,
-                "randomMin": 2,
-                "randomMax": 6
+                "randomMin": 3,
+                "randomMax": 7
               }
             },
             {
               "type": "heal",
               "message": "The Mega Evolution surge restores {healing} HP.",
               "formula": {
-                "base": 3,
+                "base": 5,
                 "stat": "heart",
                 "divisor": 4,
                 "randomMin": 2,
@@ -424,8 +592,196 @@
               }
             }
           ]
+        },
+        {
+          "id": "best-friends",
+          "name": "Best Friends",
+          "description": "You and your partner enter every battle already in sync, beginning with two Partner Bond.",
+          "level": 6,
+          "manaCost": 0,
+          "cooldownSeconds": 0,
+          "requiresCombat": false,
+          "scalesWith": "bond",
+          "passive": {
+            "startStacks": 2
+          }
+        },
+        {
+          "id": "helping-hand",
+          "name": "Helping Hand",
+          "description": "Coordinate a safe setup turn that distracts the opponent, restores your footing, and brings the partnership online.",
+          "level": 7,
+          "manaCost": 6,
+          "cooldownSeconds": 5,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "mechanicGain": 3,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your partner's distraction catches {target} for {damage} damage.",
+              "formula": {
+                "base": 3,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 0,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "heal",
+              "message": "The teamwork restores {healing} HP.",
+              "formula": {
+                "base": 3,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Your partner screens the next attacks for {guard} damage.",
+              "amount": 2,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "full-restore",
+          "name": "Full Restore",
+          "description": "Spend two Partner Bond on an emergency reset that sacrifices pressure for a deep heal and lasting protection.",
+          "level": 8,
+          "manaCost": 8,
+          "cooldownSeconds": 5.7,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "mechanicCost": 2,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "The Full Restore spray catches {target} for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 0,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "heal",
+              "message": "Full Restore recovers {healing} HP.",
+              "formula": {
+                "base": 5,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 2,
+                "randomMax": 3
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Your refreshed partner guards {guard} damage for three attacks.",
+              "amount": 3,
+              "charges": 3
+            }
+          ]
+        },
+        {
+          "id": "terastal-team-up",
+          "name": "Terastal Team-Up",
+          "description": "Turn your shared resolve crystalline for an aggressive combination that rebuilds Partner Bond as it lands.",
+          "level": 9,
+          "manaCost": 10,
+          "cooldownSeconds": 6.2,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Your crystal-bright team-up drives through {target} for {damage} damage.",
+              "formula": {
+                "base": 15,
+                "stat": "heart",
+                "divisor": 3,
+                "randomMin": 3,
+                "randomMax": 6
+              }
+            },
+            {
+              "type": "heal",
+              "message": "The shared resolve restores {healing} HP.",
+              "formula": {
+                "base": 2,
+                "stat": "heart",
+                "divisor": 5,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "champions-bond",
+          "name": "Champion's Bond",
+          "description": "Commit a full partnership meter to the final command only a champion and their most trusted partner can answer together.",
+          "level": 10,
+          "manaCost": 12,
+          "cooldownSeconds": 6.9,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "mechanicCost": 5,
+          "mechanicSpendAll": true,
+          "effects": [
+            {
+              "type": "heal",
+              "message": "Your partner answers your faith, restoring {healing} HP.",
+              "formula": {
+                "base": 5,
+                "stat": "bond",
+                "divisor": 4,
+                "randomMin": 2,
+                "randomMax": 4
+              }
+            },
+            {
+              "type": "guard",
+              "message": "Champion's Bond guards {guard} damage from the next attacks.",
+              "amount": 3,
+              "charges": 2
+            },
+            {
+              "type": "damage",
+              "message": "Your final command lands on {target} for {damage} damage.",
+              "formula": {
+                "base": 23,
+                "stat": "bond",
+                "divisor": 3,
+                "randomMin": 6,
+                "randomMax": 9
+              }
+            }
+          ]
         }
-      ]
+      ],
+      "modifiers": {
+        "bond": 2,
+        "heart": 1,
+        "spark": -1
+      },
+      "mechanic": {
+        "id": "partner-bond",
+        "name": "Partner Bond",
+        "description": "Coordinated moves build Partner Bond. Bond greatly improves healing and adds a little damage and protection before Mega Evolution spends it.",
+        "maxStacks": 5,
+        "basicAttackGain": 0,
+        "damagePerStack": 1,
+        "healingPerStack": 2,
+        "guardPerStack": 1
+      },
+      "starterItemId": "starter-poke-ball-clip"
     },
     {
       "id": "planeswalker",
@@ -450,6 +806,7 @@
           "cooldownSeconds": 3.6,
           "requiresCombat": true,
           "scalesWith": "spark",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -473,6 +830,7 @@
           "cooldownSeconds": 4.7,
           "requiresCombat": true,
           "scalesWith": "wit",
+          "mechanicGain": 2,
           "effects": [
             {
               "type": "damage",
@@ -496,6 +854,7 @@
           "cooldownSeconds": 5.3,
           "requiresCombat": true,
           "scalesWith": "spark",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -516,25 +875,26 @@
           "description": "Counter the enemy play and leave enough blue shimmer behind to blunt the next swing.",
           "level": 4,
           "manaCost": 8,
-          "cooldownSeconds": 5.8,
+          "cooldownSeconds": 5.5,
           "requiresCombat": true,
           "scalesWith": "wit",
+          "mechanicCost": 2,
           "effects": [
             {
               "type": "damage",
               "message": "Counterspell snaps around {target} for {damage} damage.",
               "formula": {
-                "base": 8,
+                "base": 10,
                 "stat": "wit",
                 "divisor": 3,
-                "randomMin": 2,
-                "randomMax": 5
+                "randomMin": 3,
+                "randomMax": 6
               }
             },
             {
               "type": "guard",
               "message": "Residual blue wards bend the next attacks aside.",
-              "amount": 2,
+              "amount": 3,
               "charges": 2
             }
           ]
@@ -545,24 +905,170 @@
           "description": "Cash in the loyalty, point at the board, and do the very unfair thing.",
           "level": 5,
           "manaCost": 10,
-          "cooldownSeconds": 6.6,
+          "cooldownSeconds": 6.1,
           "requiresCombat": true,
           "scalesWith": "spark",
+          "mechanicCost": 1,
+          "mechanicSpendAll": true,
           "effects": [
             {
               "type": "damage",
               "message": "Your Planeswalker Ultimate crashes into {target} for {damage} damage.",
               "formula": {
-                "base": 11,
+                "base": 15,
                 "stat": "spark",
                 "divisor": 3,
-                "randomMin": 3,
-                "randomMax": 6
+                "randomMin": 4,
+                "randomMax": 8
               }
             }
           ]
+        },
+        {
+          "id": "untap-step",
+          "name": "Untap Step",
+          "description": "Whenever you spend Mana Spectrum, untap and recover one Energy per color spent.",
+          "level": 6,
+          "manaCost": 0,
+          "cooldownSeconds": 0,
+          "requiresCombat": false,
+          "scalesWith": "wit",
+          "passive": {
+            "energyPerStackSpent": 1
+          }
+        },
+        {
+          "id": "chromatic-lantern",
+          "name": "Chromatic Lantern",
+          "description": "Bring three colors online at once and shelter behind the prismatic ward while the spectrum stabilizes.",
+          "level": 7,
+          "manaCost": 5,
+          "cooldownSeconds": 5.1,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "mechanicGain": 3,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Chromatic light scorches {target} for {damage} damage.",
+              "formula": {
+                "base": 4,
+                "stat": "wit",
+                "divisor": 4,
+                "randomMin": 0,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The lantern's ward guards {guard} damage while three colors come online.",
+              "amount": 2,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "cyclonic-rift",
+          "name": "Cyclonic Rift",
+          "description": "Spend three colors to overload the field, tear open the target's position, and leave nothing nearby to strike back cleanly.",
+          "level": 8,
+          "manaCost": 9,
+          "cooldownSeconds": 5.8,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "mechanicCost": 3,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "An overloaded rift tears through {target} for {damage} damage.",
+              "formula": {
+                "base": 13,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 3,
+                "randomMax": 5
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The emptied battlefield guards {guard} damage from three attacks.",
+              "amount": 3,
+              "charges": 3
+            }
+          ]
+        },
+        {
+          "id": "five-color-cascade",
+          "name": "Five-Color Cascade",
+          "description": "Turn one spell into a chain of answers that hits hard and pulls two more colors into the Mana Spectrum.",
+          "level": 9,
+          "manaCost": 10,
+          "cooldownSeconds": 6.3,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Five-Color Cascade hurls spell after spell into {target} for {damage} damage.",
+              "formula": {
+                "base": 17,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 4,
+                "randomMax": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "five-color-ultimatum",
+          "name": "Five-Color Ultimatum",
+          "description": "Spend a complete Mana Spectrum and make reality answer every color of magic at once.",
+          "level": 10,
+          "manaCost": 12,
+          "cooldownSeconds": 6.9,
+          "requiresCombat": true,
+          "scalesWith": "spark",
+          "mechanicCost": 5,
+          "mechanicSpendAll": true,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Every color answers at once; the ultimatum erases {target} for {damage} damage.",
+              "formula": {
+                "base": 26,
+                "stat": "spark",
+                "divisor": 3,
+                "randomMin": 7,
+                "randomMax": 10
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The afterimage guards {guard} damage while reality reseals.",
+              "amount": 3,
+              "charges": 2
+            }
+          ]
         }
-      ]
+      ],
+      "modifiers": {
+        "spark": 2,
+        "wit": 1,
+        "heart": -1
+      },
+      "mechanic": {
+        "id": "mana-spectrum",
+        "name": "Mana Spectrum",
+        "description": "Spells fix and widen your Mana Spectrum. Each color increases spell damage; Counterspell and the Ultimate turn stored colors into payoff.",
+        "maxStacks": 5,
+        "basicAttackGain": 0,
+        "damagePerStack": 2,
+        "healingPerStack": 0,
+        "guardPerStack": 1
+      },
+      "starterItemId": "starter-mana-counter"
     },
     {
       "id": "pilot",
@@ -587,6 +1093,7 @@
           "cooldownSeconds": 3,
           "requiresCombat": true,
           "scalesWith": "grace",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -610,6 +1117,7 @@
           "cooldownSeconds": 3.8,
           "requiresCombat": true,
           "scalesWith": "might",
+          "mechanicCost": 1,
           "effects": [
             {
               "type": "damage",
@@ -639,6 +1147,7 @@
           "cooldownSeconds": 4.6,
           "requiresCombat": true,
           "scalesWith": "grace",
+          "mechanicGain": 2,
           "effects": [
             {
               "type": "damage",
@@ -659,25 +1168,26 @@
           "description": "Launch from the carrier catapult with enough force to brace through impact.",
           "level": 4,
           "manaCost": 8,
-          "cooldownSeconds": 5.2,
+          "cooldownSeconds": 5,
           "requiresCombat": true,
           "scalesWith": "might",
+          "mechanicCost": 2,
           "effects": [
             {
               "type": "damage",
               "message": "Your Catapult Launch crushes {target} for {damage} damage.",
               "formula": {
-                "base": 8,
+                "base": 10,
                 "stat": "might",
                 "divisor": 3,
-                "randomMin": 2,
-                "randomMax": 4
+                "randomMin": 3,
+                "randomMax": 6
               }
             },
             {
               "type": "guard",
               "message": "The launch brace steadies you against the counterblow.",
-              "amount": 2,
+              "amount": 3,
               "charges": 2
             }
           ]
@@ -688,24 +1198,142 @@
           "description": "Bring every Full Armor module online for one heavy beam-finisher.",
           "level": 5,
           "manaCost": 10,
-          "cooldownSeconds": 6.2,
+          "cooldownSeconds": 5.8,
           "requiresCombat": true,
           "scalesWith": "might",
+          "mechanicCost": 1,
+          "mechanicSpendAll": true,
           "effects": [
             {
               "type": "damage",
               "message": "Full Armor Gundam hammers {target} for {damage} damage.",
               "formula": {
-                "base": 10,
+                "base": 14,
                 "stat": "might",
                 "divisor": 3,
-                "randomMin": 3,
-                "randomMax": 5
+                "randomMin": 4,
+                "randomMax": 8
+              }
+            }
+          ]
+        },
+        {
+          "id": "haro-predictive-os",
+          "name": "Haro Predictive OS",
+          "description": "Haro solves the opening trajectory before your weapons clear; every duel starts with 1 Target Lock.",
+          "level": 6,
+          "manaCost": 0,
+          "cooldownSeconds": 0,
+          "requiresCombat": false,
+          "scalesWith": "grace",
+          "passive": {
+            "startStacks": 1
+          }
+        },
+        {
+          "id": "minovsky-particle-screen",
+          "name": "Minovsky Particle Screen",
+          "description": "Flood the combat space with particles, scramble return fire, and finish painting the target.",
+          "level": 7,
+          "manaCost": 6,
+          "cooldownSeconds": 4.8,
+          "requiresCombat": true,
+          "scalesWith": "grace",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "guard",
+              "message": "Minovsky particles scatter the return fire, screening {guard} damage.",
+              "amount": 4,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "i-field-intercept",
+          "name": "I-Field Intercept",
+          "description": "Spend a firing solution to raise an I-Field that catches the next volleys cold.",
+          "level": 8,
+          "manaCost": 8,
+          "cooldownSeconds": 5.2,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "mechanicCost": 2,
+          "effects": [
+            {
+              "type": "guard",
+              "message": "The I-Field catches the next volleys, absorbing {guard} damage each time.",
+              "amount": 7,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "all-range-funnel-storm",
+          "name": "All-Range Funnel Storm",
+          "description": "Surround the enemy with an all-range attack that also sharpens the next firing solution.",
+          "level": 9,
+          "manaCost": 11,
+          "cooldownSeconds": 5.7,
+          "requiresCombat": true,
+          "scalesWith": "grace",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Funnels cross every escape vector and rake {target} for {damage} damage.",
+              "formula": {
+                "base": 17,
+                "stat": "grace",
+                "divisor": 3,
+                "randomMin": 4,
+                "randomMax": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "last-shooting-full-burst",
+          "name": "Full Burst: Last Shooting",
+          "description": "Commit a complete Target Lock and fire every remaining weapon down the final vector.",
+          "level": 10,
+          "manaCost": 14,
+          "cooldownSeconds": 7,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "mechanicCost": 3,
+          "mechanicSpendAll": true,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Every weapon fires on the final vector, blasting {target} for {damage} damage.",
+              "formula": {
+                "base": 25,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 6,
+                "randomMax": 10
               }
             }
           ]
         }
-      ]
+      ],
+      "modifiers": {
+        "might": 2,
+        "grace": 1,
+        "bond": -1
+      },
+      "mechanic": {
+        "id": "target-lock",
+        "name": "Target Lock",
+        "description": "Basic fire and funnel work paint the target. Each lock sharply increases attack damage before heavy launch skills spend the solution.",
+        "maxStacks": 3,
+        "basicAttackGain": 1,
+        "damagePerStack": 2,
+        "healingPerStack": 0,
+        "guardPerStack": 0
+      },
+      "starterItemId": "starter-haro-patch"
     },
     {
       "id": "captain",
@@ -730,6 +1358,7 @@
           "cooldownSeconds": 3.2,
           "requiresCombat": true,
           "scalesWith": "might",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -753,6 +1382,7 @@
           "cooldownSeconds": 4.2,
           "requiresCombat": true,
           "scalesWith": "heart",
+          "mechanicGain": 2,
           "effects": [
             {
               "type": "damage",
@@ -782,6 +1412,7 @@
           "cooldownSeconds": 5,
           "requiresCombat": true,
           "scalesWith": "might",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -802,25 +1433,26 @@
           "description": "Kick into Gear Second, rush the prize, and shrug off the counterattack.",
           "level": 4,
           "manaCost": 8,
-          "cooldownSeconds": 5.7,
+          "cooldownSeconds": 5.4,
           "requiresCombat": true,
           "scalesWith": "heart",
+          "mechanicCost": 2,
           "effects": [
             {
               "type": "damage",
               "message": "Gear Second crashes into {target} for {damage} damage.",
               "formula": {
-                "base": 8,
+                "base": 10,
                 "stat": "heart",
                 "divisor": 3,
-                "randomMin": 2,
-                "randomMax": 5
+                "randomMin": 3,
+                "randomMax": 6
               }
             },
             {
               "type": "guard",
               "message": "Gear Second leaves you too fired up to fold.",
-              "amount": 4,
+              "amount": 5,
               "charges": 1
             }
           ]
@@ -831,30 +1463,171 @@
           "description": "Let the ridiculous freedom of Gear Fifth turn danger into a finishing gag.",
           "level": 5,
           "manaCost": 10,
-          "cooldownSeconds": 6.5,
+          "cooldownSeconds": 6,
           "requiresCombat": true,
           "scalesWith": "might",
+          "mechanicCost": 1,
+          "mechanicSpendAll": true,
           "effects": [
             {
               "type": "damage",
               "message": "Gear Fifth blasts {target} for {damage} damage.",
               "formula": {
-                "base": 10,
+                "base": 14,
                 "stat": "might",
                 "divisor": 3,
-                "randomMin": 3,
-                "randomMax": 6
+                "randomMin": 4,
+                "randomMax": 9
               }
             },
             {
               "type": "guard",
               "message": "You plant yourself between danger and the crew.",
-              "amount": 5,
+              "amount": 6,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "captains-wake",
+          "name": "The Captain's Wake",
+          "description": "Every ordinary swing pulls the crew forward; basic attacks now build 2 Crew Momentum.",
+          "level": 6,
+          "manaCost": 0,
+          "cooldownSeconds": 0,
+          "requiresCombat": false,
+          "scalesWith": "heart",
+          "passive": {
+            "basicAttackGainBonus": 1
+          }
+        },
+        {
+          "id": "all-hands-on-deck",
+          "name": "All Hands on Deck!",
+          "description": "Call every crewmate into formation, close ranks, and drive the whole ship forward.",
+          "level": 7,
+          "manaCost": 6,
+          "cooldownSeconds": 4.8,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "guard",
+              "message": "The crew closes ranks, guarding {guard} damage from each incoming hit.",
+              "amount": 3,
+              "charges": 2
+            }
+          ]
+        },
+        {
+          "id": "victory-feast",
+          "name": "Sanji's Victory Feast",
+          "description": "Spend some of the crew's momentum on a battle-ready course that restores the whole formation.",
+          "level": 8,
+          "manaCost": 8,
+          "cooldownSeconds": 5.4,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "mechanicCost": 2,
+          "effects": [
+            {
+              "type": "heal",
+              "message": "A victory-course refill restores {healing} HP.",
+              "formula": {
+                "base": 6,
+                "stat": "heart",
+                "divisor": 4,
+                "randomMin": 1,
+                "randomMax": 3
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The fed crew braces you for {guard} damage.",
+              "amount": 2,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "conquerors-haki",
+          "name": "Conqueror's Haki",
+          "description": "Overwhelm the field with a captain's will and turn the crew's answer into fresh momentum.",
+          "level": 9,
+          "manaCost": 11,
+          "cooldownSeconds": 5.8,
+          "requiresCombat": true,
+          "scalesWith": "heart",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Conqueror's Haki crashes over {target} for {damage} damage.",
+              "formula": {
+                "base": 17,
+                "stat": "heart",
+                "divisor": 3,
+                "randomMin": 4,
+                "randomMax": 7
+              }
+            },
+            {
+              "type": "guard",
+              "message": "The crew rallies behind your will, guarding {guard} damage.",
+              "amount": 2,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "bajrang-dawn-breaker",
+          "name": "Bajrang Gun: Dawn Breaker",
+          "description": "Cash in a full crew charge and drop one impossible punch like a new dawn.",
+          "level": 10,
+          "manaCost": 14,
+          "cooldownSeconds": 7,
+          "requiresCombat": true,
+          "scalesWith": "might",
+          "mechanicCost": 5,
+          "mechanicSpendAll": true,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Bajrang Gun drops like a new dawn and crushes {target} for {damage} damage.",
+              "formula": {
+                "base": 24,
+                "stat": "might",
+                "divisor": 3,
+                "randomMin": 6,
+                "randomMax": 10
+              }
+            },
+            {
+              "type": "guard",
+              "message": "You land between the threat and your crew, guarding {guard} damage.",
+              "amount": 4,
               "charges": 1
             }
           ]
         }
-      ]
+      ],
+      "modifiers": {
+        "heart": 2,
+        "might": 1,
+        "wit": -1
+      },
+      "mechanic": {
+        "id": "crew-momentum",
+        "name": "Crew Momentum",
+        "description": "Every committed swing and crew call builds Crew Momentum. Momentum strengthens attacks and the guard you put between danger and the crew.",
+        "maxStacks": 5,
+        "basicAttackGain": 1,
+        "damagePerStack": 1,
+        "healingPerStack": 0,
+        "guardPerStack": 1
+      },
+      "starterItemId": "starter-crew-bracelet"
     },
     {
       "id": "arena-fighter",
@@ -873,12 +1646,13 @@
         {
           "id": "guest-star",
           "name": "AP Assist",
-          "description": "Spend AP for a crossover assist that clips the enemy and brings hype back to your side.",
+          "description": "Call a crossover assist that clips the enemy, brings hype back to your side, and builds AP.",
           "level": 1,
           "manaCost": 3,
           "cooldownSeconds": 3.5,
           "requiresCombat": true,
           "scalesWith": "bond",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -913,6 +1687,7 @@
           "cooldownSeconds": 4.5,
           "requiresCombat": true,
           "scalesWith": "wit",
+          "mechanicGain": 1,
           "effects": [
             {
               "type": "damage",
@@ -936,6 +1711,7 @@
           "cooldownSeconds": 5.1,
           "requiresCombat": true,
           "scalesWith": "grace",
+          "mechanicGain": 2,
           "effects": [
             {
               "type": "damage",
@@ -962,26 +1738,27 @@
           "description": "Raid into the front line with the whole lineup behind you for damage and recovery.",
           "level": 4,
           "manaCost": 8,
-          "cooldownSeconds": 5.9,
+          "cooldownSeconds": 5.5,
           "requiresCombat": true,
           "scalesWith": "bond",
+          "mechanicCost": 2,
           "effects": [
             {
               "type": "damage",
               "message": "Your Raid Team-Up hits {target} for {damage} damage.",
               "formula": {
-                "base": 8,
+                "base": 10,
                 "stat": "bond",
                 "divisor": 3,
-                "randomMin": 2,
-                "randomMax": 5
+                "randomMin": 3,
+                "randomMax": 6
               }
             },
             {
               "type": "heal",
               "message": "The Raid energy restores {healing} HP.",
               "formula": {
-                "base": 2,
+                "base": 4,
                 "stat": "bond",
                 "divisor": 4,
                 "randomMin": 1,
@@ -996,24 +1773,164 @@
           "description": "Flip the Final Trigger and turn the crossover pileup into one decisive blow.",
           "level": 5,
           "manaCost": 10,
-          "cooldownSeconds": 6.9,
+          "cooldownSeconds": 6.2,
           "requiresCombat": true,
           "scalesWith": "wit",
+          "mechanicCost": 1,
+          "mechanicSpendAll": true,
           "effects": [
             {
               "type": "damage",
               "message": "Your Final Trigger overwhelms {target} for {damage} damage.",
               "formula": {
-                "base": 11,
+                "base": 15,
                 "stat": "wit",
                 "divisor": 3,
-                "randomMin": 3,
-                "randomMax": 6
+                "randomMin": 4,
+                "randomMax": 8
+              }
+            }
+          ]
+        },
+        {
+          "id": "ap-refresh-protocol",
+          "name": "AP Refresh Protocol",
+          "description": "Every AP actually spent readies part of the next play, refunding 1 Energy per AP spent.",
+          "level": 6,
+          "manaCost": 0,
+          "cooldownSeconds": 0,
+          "requiresCombat": false,
+          "scalesWith": "wit",
+          "passive": {
+            "energyPerStackSpent": 1
+          }
+        },
+        {
+          "id": "active-trigger",
+          "name": "Active Trigger",
+          "description": "Check an Active Trigger to refresh the lineup, ready a blocker, and bank more AP.",
+          "level": 7,
+          "manaCost": 6,
+          "cooldownSeconds": 4.8,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "heal",
+              "message": "The Active Trigger refreshes your lineup for {healing} HP.",
+              "formula": {
+                "base": 2,
+                "stat": "bond",
+                "divisor": 5,
+                "randomMin": 0,
+                "randomMax": 1
+              }
+            },
+            {
+              "type": "guard",
+              "message": "A readied blocker guards {guard} damage.",
+              "amount": 2,
+              "charges": 1
+            }
+          ]
+        },
+        {
+          "id": "blocker-lineup",
+          "name": "Blocker Line-Up",
+          "description": "Spend AP to fill the front line with bodies that refuse to let the attack through.",
+          "level": 8,
+          "manaCost": 8,
+          "cooldownSeconds": 5.4,
+          "requiresCombat": true,
+          "scalesWith": "bond",
+          "mechanicCost": 2,
+          "effects": [
+            {
+              "type": "guard",
+              "message": "Your Blocker line absorbs {guard} damage from each incoming hit.",
+              "amount": 2,
+              "charges": 3
+            }
+          ]
+        },
+        {
+          "id": "double-impact-raid",
+          "name": "Double Impact Raid",
+          "description": "Punch through the front line with a double-impact entry that leaves the next trigger live.",
+          "level": 9,
+          "manaCost": 11,
+          "cooldownSeconds": 5.8,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "mechanicGain": 2,
+          "effects": [
+            {
+              "type": "damage",
+              "message": "Double Impact punches through the front line and hits {target} for {damage} damage.",
+              "formula": {
+                "base": 17,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 4,
+                "randomMax": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "championship-final-trigger",
+          "name": "Championship Final Trigger",
+          "description": "Resolve a full AP stack into the championship sequence: crowd surge first, decisive crossover second.",
+          "level": 10,
+          "manaCost": 14,
+          "cooldownSeconds": 7,
+          "requiresCombat": true,
+          "scalesWith": "wit",
+          "mechanicCost": 4,
+          "mechanicSpendAll": true,
+          "effects": [
+            {
+              "type": "heal",
+              "message": "The championship crowd restores {healing} HP.",
+              "formula": {
+                "base": 3,
+                "stat": "bond",
+                "divisor": 5,
+                "randomMin": 1,
+                "randomMax": 2
+              }
+            },
+            {
+              "type": "damage",
+              "message": "Every crossover line resolves at once, overwhelming {target} for {damage} damage.",
+              "formula": {
+                "base": 23,
+                "stat": "wit",
+                "divisor": 3,
+                "randomMin": 6,
+                "randomMax": 10
               }
             }
           ]
         }
-      ]
+      ],
+      "modifiers": {
+        "bond": 2,
+        "wit": 1,
+        "grace": -1
+      },
+      "mechanic": {
+        "id": "action-points",
+        "name": "Action Points",
+        "description": "Assists, triggers, and clean Step timing build AP. Stored AP improves damage, healing, and guard before raid and final triggers spend it.",
+        "maxStacks": 4,
+        "basicAttackGain": 1,
+        "damagePerStack": 1,
+        "healingPerStack": 1,
+        "guardPerStack": 1
+      },
+      "starterItemId": "starter-ap-badge"
     }
   ],
   "species": [

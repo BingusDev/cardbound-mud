@@ -379,14 +379,16 @@ export class Store {
     const playerSpecies = this.characterConfig.normalizeSpecies(species);
     const playerJob = this.characterConfig.normalizeJob(job);
     const stats = this.characterConfig.statsForSpecies(playerSpecies);
-    const maxHp = this.characterConfig.maxHpForStats(stats);
-    const maxMana = this.characterConfig.maxManaForStats(stats);
+    const effectiveStats = this.characterConfig.leveledStats(stats, playerSpecies, playerJob, 1);
+    const maxHp = this.characterConfig.maxHpForStats(effectiveStats);
+    const maxMana = this.characterConfig.maxManaForStats(effectiveStats);
+    const inventory = starterInventoryForJob(this.characterConfig, playerJob);
 
     try {
       this.db
         .prepare(
           `INSERT INTO players (account_id, name, species, job, stats_json, room_id, hp, max_hp, mana, max_mana, xp, level, tickets, binder_cards_json, titles_json, flags_json, inventory_json, sanctuary_room_id, is_admin)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, 0, '[]', '[]', '[]', '[]', ?, ?)`
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, 0, '[]', '[]', '[]', ?, ?, ?)`
         )
         .run(
           accountId,
@@ -399,6 +401,7 @@ export class Store {
           maxHp,
           maxMana,
           maxMana,
+          JSON.stringify(inventory),
           startRoomId,
           isAdmin ? 1 : 0
         );
@@ -515,14 +518,16 @@ export class Store {
     const playerSpecies = this.characterConfig.normalizeSpecies(species);
     const playerJob = this.characterConfig.normalizeJob(job);
     const stats = this.characterConfig.statsForSpecies(playerSpecies);
-    const maxHp = this.characterConfig.maxHpForStats(stats);
-    const maxMana = this.characterConfig.maxManaForStats(stats);
+    const effectiveStats = this.characterConfig.leveledStats(stats, playerSpecies, playerJob, 1);
+    const maxHp = this.characterConfig.maxHpForStats(effectiveStats);
+    const maxMana = this.characterConfig.maxManaForStats(effectiveStats);
+    const inventory = starterInventoryForJob(this.characterConfig, playerJob);
     this.db
       .prepare(
         `INSERT INTO players (name, species, job, stats_json, room_id, hp, max_hp, mana, max_mana, xp, level, tickets, binder_cards_json, titles_json, flags_json, inventory_json, sanctuary_room_id, is_admin)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, 0, '[]', '[]', '[]', '[]', ?, ?)`
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, 0, '[]', '[]', '[]', ?, ?, ?)`
       )
-      .run(cleanedName, playerSpecies, playerJob, JSON.stringify(stats), startRoomId, maxHp, maxHp, maxMana, maxMana, startRoomId, isAdmin ? 1 : 0);
+      .run(cleanedName, playerSpecies, playerJob, JSON.stringify(stats), startRoomId, maxHp, maxHp, maxMana, maxMana, JSON.stringify(inventory), startRoomId, isAdmin ? 1 : 0);
 
     const created = this.db
       .prepare("SELECT * FROM players WHERE name = ?")
@@ -723,6 +728,11 @@ function assertPassword(password: string) {
 
 function hashPassword(password: string, salt: string) {
   return crypto.scryptSync(password, salt, 64).toString("hex");
+}
+
+function starterInventoryForJob(characterConfig: CharacterConfig, job: PlayerJob) {
+  const starterItemId = characterConfig.jobDefinition(job).starterItemId;
+  return starterItemId ? [starterItemId] : [];
 }
 
 function fromDbPlayer(row: DbPlayer, characterConfig: CharacterConfig): PlayerRecord {

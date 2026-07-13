@@ -51,6 +51,7 @@ const activeQuestsButton = document.querySelector("#activeQuestsButton");
 const completeQuestsButton = document.querySelector("#completeQuestsButton");
 const combatTarget = document.querySelector("#combatTarget");
 const attackAction = document.querySelector("#attackAction");
+const braceAction = document.querySelector("#braceAction");
 const fleeAction = document.querySelector("#fleeAction");
 const restAction = document.querySelector("#restAction");
 const skillGrid = document.querySelector("#skillGrid");
@@ -133,6 +134,10 @@ attackAction.addEventListener("click", () => {
     return;
   }
   sendActionCommand("attack");
+});
+
+braceAction.addEventListener("click", () => {
+  if (currentState?.combat?.inCombat && currentState.combat.telegraph) sendActionCommand("brace");
 });
 
 fleeAction.addEventListener("click", () => {
@@ -420,7 +425,7 @@ function renderState(state) {
   roomMeta.textContent = state.zone.name;
   hpText.textContent = `${state.hp}/${state.maxHp}`;
   manaText.textContent = `${state.mana}/${state.maxMana}`;
-  speciesText.textContent = state.jobName;
+  speciesText.textContent = state.speciesName;
   jobText.textContent = state.jobName;
   levelText.textContent = state.level;
   xpText.textContent = `${state.xp}/${state.xpForNextLevel ?? "--"}`;
@@ -431,7 +436,7 @@ function renderState(state) {
   renderSkillProgress(state);
   renderInventory(state);
   renderProfileMode();
-  renderQuestJournal(state.quests ?? []);
+  renderQuestJournal(state.quests ?? [], state.progressionHint);
   renderAreaMap(state.areaMap);
   hpBar.style.width = `${Math.max(0, Math.min(100, (state.hp / state.maxHp) * 100))}%`;
   manaBar.style.width = `${Math.max(0, Math.min(100, (state.mana / state.maxMana) * 100))}%`;
@@ -582,7 +587,10 @@ function renderCreationPreview() {
   const job = characterConfig.jobs.find((candidate) => candidate.id === jobSelect.value) ?? characterConfig.jobs[0];
   if (!species || !job) return;
 
-  const stats = Object.fromEntries(characterConfig.stats.map((stat) => [stat.id, (stat.base ?? 0) + (species.modifiers?.[stat.id] ?? 0)]));
+  const stats = Object.fromEntries(characterConfig.stats.map((stat) => [
+    stat.id,
+    (stat.base ?? 0) + (species.modifiers?.[stat.id] ?? 0) + (job.modifiers?.[stat.id] ?? 0)
+  ]));
   const levelOneSkills = (job.skills ?? []).filter((skill) => skill.level <= 1);
   const futureSkills = (job.skills ?? []).filter((skill) => skill.level > 1).slice(0, 3);
   creationPreview.innerHTML = `
@@ -596,6 +604,7 @@ function renderCreationPreview() {
     <div class="preview-skills">
       <span>Starting ${levelOneSkills.map((skill) => escapeHtml(skill.name)).join(", ") || "basic attack"}</span>
       ${futureSkills.length ? `<span>Later ${futureSkills.map((skill) => `${escapeHtml(skill.name)} L${skill.level}`).join(", ")}</span>` : ""}
+      ${job.mechanic ? `<span><strong>${escapeHtml(job.mechanic.name)}</strong>: ${escapeHtml(job.mechanic.description)}</span>` : ""}
     </div>
   `;
 }
@@ -612,14 +621,27 @@ function renderSkills(skills) {
     button.type = "button";
     button.textContent = skill?.name ?? `Slot ${index + 1}`;
     button.dataset.manaCost = String(skill?.manaCost ?? 0);
+    button.dataset.mechanicCost = String(skill ? (skill.mechanicSpendAll ? Math.max(1, skill.mechanicCost ?? 0) : (skill.mechanicCost ?? 0)) : 0);
     button.dataset.implemented = skill ? "true" : "false";
-    button.title = skill ? `${skill.description} Energy: ${skill.manaCost}. Scales with ${statName(skill.scalesWith)}.` : "Choose a skill for this action slot.";
+    const mechanic = currentState?.combat?.mechanic ?? currentState?.classMechanic ?? characterConfig.jobs?.find((job) => job.id === currentState?.job)?.mechanic;
+    const mechanicRules = skill
+      ? [
+          skill.mechanicGain ? `Builds ${skill.mechanicGain} ${mechanic?.name ?? "class mechanic"}.` : "",
+          skill.mechanicSpendAll
+            ? `Spends all ${mechanic?.name ?? "class mechanic"}; requires at least ${Math.max(1, skill.mechanicCost ?? 0)}.`
+            : skill.mechanicCost
+              ? `Costs ${skill.mechanicCost} ${mechanic?.name ?? "class mechanic"}.`
+              : ""
+        ].filter(Boolean).join(" ")
+      : "";
+    button.title = skill ? `${skill.description} Energy: ${skill.manaCost}. Scales with ${statName(skill.scalesWith)}.${mechanicRules ? ` ${mechanicRules}` : ""}` : "Choose a skill for this action slot.";
     button.addEventListener("click", () => {
       if (!skill) {
         slotEditor.hidden = false;
         editActionSlots.textContent = "Done";
         return;
       }
+      if (button.getAttribute("aria-disabled") === "true") return;
       appendLog([`> ${skill.name}`]);
       socket.send(JSON.stringify({ type: "command", input: skill.name }));
     });
@@ -676,7 +698,7 @@ function actionSlotStorageKey(state) {
 }
 
 function updateActionPanel() {
-  if (!attackAction || !fleeAction || !restAction || !combatTarget || !currentState) return;
+  if (!attackAction || !braceAction || !fleeAction || !restAction || !combatTarget || !currentState) return;
 
   const combat = currentState.combat ?? { inCombat: false };
   const now = Date.now() + serverClockOffset;
@@ -687,11 +709,25 @@ function updateActionPanel() {
   const ready = combat.inCombat && remaining <= 0;
 
   if (combat.inCombat) {
-    combatTarget.textContent = combat.targetName ?? "Target";
+    const targetName = combat.targetName ?? "Target";
+    const targetVitals = Number.isFinite(combat.targetHp) && Number.isFinite(combat.targetMaxHp)
+      ? ` · ${combat.targetHp}/${combat.targetMaxHp} HP`
+      : "";
+    const mechanic = combat.mechanic;
+    const mechanicVitals = mechanic ? ` · ${mechanic.name} ${mechanic.stacks}/${mechanic.maxStacks}` : "";
+    const phase = combat.bossPhase ? ` · ${combat.bossPhase.name}` : "";
+    const telegraph = combat.telegraph;
+    const warning = telegraph
+      ? ` · ${telegraph.name} ${formatRemaining(Math.max(0, telegraph.resolvesAt - now))}`
+      : "";
+    combatTarget.textContent = `${targetName}${targetVitals}${mechanicVitals}${phase}${warning}`;
+    combatTarget.classList.toggle("telegraphing", Boolean(telegraph));
   } else if (combat.isDead) {
     combatTarget.textContent = `Resleeving in ${formatRemaining(Math.max(0, (combat.respawnAt ?? now) - now))}`;
+    combatTarget.classList.remove("telegraphing");
   } else {
     combatTarget.textContent = "No duel target";
+    combatTarget.classList.remove("telegraphing");
   }
 
   attackAction.style.setProperty("--cooldown", `${progress * 100}%`);
@@ -706,6 +742,22 @@ function updateActionPanel() {
     : ready
       ? "Attack your current target."
       : "Still getting ready. Click or type attack to try anyway.";
+
+  const telegraph = combat.telegraph;
+  const canBrace = combat.inCombat && !combat.isDead && Boolean(telegraph) && !telegraph.braced;
+  braceAction.disabled = !canBrace;
+  braceAction.classList.toggle("ready", canBrace);
+  braceAction.classList.toggle("locked", !canBrace);
+  braceAction.textContent = telegraph?.braced ? "Braced" : "Brace";
+  braceAction.title = combat.isDead
+    ? "You are waiting for the Life Point safety field to return you."
+    : !combat.inCombat
+      ? "Brace becomes available when a boss telegraphs a major attack."
+      : telegraph?.braced
+        ? "You are already braced for this attack."
+        : telegraph
+          ? `Brace against ${telegraph.name}, reducing its damage but delaying your next action.`
+          : "No major attack is being telegraphed right now.";
 
   fleeAction.disabled = !combat.inCombat || combat.isDead;
   fleeAction.classList.toggle("locked", !combat.inCombat || combat.isDead);
@@ -725,9 +777,13 @@ function updateActionPanel() {
   document.querySelectorAll(".skill-button").forEach((button) => {
     const implemented = button.dataset.implemented === "true";
     const canPay = currentState.mana >= Number(button.dataset.manaCost ?? 0);
-    button.classList.toggle("ready", implemented && ready && canPay);
+    const mechanicCost = Number(button.dataset.mechanicCost ?? 0);
+    const canPayMechanic = (combat.mechanic?.stacks ?? 0) >= mechanicCost;
+    const unavailable = !implemented || !combat.inCombat || combat.isDead || !ready || !canPay || !canPayMechanic;
+    button.classList.toggle("ready", implemented && ready && canPay && canPayMechanic);
     button.classList.toggle("cooling", implemented && combat.inCombat && !ready);
-    button.classList.toggle("locked", !implemented || !combat.inCombat || combat.isDead || !canPay);
+    button.classList.toggle("locked", !implemented || !combat.inCombat || combat.isDead || !canPay || !canPayMechanic);
+    button.setAttribute("aria-disabled", String(unavailable));
   });
 }
 
@@ -750,6 +806,30 @@ function renderSkillProgress(state) {
   const unlocked = state.jobSkills ?? [];
   const locked = state.lockedJobSkills ?? [];
   skillProgress.innerHTML = "";
+
+  const mechanic = state.classMechanic ?? characterConfig.jobs?.find((job) => job.id === state.job)?.mechanic;
+  if (mechanic) {
+    const mechanicCard = document.createElement("div");
+    mechanicCard.className = "class-mechanic-card";
+    const mechanicName = document.createElement("strong");
+    const mechanicDescription = document.createElement("p");
+    const mechanicRules = document.createElement("small");
+    mechanicName.textContent = `${mechanic.name} · cap ${mechanic.maxStacks}`;
+    mechanicDescription.textContent = mechanic.description;
+    mechanicRules.textContent = [
+      mechanic.startStacks ? `Starts at ${mechanic.startStacks}` : "",
+      mechanic.basicAttackGain ? `Basic attack +${mechanic.basicAttackGain}` : "",
+      mechanic.damagePerStack ? `+${mechanic.damagePerStack} damage/stack` : "",
+      mechanic.healingPerStack ? `+${mechanic.healingPerStack} healing/stack` : "",
+      mechanic.guardPerStack ? `+${mechanic.guardPerStack} guard/stack` : "",
+      mechanic.energyPerStackSpent ? `Refund ${mechanic.energyPerStackSpent} Energy/spent` : "",
+      mechanic.healingPerStackSpent ? `Restore ${mechanic.healingPerStackSpent} HP/spent` : "",
+      mechanic.retainStacksOnSpendAll ? `Retain ${mechanic.retainStacksOnSpendAll} after spend-all` : ""
+    ].filter(Boolean).join(" · ");
+    mechanicCard.append(mechanicName, mechanicDescription);
+    if (mechanicRules.textContent) mechanicCard.append(mechanicRules);
+    skillProgress.append(mechanicCard);
+  }
 
   const title = document.createElement("h3");
   title.textContent = "Skills";
@@ -847,6 +927,7 @@ function inventoryCard(item, slot) {
 function itemMeta(item, slot) {
   const parts = [];
   if (slot) parts.push(`Equipped: ${slot}`);
+  if (item.rarity) parts.push(rarityLabel(item.rarity));
   parts.push(item.type);
   if (Number.isFinite(item.value)) parts.push(`${item.value} Prize Tickets`);
   const bonuses = Object.entries(item.equipment?.statBonuses ?? {})
@@ -860,22 +941,58 @@ function itemMeta(item, slot) {
   return parts.join(" | ");
 }
 
+function rarityLabel(rarity) {
+  return {
+    common: "Common",
+    uncommon: "Uncommon",
+    rare: "Rare",
+    boss: "Boss Drop",
+    promo: "Promo"
+  }[rarity] ?? rarity;
+}
+
 function skillProgressItem(skill, locked) {
   const item = document.createElement("div");
   item.className = locked ? "locked" : "";
   const label = document.createElement("span");
   const meta = document.createElement("small");
   label.textContent = skill.name;
-  meta.textContent = locked ? `Unlocks at level ${skill.level}` : `${skill.manaCost ?? 0} Energy | ${statName(skill.scalesWith)}`;
+  const mechanicBits = [
+    skill.mechanicGain ? `+${skill.mechanicGain}` : "",
+    skill.mechanicSpendAll
+      ? `spend all (needs ${Math.max(1, skill.mechanicCost ?? 0)})`
+      : skill.mechanicCost
+        ? `-${skill.mechanicCost}`
+        : ""
+  ].filter(Boolean).join(" / ");
+  meta.textContent = skill.passive
+    ? locked
+      ? `Passive | Unlocks at level ${skill.level}`
+      : "Passive | Always active"
+    : locked
+      ? `Unlocks at level ${skill.level}${mechanicBits ? ` | ${mechanicBits}` : ""}`
+      : `${skill.manaCost ?? 0} Energy | ${statName(skill.scalesWith)}${mechanicBits ? ` | ${mechanicBits}` : ""}`;
   item.title = skill.description;
   item.append(label, meta);
+  if (skill.passive) {
+    const description = document.createElement("small");
+    description.className = "skill-progress-description";
+    description.textContent = skill.description;
+    item.append(description);
+  }
   return item;
 }
 
-function renderQuestJournal(quests) {
+function renderQuestJournal(quests, progressionHint) {
   if (!questJournal) return;
   questJournal.innerHTML = "";
   renderQuestFilterButtons();
+  if (progressionHint) {
+    const route = document.createElement("p");
+    route.className = "quest-progression-hint";
+    route.textContent = progressionHint;
+    questJournal.append(route);
+  }
   if (!quests.length) {
     const empty = document.createElement("p");
     empty.textContent = "No quests recorded yet.";
@@ -903,7 +1020,7 @@ function renderQuestJournal(quests) {
 
 function setQuestFilter(filter) {
   questFilter = filter;
-  renderQuestJournal(currentState?.quests ?? []);
+  renderQuestJournal(currentState?.quests ?? [], currentState?.progressionHint);
 }
 
 function renderQuestFilterButtons() {

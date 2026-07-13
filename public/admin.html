@@ -194,6 +194,15 @@
                   <option value="key">key</option>
                 </select>
               </label>
+              <label>Rarity
+                <select id="itemRarityInput">
+                  <option value="common">common</option>
+                  <option value="uncommon">uncommon</option>
+                  <option value="rare">rare</option>
+                  <option value="boss">boss</option>
+                  <option value="promo">promo</option>
+                </select>
+              </label>
               <label>Value<input id="itemValueInput" type="number" min="0" /></label>
               <label class="wide">Description<textarea id="itemDescriptionInput" rows="5"></textarea></label>
               <div class="item-type-panel wide" id="consumableFields">
@@ -293,6 +302,7 @@
                 <label>Wares<select id="npcMerchantItemsInput" multiple size="6"></select></label>
               </fieldset>
               <label>Attack Name<input id="npcAttackNameInput" /></label>
+              <label class="wide">Boss Encounter JSON<textarea id="npcEncounterInput" rows="12" placeholder='{"telegraphs":[],"phases":[]}'></textarea></label>
               <label class="wide">Defeat Message<textarea id="npcDefeatMessageInput" rows="3"></textarea></label>
               <label class="wide">Greeting Lines<textarea id="npcGreetingInput" rows="4"></textarea></label>
               <fieldset class="drop-editor wide">

@@ -97,6 +97,13 @@ body.in-combat .combat-target {
   background: #26151c;
 }
 
+body.in-combat .combat-target.telegraphing {
+  color: #fff1b8;
+  border-color: var(--yellow);
+  background: #2b2512;
+  box-shadow: inset 0 0 0 1px rgba(244, 207, 99, 0.22);
+}
+
 body.combat-started .terminal-panel {
   animation: combat-flash 900ms ease;
 }
@@ -335,6 +342,27 @@ body.took-damage .meter:first-child .bar {
   font-size: 13px;
 }
 
+.class-mechanic-card {
+  display: grid;
+  gap: 4px;
+  padding: 9px;
+  border: 1px solid rgba(224, 179, 92, 0.55);
+  border-radius: 6px;
+  background: rgba(224, 179, 92, 0.08);
+}
+
+.class-mechanic-card strong {
+  color: var(--gold);
+  font-size: 12px;
+}
+
+.class-mechanic-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .skill-progress-list {
   display: grid;
   gap: 6px;
@@ -446,6 +474,15 @@ body.took-damage .meter:first-child .bar {
   margin: 0;
   color: var(--muted);
   font-size: 12px;
+}
+
+.quest-journal > .quest-progression-hint {
+  padding: 8px;
+  border: 1px solid rgba(224, 179, 92, 0.55);
+  border-radius: 6px;
+  color: var(--text);
+  background: rgba(224, 179, 92, 0.08);
+  line-height: 1.4;
 }
 
 .quest-summary {
@@ -804,7 +841,7 @@ button:hover {
 }
 
 .action-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .action-button,

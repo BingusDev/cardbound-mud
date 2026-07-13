@@ -784,6 +784,10 @@ textarea {
   color: var(--red);
 }
 
+.validation-warning {
+  color: var(--gold);
+}
+
 #validationList {
   display: grid;
   gap: 8px;

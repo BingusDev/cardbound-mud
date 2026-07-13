@@ -1,5 +1,5 @@
 import { CharacterConfig } from "./characterConfig.js";
-import { awardXp } from "./progressionSystem.js";
+import { awardXp, skillUnlockLines } from "./progressionSystem.js";
 import { Store } from "./store.js";
 import type { PlayerRecord, QuestDefinition, QuestRecord, QuestScriptAction, QuestTrigger, QuestView } from "./types.js";
 import { World } from "./world.js";
@@ -94,6 +94,7 @@ export class QuestSystem {
         lines.push(`Quest complete: ${quest.name}.`);
         lines.push(...this.applyScripts(player, quest.scripts?.onComplete ?? []));
         lines.push(...this.applyRewards(player, quest));
+        lines.push(...this.nextStoryGateLines(player, quest.id));
         changed = true;
       }
 
@@ -129,7 +130,10 @@ export class QuestSystem {
       if (reward.type === "xp") {
         const rewardResult = awardXp(player, reward.amount ?? 0, "quest", this.characterConfig);
         if (rewardResult.amount > 0) lines.push(`Reward: ${rewardResult.amount} XP.`);
-        if (rewardResult.leveledUp) lines.push(`Level up! You are now level ${rewardResult.newLevel}.`);
+        if (rewardResult.leveledUp) {
+          lines.push(`Level up! You are now level ${rewardResult.newLevel}.`);
+          lines.push(...skillUnlockLines(rewardResult.unlockedSkills));
+        }
       }
 
       if (reward.type === "tickets") {
@@ -212,6 +216,7 @@ export class QuestSystem {
       if (prerequisite.type === "flag" && !player.flags.includes(prerequisite.flag)) return false;
       if (prerequisite.type === "item" && !player.inventory.includes(prerequisite.itemId)) return false;
       if (prerequisite.type === "quest" && this.store.getQuestRecord(player.id, prerequisite.questId)?.status !== "completed") return false;
+      if (prerequisite.type === "binderCards" && player.binderCards.length < prerequisite.count) return false;
     }
     return true;
   }
@@ -219,6 +224,7 @@ export class QuestSystem {
   private currentStateTriggers(player: PlayerRecord): QuestTrigger[] {
     const triggers: QuestTrigger[] = [
       { type: "enterRoom", roomId: player.roomId },
+      { type: "binderCards", count: player.binderCards.length },
       ...player.inventory.map((itemId) => ({ type: "take" as const, itemId }))
     ];
 
@@ -229,5 +235,44 @@ export class QuestSystem {
     }
 
     return triggers;
+  }
+
+  private nextStoryGateLines(player: PlayerRecord, completedQuestId: string) {
+    const nextQuest = [...this.world.quests.values()].find((quest) => {
+      return (quest.prerequisites ?? []).some((prerequisite) => prerequisite.type === "quest" && prerequisite.questId === completedQuestId);
+    });
+    if (!nextQuest) return [];
+
+    const levelGate = (nextQuest.prerequisites ?? [])
+      .filter((prerequisite) => prerequisite.type === "level")
+      .reduce((highest, prerequisite) => Math.max(highest, prerequisite.level), 0);
+    const collectionGate = (nextQuest.prerequisites ?? [])
+      .filter((prerequisite) => prerequisite.type === "binderCards")
+      .reduce((highest, prerequisite) => Math.max(highest, prerequisite.count), 0);
+    const requirements: string[] = [];
+    const actions: string[] = [];
+    if (levelGate > player.level) {
+      const targetXp = this.characterConfig.xpForLevel(levelGate);
+      const remainingXp = Math.max(0, targetXp - player.xp);
+      requirements.push(`level ${levelGate} (${player.xp}/${targetXp} XP)`);
+      actions.push(`earn ${remainingXp} more XP`);
+    }
+    if (collectionGate > player.binderCards.length) {
+      const remainingCards = collectionGate - player.binderCards.length;
+      requirements.push(`${collectionGate} unique Collection cards (${player.binderCards.length}/${collectionGate})`);
+      actions.push(`defeat ${remainingCards} unlogged runaway${remainingCards === 1 ? "" : "s"}`);
+    }
+    if (requirements.length) {
+      const action = actions.join(" and ");
+      return [`Next story gate: ${nextQuest.name} requires ${requirements.join(" and ")}. ${action.charAt(0).toUpperCase()}${action.slice(1)}.`];
+    }
+
+    const npc = nextQuest.startsOn.npcId ? this.world.npcs.get(nextQuest.startsOn.npcId) : undefined;
+    const startHint = nextQuest.startsOn.type === "ask" && npc && nextQuest.startsOn.topic
+      ? ` Try: ask ${npc.name} about ${nextQuest.startsOn.topic}.`
+      : nextQuest.startsOn.type === "talk" && npc
+        ? ` Try: talk ${npc.name}.`
+        : "";
+    return [`Next story assignment unlocked: ${nextQuest.name}.${startHint}`];
   }
 }
