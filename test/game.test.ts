@@ -400,6 +400,79 @@ test("quest starter dialogue includes class-specific branches", (t) => {
   assert.match(start.lines.join("\n"), /Gym badge/i);
 });
 
+test("every advertised NPC dialogue prompt and configured ask phrase resolves to its topic", (t) => {
+  const { game, player, store, world } = testGame(t, "dialogue-topics");
+
+  player.flags = [
+    ...new Set(
+      [...world.npcs.values()].flatMap((npc) =>
+        Object.values(npc.dialogue.topics).flatMap((topic) => topic.requiresFlag ? [topic.requiresFlag] : [])
+      )
+    )
+  ];
+  store.savePlayer(player);
+
+  for (const quest of world.quests.values()) {
+    store.saveQuestRecord({
+      playerId: player.id,
+      questId: quest.id,
+      status: "completed",
+      completedSteps: quest.steps.map((step) => step.id),
+      completedAt: new Date().toISOString()
+    });
+  }
+
+  for (const npc of world.npcs.values()) {
+    const topics = Object.entries(npc.dialogue.topics);
+    if (!topics.length) continue;
+
+    movePlayerToNpc(player, store, world, npc.id);
+    const talk = game.runCommand(player, `talk ${npc.name}`, []);
+    const advertisedLine = talk.lines.find((line) => line.startsWith(`You can ask ${npc.name} about:`));
+    assert.ok(advertisedLine, `${npc.name} should advertise their available dialogue topics`);
+
+    for (const [key, topic] of topics) {
+      const prompt = topic.prompt ?? key;
+      assert.match(
+        advertisedLine,
+        new RegExp(`${escapeRegExp(prompt)}(?:,|\\.)`, "i"),
+        `${npc.name} should advertise topic '${key}' as '${prompt}'`
+      );
+
+      for (const phrase of new Set([key, prompt, ...topic.aliases])) {
+        const result = game.runCommand(player, `ask ${npc.name} about ${phrase}`, []);
+        const output = result.lines.join("\n");
+        assert.doesNotMatch(
+          output,
+          /Ask whom about what|You do not see them here|uncertain what you mean/i,
+          `${npc.name}'s topic '${key}' should accept '${phrase}'`
+        );
+        assert.ok(
+          topic.response.some((line) => output.includes(`"${line}"`)),
+          `${npc.name}'s phrase '${phrase}' should resolve to topic '${key}'`
+        );
+      }
+    }
+  }
+});
+
+test("talk quest steps name the command and target NPC explicitly", () => {
+  const world = World.load();
+
+  for (const quest of world.quests.values()) {
+    for (const step of quest.steps) {
+      if (step.trigger.type !== "talk" || !step.trigger.npcId) continue;
+      const npc = world.npcs.get(step.trigger.npcId);
+      assert.ok(npc, `${quest.name} references missing talk target ${step.trigger.npcId}`);
+      assert.match(
+        step.label,
+        new RegExp(`talk to ${escapeRegExp(npc.name)}`, "i"),
+        `${quest.name}'s talk step should tell players to use 'Talk to ${npc.name}'`
+      );
+    }
+  }
+});
+
 test("taking one item copy does not schedule a respawn while another spawned copy remains", (t) => {
   const { game, player, store } = testGame(t, "duplicate-item-take");
 

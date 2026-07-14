@@ -400,7 +400,7 @@
     {
       "id": "trainer",
       "name": "Trainer",
-      "description": "A Pokemon Trainer who fights beside a partner monster, burns through Potions, and knows exactly when to call for evolution.",
+      "description": "A Pokemon Trainer who fights beside a partner monster and burns through Potions.",
       "primaryStats": [
         "bond",
         "heart"

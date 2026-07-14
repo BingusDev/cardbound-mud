@@ -14,7 +14,7 @@ export class QuestSystem {
 
   list(player: PlayerRecord) {
     const views = this.views(player);
-    if (!views.length) return ["No quests are recorded yet. Speak with folk who look like they need help."];
+    if (!views.length) return ["No quests are recorded yet. Talk to folk who look like they need help."];
 
     return views.map((quest) => {
       const completed = quest.completedSteps.length;

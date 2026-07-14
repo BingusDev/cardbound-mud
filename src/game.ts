@@ -690,7 +690,7 @@ export class Game {
       return `${quest.name} is tied to later work. Before ${action}, continue ${prerequisites.length ? prerequisites.join(", ") : "your current quests"} first.`;
     }
     if (quest && hint) return `${quest.name} has not begun yet. Before ${action}, try: ${hint}.`;
-    return `${formatQuestList(quests)} has not begun yet. Speak with nearby folk before ${action}.`;
+    return `${formatQuestList(quests)} has not begun yet. Talk to nearby folk before ${action}.`;
   }
 
   private unmetQuestPrerequisiteLabels(player: PlayerRecord, quest: QuestDefinition) {
@@ -909,8 +909,10 @@ export class Game {
     const requestedTopic = cleanCommandQuery(match.topic);
     const topic = Object.entries(npc.dialogue.topics).find(([key, value]) => {
       if (!this.dialogueTopicAvailable(player, value)) return false;
-      const aliases = [key, ...value.aliases].map((alias) => alias.toLowerCase());
-      return aliases.some((alias) => alias === requestedTopic || alias.includes(requestedTopic) || requestedTopic.includes(alias));
+      const phrases = [key, value.prompt, ...value.aliases]
+        .filter((phrase): phrase is string => Boolean(phrase))
+        .map(cleanCommandQuery);
+      return phrases.some((phrase) => phrase === requestedTopic || phrase.includes(requestedTopic) || requestedTopic.includes(phrase));
     });
 
     if (!topic) {

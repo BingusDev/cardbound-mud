@@ -151,7 +151,7 @@
       "id": "starter-deck-panic",
       "name": "Duel Disk Lockdown",
       "summary": "Open the mall route, log your first Collection card, and make sure the information kiosk survived first contact with living Duel Monsters.",
-      "description": "Marshal Echo needs the emergency Duel Disk keycard from the card shop. Log a Collection card, get the keycard, beat the Blue-Eyes White Dragon back from the turnstiles, reach the concourse, and check in with Milo at the kiosk.",
+      "description": "Marshal Echo needs the emergency Duel Disk keycard from the card shop. Log a Collection card, get the keycard, beat the Blue-Eyes White Dragon back from the turnstiles, reach the concourse, and talk to Kiosk Kid Milo.",
       "tags": [
         "main",
         "starter"
@@ -267,7 +267,7 @@
       "id": "citywide-signal",
       "name": "Rotom Radio Relay",
       "summary": "Help the food court radio crew broadcast monster warnings across Cardbound City after your binder proves you can handle the route.",
-      "description": "Signal DJ Pax can warn the city if you have at least three Collection cards, gather a Rotom antenna sticker, retrieve the rooftop signal booster, defeat the Fan Rotom, and tell Bea to fire up the mast.",
+      "description": "Signal DJ Pax can warn the city if you have at least three Collection cards, gather a Rotom antenna sticker, retrieve the rooftop signal booster, defeat the Fan Rotom, and talk to Roof Technician Bea.",
       "tags": [
         "main",
         "signal"
@@ -335,7 +335,7 @@
         },
         {
           "id": "talk-roof-technician",
-          "label": "Tell Roof Technician Bea the Rotom relay is ready.",
+          "label": "Talk to Roof Technician Bea when the Rotom relay is ready.",
           "trigger": {
             "type": "talk",
             "npcId": "roof-technician"
@@ -380,7 +380,7 @@
       "id": "park-roundup",
       "name": "Poke Ball Roundup",
       "summary": "Help Ranger Mira calm the small Pokemon-adjacent monsters before they learn capitalism from the hot dog cart.",
-      "description": "The park monsters are scared, hungry, and fast. Build your binder to five cards, gather Poke Ball rescue tags, check Pocket Park, calm the Misty's Gyarados, and report back to Mira.",
+      "description": "The park monsters are scared, hungry, and fast. Build your binder to five cards, gather Poke Ball rescue tags, check Pocket Park, calm the Misty's Gyarados, and talk to Ranger Mira again.",
       "tags": [
         "main",
         "park"
@@ -440,7 +440,7 @@
         },
         {
           "id": "return-ranger-mira",
-          "label": "Report back to Ranger Mira.",
+          "label": "Talk to Ranger Mira again.",
           "trigger": {
             "type": "talk",
             "npcId": "ranger-mira"
@@ -558,7 +558,7 @@
         },
         {
           "id": "return-professor-amper",
-          "label": "Return to Professor Amper.",
+          "label": "Talk to Professor Amper again.",
           "trigger": {
             "type": "talk",
             "npcId": "professor-amper"
@@ -816,7 +816,7 @@
         },
         {
           "id": "talk-harbor-captain",
-          "label": "Tell Captain Rook the finale route is open.",
+          "label": "Talk to Captain Rook when the finale route is open.",
           "trigger": {
             "type": "talk",
             "npcId": "harbor-captain"
@@ -2930,7 +2930,7 @@
               "radio"
             ],
             "response": [
-              "The roof mast needs a Rotom antenna sticker and a signal booster. Get the sticker from transit, the booster from the roof, then tell the technician we can go citywide."
+              "The roof mast needs a Rotom antenna sticker and a signal booster. Get the sticker from transit, the booster from the roof, then talk to Roof Technician Bea."
             ],
             "classResponses": {
               "duelist": [
@@ -3013,7 +3013,7 @@
               "marshal"
             ],
             "response": [
-              "Tell the marshal I am alive, helpful, and only charging one coupon per rescue."
+              "Talk to Marshal Echo and let him know I am alive, helpful, and only charging one coupon per rescue."
             ]
           }
         }
@@ -3469,7 +3469,7 @@
               "rescue"
             ],
             "response": [
-              "Grab Poke Ball rescue tags from the ranger table or arcade, tag the park sightings, and report back before the little ones discover the hot dog cart."
+              "Grab Poke Ball rescue tags from the ranger table or arcade, tag the park sightings, then talk to me again before the little ones discover the hot dog cart."
             ],
             "classResponses": {
               "duelist": [
